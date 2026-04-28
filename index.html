@@ -93,8 +93,11 @@
         transform: translateY(-220px) translateX(0) rotate(10deg);
         opacity: 0;
       }
+
       10% { opacity: 0.85; }
+
       85% { opacity: 0.55; }
+
       100% {
         transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg);
         opacity: 0;
@@ -134,8 +137,11 @@
         transform: translateY(-80px) translateX(0) scale(0.6);
         opacity: 0;
       }
+
       12% { opacity: 0.95; }
+
       80% { opacity: 0.65; }
+
       100% {
         transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1);
         opacity: 0;
@@ -174,6 +180,7 @@
         transform: translate(-50%, -50%) scale(1);
         opacity: 0.9;
       }
+
       to {
         transform: translate(-50%, -50%) scale(1.9);
         opacity: 0;
@@ -194,7 +201,7 @@
     .nav {
       max-width: 1180px;
       margin: 0 auto;
-      padding: 20px 24px;
+      padding: 18px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -209,21 +216,28 @@
       font-size: 18px;
     }
 
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
-      box-shadow: 0 0 30px rgba(198, 168, 90, 0.38);
-      position: relative;
+    .logo-img {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 0 6px rgba(255, 217, 120, 0.55))
+        drop-shadow(0 0 18px rgba(198, 168, 90, 0.35));
+      transition: all 0.3s ease;
     }
 
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 8px;
-      border-radius: 50%;
-      border: 1px solid rgba(11, 11, 11, 0.6);
+    .brand:hover .logo-img {
+      transform: scale(1.05);
+      filter:
+        drop-shadow(0 0 10px rgba(255, 217, 120, 0.85))
+        drop-shadow(0 0 28px rgba(198, 168, 90, 0.55));
+    }
+
+    .brand-text {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-size: 18px;
+      color: var(--soft-white);
     }
 
     .nav-links {
@@ -299,8 +313,15 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.35); }
+      0%, 100% {
+        opacity: 0.45;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.35);
+      }
     }
 
     h1 {
@@ -616,6 +637,28 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 520px) {
+      .logo-img {
+        height: 36px;
+      }
+
+      .brand-text {
+        font-size: 16px;
+      }
+
+      h1 {
+        font-size: 48px;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -628,8 +671,8 @@
   <header>
     <nav class="nav">
       <a href="#" class="brand">
-        <span class="brand-mark"></span>
-        <span>AUREN</span>
+        <img src="logo.png" alt="Logo Auren" class="logo-img" />
+        <span class="brand-text">AUREN</span>
       </a>
 
       <div class="nav-links">
