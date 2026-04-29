@@ -13,7 +13,6 @@
       --gold: #C6A85A;
       --gold-light: #FFD978;
       --danger: #E66B6B;
-      --green: #28C76F;
     }
 
     * {
@@ -280,12 +279,12 @@
     .hero {
       max-width: 1180px;
       margin: 0 auto;
-      padding: 130px 24px 62px;
+      padding: 130px 24px 60px;
       display: grid;
-      grid-template-columns: 1fr 1.02fr;
-      gap: 48px;
+      grid-template-columns: 1fr 0.95fr;
+      gap: 56px;
       align-items: center;
-      min-height: 88vh;
+      min-height: 86vh;
     }
 
     .eyebrow {
@@ -411,72 +410,30 @@
     }
 
     .live-price-widget {
+      position: relative;
       width: 100%;
-      min-height: 150px;
+      min-height: 185px;
       border-radius: 22px;
       overflow: hidden;
       background: rgba(255,255,255,0.035);
       border: 1px solid rgba(198,168,90,0.16);
       padding: 12px;
-      margin-bottom: 20px;
+      pointer-events: none;
+    }
+
+    .live-price-widget::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      cursor: default;
     }
 
     .tradingview-widget-container,
     .tradingview-widget-container__widget {
       width: 100%;
-      min-height: 130px;
-    }
-
-    .hero-summary {
-      border-radius: 22px;
-      padding: 22px;
-      background: linear-gradient(145deg, rgba(198,168,90,0.13), rgba(255,255,255,0.04));
-      border: 1px solid rgba(198,168,90,0.2);
-    }
-
-    .hero-summary-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .hero-summary-header span {
-      color: var(--gold-light);
-      font-weight: 800;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .summary-item {
-      padding: 15px;
-      border-radius: 16px;
-      background: rgba(0,0,0,0.22);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .summary-item small {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    .summary-item strong {
-      font-size: 20px;
-    }
-
-    .bearish {
-      color: var(--danger);
-    }
-
-    .gold {
-      color: var(--gold-light);
+      min-height: 160px;
+      pointer-events: none;
     }
 
     section {
@@ -666,7 +623,6 @@
       line-height: 1.7;
       max-width: 780px;
       font-size: 16px;
-      margin-bottom: 0;
     }
 
     .waitlist-form {
@@ -735,6 +691,7 @@
         grid-template-columns: 1fr;
         padding-top: 120px;
         min-height: auto;
+        gap: 38px;
       }
 
       .features,
@@ -785,10 +742,6 @@
       .hero-actions .btn,
       .waitlist-form .btn {
         width: 100%;
-      }
-
-      .summary-grid {
-        grid-template-columns: 1fr;
       }
 
       .waitlist-form {
@@ -879,35 +832,6 @@
                 "locale": "it"
               }
               </script>
-            </div>
-          </div>
-
-          <div class="hero-summary">
-            <div class="hero-summary-header">
-              <span>Scenario Auren</span>
-              <span>65%</span>
-            </div>
-
-            <div class="summary-grid">
-              <div class="summary-item">
-                <small>Bias</small>
-                <strong class="bearish">Ribassista</strong>
-              </div>
-
-              <div class="summary-item">
-                <small>Livello chiave</small>
-                <strong>4.600</strong>
-              </div>
-
-              <div class="summary-item">
-                <small>Resistenza</small>
-                <strong>4.670 - 4.720</strong>
-              </div>
-
-              <div class="summary-item">
-                <small>Invalidazione</small>
-                <strong>oltre 4.720</strong>
-              </div>
             </div>
           </div>
         </div>
