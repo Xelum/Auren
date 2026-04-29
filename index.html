@@ -39,13 +39,54 @@
     }
 
     .background {
+      position: fixed;<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auren | Analisi probabilistica sull'oro</title>
+
+  <style>
+    :root {
+      --black: #0B0B0B;
+      --soft-white: #F5F5F5;
+      --muted: #A7A7A7;
+      --gold: #C6A85A;
+      --gold-light: #FFD978;
+      --danger: #E66B6B;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--black);
+      color: var(--soft-white);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .background {
       position: fixed;
       inset: 0;
       z-index: -5;
       overflow: hidden;
       background:
-        radial-gradient(circle at 20% 20%, rgba(198, 168, 90, 0.13), transparent 30%),
-        radial-gradient(circle at 80% 10%, rgba(198, 168, 90, 0.08), transparent 28%),
+        radial-gradient(circle at 20% 18%, rgba(198,168,90,0.13), transparent 28%),
+        radial-gradient(circle at 80% 12%, rgba(198,168,90,0.08), transparent 26%),
         linear-gradient(180deg, #111111 0%, #080808 100%);
     }
 
@@ -57,7 +98,7 @@
         linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
       background-size: 64px 64px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent 90%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 92%);
     }
 
     .gold-rain,
@@ -82,7 +123,7 @@
       width: 2px;
       height: 140px;
       background: linear-gradient(to bottom, transparent, rgba(255,217,120,0.9), transparent);
-      filter: drop-shadow(0 0 12px rgba(255, 217, 120, 0.75));
+      filter: drop-shadow(0 0 12px rgba(255,217,120,0.75));
       animation: fall linear infinite;
     }
 
@@ -114,9 +155,9 @@
       border-radius: 50%;
       background: var(--gold-light);
       box-shadow:
-        0 0 10px rgba(255, 217, 120, 0.9),
-        0 0 24px rgba(255, 217, 120, 0.55),
-        0 0 42px rgba(198, 168, 90, 0.28);
+        0 0 10px rgba(255,217,120,0.9),
+        0 0 24px rgba(255,217,120,0.55),
+        0 0 42px rgba(198,168,90,0.28);
       opacity: 0;
       animation: meteorFall linear infinite;
     }
@@ -175,8 +216,8 @@
       border-radius: 50%;
       pointer-events: none;
       z-index: 9997;
-      background: radial-gradient(circle, rgba(255, 217, 120, 0.34), rgba(198,168,90,0.12) 45%, transparent 72%);
-      box-shadow: 0 0 22px rgba(255, 217, 120, 0.3);
+      background: radial-gradient(circle, rgba(255,217,120,0.34), rgba(198,168,90,0.12) 45%, transparent 72%);
+      box-shadow: 0 0 22px rgba(255,217,120,0.3);
       animation: trailFade 0.7s ease-out forwards;
     }
 
@@ -199,15 +240,15 @@
       right: 0;
       z-index: 50;
       backdrop-filter: blur(18px);
-      background: rgba(11, 11, 11, 0.76);
-      border-bottom: 1px solid rgba(198, 168, 90, 0.14);
+      background: rgba(11,11,11,0.82);
+      border-bottom: 1px solid rgba(198,168,90,0.14);
     }
 
     .nav {
-      max-width: 1180px;
+      max-width: 1120px;
       margin: 0 auto;
       padding: 8px 24px;
-      min-height: 82px;
+      min-height: 74px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -216,19 +257,18 @@
     .brand {
       display: flex;
       align-items: center;
-      min-width: 220px;
+      min-width: 190px;
     }
 
     .logo-img-big {
-      height: 72px;
+      height: 58px;
       width: auto;
-      max-width: 215px;
+      max-width: 185px;
       object-fit: contain;
       display: block;
       filter:
-        drop-shadow(0 0 10px rgba(255, 217, 120, 0.75))
-        drop-shadow(0 0 28px rgba(198, 168, 90, 0.45))
-        drop-shadow(0 0 55px rgba(198, 168, 90, 0.22));
+        drop-shadow(0 0 10px rgba(255,217,120,0.75))
+        drop-shadow(0 0 28px rgba(198,168,90,0.45));
       transition: all 0.3s ease;
     }
 
@@ -252,11 +292,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 46px;
+      min-height: 44px;
       padding: 0 20px;
       border-radius: 999px;
-      border: 1px solid rgba(198, 168, 90, 0.38);
-      background: rgba(198, 168, 90, 0.08);
+      border: 1px solid rgba(198,168,90,0.38);
+      background: rgba(198,168,90,0.08);
       color: var(--soft-white);
       font-weight: 700;
       transition: 0.2s ease;
@@ -265,26 +305,26 @@
 
     .btn:hover {
       transform: translateY(-2px);
-      background: rgba(198, 168, 90, 0.15);
-      box-shadow: 0 0 28px rgba(198, 168, 90, 0.24);
+      background: rgba(198,168,90,0.15);
+      box-shadow: 0 0 28px rgba(198,168,90,0.24);
     }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
       color: #111;
       border: none;
-      box-shadow: 0 0 40px rgba(198, 168, 90, 0.25);
+      box-shadow: 0 0 40px rgba(198,168,90,0.25);
     }
 
     .hero {
-      max-width: 1180px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 130px 24px 60px;
+      padding: 118px 24px 36px;
       display: grid;
       grid-template-columns: 1fr 0.95fr;
-      gap: 56px;
+      gap: 58px;
       align-items: center;
-      min-height: 86vh;
+      min-height: 620px;
     }
 
     .eyebrow {
@@ -293,8 +333,8 @@
       gap: 8px;
       padding: 8px 13px;
       border-radius: 999px;
-      border: 1px solid rgba(198, 168, 90, 0.26);
-      background: rgba(198, 168, 90, 0.07);
+      border: 1px solid rgba(198,168,90,0.26);
+      background: rgba(198,168,90,0.07);
       color: var(--gold-light);
       font-size: 13px;
       margin-bottom: 22px;
@@ -305,7 +345,7 @@
       height: 8px;
       border-radius: 50%;
       background: var(--gold-light);
-      box-shadow: 0 0 20px rgba(255, 217, 120, 0.9);
+      box-shadow: 0 0 20px rgba(255,217,120,0.9);
       animation: pulse 1.8s ease-in-out infinite;
     }
 
@@ -322,10 +362,11 @@
     }
 
     h1 {
-      font-size: clamp(48px, 7vw, 82px);
+      font-size: clamp(50px, 6vw, 78px);
       line-height: 0.98;
       letter-spacing: -0.07em;
       margin-bottom: 22px;
+      max-width: 620px;
     }
 
     .gold-text {
@@ -337,9 +378,9 @@
 
     .hero p {
       color: var(--muted);
-      font-size: 19px;
+      font-size: 18px;
       line-height: 1.65;
-      max-width: 620px;
+      max-width: 610px;
       margin-bottom: 28px;
     }
 
@@ -364,13 +405,16 @@
       background: linear-gradient(145deg, rgba(255,217,120,0.5), rgba(198,168,90,0.08), rgba(255,255,255,0.08));
       box-shadow: 0 24px 90px rgba(0,0,0,0.55), 0 0 80px rgba(198,168,90,0.12);
       overflow: hidden;
+      max-width: 500px;
+      justify-self: end;
+      width: 100%;
     }
 
     .terminal-inner {
       border-radius: 29px;
-      background: rgba(15, 15, 15, 0.9);
+      background: rgba(15,15,15,0.9);
       backdrop-filter: blur(20px);
-      padding: 26px;
+      padding: 24px;
       position: relative;
       z-index: 1;
     }
@@ -397,7 +441,7 @@
     .status-badge {
       font-size: 12px;
       color: var(--gold-light);
-      border: 1px solid rgba(198, 168, 90, 0.24);
+      border: 1px solid rgba(198,168,90,0.24);
       padding: 7px 10px;
       border-radius: 999px;
       background: rgba(198,168,90,0.08);
@@ -412,7 +456,7 @@
     .live-price-widget {
       position: relative;
       width: 100%;
-      min-height: 185px;
+      height: 180px;
       border-radius: 22px;
       overflow: hidden;
       background: rgba(255,255,255,0.035);
@@ -432,26 +476,30 @@
     .tradingview-widget-container,
     .tradingview-widget-container__widget {
       width: 100%;
-      min-height: 160px;
+      min-height: 155px;
       pointer-events: none;
     }
 
     section {
-      max-width: 1180px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 64px 24px;
+      padding: 46px 24px;
+    }
+
+    #cosa-legge {
+      padding-top: 28px;
     }
 
     .section-heading {
       text-align: center;
       max-width: 780px;
-      margin: 0 auto 36px;
+      margin: 0 auto 34px;
     }
 
     .section-heading h2 {
-      font-size: clamp(34px, 5vw, 58px);
+      font-size: clamp(34px, 5vw, 56px);
       letter-spacing: -0.05em;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .section-heading p {
@@ -510,7 +558,7 @@
     }
 
     .scenario-section {
-      padding-top: 54px;
+      padding-top: 46px;
     }
 
     .scenario-board {
@@ -531,7 +579,7 @@
     }
 
     .scenario-board h2 {
-      font-size: clamp(34px, 5vw, 58px);
+      font-size: clamp(34px, 5vw, 56px);
       letter-spacing: -0.05em;
       margin-bottom: 12px;
     }
@@ -671,12 +719,12 @@
       }
 
       .nav {
-        min-height: 78px;
+        min-height: 72px;
       }
 
       .logo-img-big {
-        height: 64px;
-        max-width: 180px;
+        height: 54px;
+        max-width: 170px;
       }
 
       .nav-links {
@@ -689,9 +737,15 @@
 
       .hero {
         grid-template-columns: 1fr;
-        padding-top: 120px;
+        padding-top: 110px;
+        padding-bottom: 28px;
         min-height: auto;
-        gap: 38px;
+        gap: 36px;
+      }
+
+      .terminal-card {
+        justify-self: start;
+        max-width: 100%;
       }
 
       .features,
@@ -705,7 +759,11 @@
       }
 
       section {
-        padding: 56px 24px;
+        padding: 42px 24px;
+      }
+
+      #cosa-legge {
+        padding-top: 24px;
       }
 
       .premium {
@@ -715,12 +773,12 @@
 
     @media (max-width: 520px) {
       .logo-img-big {
-        height: 56px;
-        max-width: 160px;
+        height: 50px;
+        max-width: 150px;
       }
 
       .nav {
-        min-height: 74px;
+        min-height: 70px;
         padding: 8px 18px;
       }
 
@@ -735,8 +793,8 @@
       }
 
       .hero {
-        padding: 112px 20px 44px;
-        gap: 34px;
+        padding: 104px 20px 26px;
+        gap: 30px;
       }
 
       .hero-actions .btn,
