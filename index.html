@@ -1068,6 +1068,7 @@
           <div class="scenario-status-left">
             <div class="scenario-message" id="scenario-message">Scenario in caricamento...</div>
             <div class="scenario-update-text">
+              Prezzo XAU/USD: <strong id="current-price">--</strong> ·
               Ultimo aggiornamento: <strong id="last-update">--:--</strong>
             </div>
           </div>
@@ -1080,61 +1081,52 @@
 
         <div class="scenario-grid">
           <div class="scenario-card main">
-            <div class="prob" id="main-prob">65%</div>
-            <h3 id="main-title">Continuazione ribassista</h3>
-            <p id="main-desc">
-              Il prezzo resta debole sotto la zona di resistenza. Una rottura netta del supporto
-              potrebbe aumentare la pressione verso la successiva area di domanda.
-            </p>
+            <div class="prob" id="main-prob">--%</div>
+            <h3 id="main-title">Caricamento...</h3>
+            <p id="main-desc">Lettura dello scenario in corso.</p>
 
             <div class="scenario-meta">
               <div>
-                <span id="main-label-1">Supporto da osservare</span>
-                <strong id="main-value-1">4.600</strong>
+                <span id="main-label-1">Supporto</span>
+                <strong id="main-value-1">--</strong>
               </div>
               <div>
                 <span id="main-label-2">Resistenza</span>
-                <strong id="main-value-2">4.670 - 4.720</strong>
+                <strong id="main-value-2">--</strong>
               </div>
             </div>
           </div>
 
           <div class="scenario-card">
-            <div class="prob" id="sec-prob">25%</div>
-            <h3 id="sec-title">Rimbalzo tecnico</h3>
-            <p id="sec-desc">
-              Il prezzo potrebbe recuperare verso la resistenza, ma il movimento resterebbe correttivo
-              finche la struttura non cambia.
-            </p>
+            <div class="prob" id="sec-prob">--%</div>
+            <h3 id="sec-title">Caricamento...</h3>
+            <p id="sec-desc">Lettura dello scenario secondario in corso.</p>
 
             <div class="scenario-meta">
               <div>
                 <span id="sec-label-1">Area target</span>
-                <strong id="sec-value-1">4.670</strong>
+                <strong id="sec-value-1">--</strong>
               </div>
               <div>
                 <span id="sec-label-2">Forza scenario</span>
-                <strong id="sec-value-2">Media</strong>
+                <strong id="sec-value-2">--</strong>
               </div>
             </div>
           </div>
 
           <div class="scenario-card">
-            <div class="prob" id="alt-prob">10%</div>
-            <h3 id="alt-title">Inversione rialzista</h3>
-            <p id="alt-desc">
-              Una vera inversione richiede il recupero della resistenza chiave e una tenuta sopra quel livello
-              con maggiore forza.
-            </p>
+            <div class="prob" id="alt-prob">--%</div>
+            <h3 id="alt-title">Caricamento...</h3>
+            <p id="alt-desc">Lettura dello scenario alternativo in corso.</p>
 
             <div class="scenario-meta">
               <div>
-                <span id="alt-label-1">Invalidazione bearish</span>
-                <strong id="alt-value-1">oltre 4.720</strong>
+                <span id="alt-label-1">Invalidazione</span>
+                <strong id="alt-value-1">--</strong>
               </div>
               <div>
                 <span id="alt-label-2">Forza scenario</span>
-                <strong id="alt-value-2">Bassa</strong>
+                <strong id="alt-value-2">--</strong>
               </div>
             </div>
           </div>
@@ -1234,110 +1226,6 @@
 
     animateGlow();
 
-    const scenarios = [
-      {
-        type: "bearish",
-        lastUpdateMessage: "La lettura principale resta ribassista sotto la resistenza chiave.",
-        main: {
-          probability: 65,
-          title: "Continuazione ribassista",
-          description: "Il prezzo resta debole sotto la zona di resistenza. Una rottura netta del supporto potrebbe aumentare la pressione verso la successiva area di domanda.",
-          label1: "Supporto da osservare",
-          value1: "4.600",
-          label2: "Resistenza",
-          value2: "4.670 - 4.720"
-        },
-        secondary: {
-          probability: 25,
-          title: "Rimbalzo tecnico",
-          description: "Il prezzo potrebbe recuperare verso la resistenza, ma il movimento resterebbe correttivo finche la struttura non cambia.",
-          label1: "Area target",
-          value1: "4.670",
-          label2: "Forza scenario",
-          value2: "Media"
-        },
-        alternative: {
-          probability: 10,
-          title: "Inversione rialzista",
-          description: "Una vera inversione richiede il recupero della resistenza chiave e una tenuta sopra quel livello con maggiore forza.",
-          label1: "Invalidazione bearish",
-          value1: "oltre 4.720",
-          label2: "Forza scenario",
-          value2: "Bassa"
-        }
-      },
-      {
-        type: "neutral",
-        lastUpdateMessage: "Il mercato entra in fase di attesa: scenario principale meno direzionale.",
-        main: {
-          probability: 50,
-          title: "Fase laterale",
-          description: "Il prezzo resta compresso tra supporto e resistenza. La lettura principale favorisce attesa e conferme prima di una nuova direzione.",
-          label1: "Supporto",
-          value1: "4.600",
-          label2: "Resistenza",
-          value2: "4.670"
-        },
-        secondary: {
-          probability: 30,
-          title: "Rimbalzo tecnico",
-          description: "Un recupero verso la parte alta del range resta possibile, ma senza rottura non conferma una vera inversione.",
-          label1: "Area target",
-          value1: "4.670",
-          label2: "Forza scenario",
-          value2: "Media"
-        },
-        alternative: {
-          probability: 20,
-          title: "Breakout direzionale",
-          description: "Una rottura netta del range potrebbe riattivare volatilita e cambiare rapidamente la lettura principale.",
-          label1: "Livello decisivo",
-          value1: "oltre 4.720",
-          label2: "Forza scenario",
-          value2: "Bassa"
-        }
-      },
-      {
-        type: "bullish",
-        lastUpdateMessage: "La pressione rialzista aumenta dopo il recupero della zona chiave.",
-        main: {
-          probability: 55,
-          title: "Recupero rialzista",
-          description: "Il prezzo mostra forza sopra il livello chiave. La tenuta della zona recuperata potrebbe favorire continuita verso la prossima resistenza.",
-          label1: "Supporto da mantenere",
-          value1: "4.670",
-          label2: "Target tecnico",
-          value2: "4.720 - 4.800"
-        },
-        secondary: {
-          probability: 30,
-          title: "Ritracciamento",
-          description: "Il prezzo potrebbe tornare a testare il supporto prima di confermare una nuova spinta rialzista.",
-          label1: "Area di test",
-          value1: "4.670",
-          label2: "Forza scenario",
-          value2: "Media"
-        },
-        alternative: {
-          probability: 15,
-          title: "Falso breakout",
-          description: "Una perdita rapida del livello recuperato indebolirebbe la lettura positiva e riporterebbe il mercato in fase di rischio.",
-          label1: "Invalidazione bullish",
-          value1: "sotto 4.600",
-          label2: "Forza scenario",
-          value2: "Bassa"
-        }
-      }
-    ];
-
-    function getCurrentHourKey() {
-      const now = new Date();
-      return now.getFullYear() + "-" +
-        String(now.getMonth() + 1).padStart(2, "0") + "-" +
-        String(now.getDate()).padStart(2, "0") + "-" +
-        String(now.getHours()).padStart(2, "0");
-    }
-
     function formatTime(date) {
       return String(date.getHours()).padStart(2, "0") + ":" +
         String(date.getMinutes()).padStart(2, "0");
@@ -1350,133 +1238,121 @@
       return next;
     }
 
-    function pickScenario() {
-      const previousScenario = JSON.parse(localStorage.getItem("auren_current_scenario") || "null");
-
-      if (!previousScenario) {
-        return scenarios[0];
+    function formatPrice(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) {
+        return "--";
       }
 
-      const random = Math.random();
-
-      if (previousScenario.type === "bearish") {
-        if (random < 0.62) return scenarios[0];
-        if (random < 0.86) return scenarios[1];
-        return scenarios[2];
-      }
-
-      if (previousScenario.type === "neutral") {
-        if (random < 0.40) return scenarios[1];
-        if (random < 0.70) return scenarios[0];
-        return scenarios[2];
-      }
-
-      if (previousScenario.type === "bullish") {
-        if (random < 0.55) return scenarios[2];
-        if (random < 0.80) return scenarios[1];
-        return scenarios[0];
-      }
-
-      return scenarios[0];
+      return Number(value).toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
-    function buildScenarioMessage(previousScenario, currentScenario) {
-      if (!previousScenario) {
-        return "Primo scenario gratuito generato per questa sessione.";
-      }
+    function buildLiveMessage(currentType) {
+      const previousType = localStorage.getItem("auren_previous_type");
 
-      if (previousScenario.type === currentScenario.type) {
-        if (currentScenario.type === "bearish") {
-          return "Come previsto nel precedente aggiornamento, la lettura resta ribassista.";
+      if (!previousType) {
+        if (currentType === "bearish") {
+          return "Scenario reale aggiornato: la lettura principale risulta ribassista.";
         }
 
-        if (currentScenario.type === "bullish") {
-          return "Come indicato nel precedente aggiornamento, il recupero rialzista resta attivo.";
+        if (currentType === "bullish") {
+          return "Scenario reale aggiornato: la lettura principale risulta rialzista.";
         }
 
-        return "La fase di attesa resta confermata anche in questo aggiornamento.";
+        return "Scenario reale aggiornato sulla base dei dati disponibili.";
       }
 
-      if (previousScenario.type === "bearish" && currentScenario.type === "neutral") {
-        return "La pressione ribassista si attenua: lo scenario passa in fase di attesa.";
+      if (previousType === currentType) {
+        if (currentType === "bearish") {
+          return "Come nel precedente aggiornamento, la pressione resta ribassista.";
+        }
+
+        if (currentType === "bullish") {
+          return "Come nel precedente aggiornamento, il recupero rialzista resta attivo.";
+        }
+
+        return "La lettura resta coerente con il precedente aggiornamento.";
       }
 
-      if (previousScenario.type === "bearish" && currentScenario.type === "bullish") {
-        return "Lo scenario ribassista precedente e stato invalidato dal recupero dei livelli chiave.";
+      if (previousType === "bearish" && currentType === "bullish") {
+        return "Lo scenario ribassista precedente e stato invalidato: ora prevale una lettura piu costruttiva.";
       }
 
-      if (previousScenario.type === "neutral" && currentScenario.type === "bearish") {
-        return "La fase laterale si indebolisce: torna prevalente la pressione ribassista.";
-      }
-
-      if (previousScenario.type === "neutral" && currentScenario.type === "bullish") {
-        return "Il mercato esce dalla fase di attesa con una lettura piu costruttiva.";
-      }
-
-      if (previousScenario.type === "bullish" && currentScenario.type === "neutral") {
-        return "Il recupero rialzista perde forza: il mercato torna in fase di attesa.";
-      }
-
-      if (previousScenario.type === "bullish" && currentScenario.type === "bearish") {
+      if (previousType === "bullish" && currentType === "bearish") {
         return "La lettura rialzista precedente e stata invalidata: torna pressione ribassista.";
       }
 
-      return currentScenario.lastUpdateMessage;
+      return "Lo scenario si aggiorna con una nuova lettura rispetto al precedente aggiornamento.";
     }
 
-    function renderScenario(data, message, updateDate) {
+    function renderScenarioFromApi(data) {
+      const scenario = data.scenario;
+      const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
+      const message = buildLiveMessage(scenario.type);
+
       document.getElementById("scenario-message").innerText = message;
       document.getElementById("last-update").innerText = formatTime(updateDate);
+      document.getElementById("current-price").innerText = formatPrice(data.price);
 
-      document.getElementById("main-prob").innerText = data.main.probability + "%";
-      document.getElementById("main-title").innerText = data.main.title;
-      document.getElementById("main-desc").innerText = data.main.description;
-      document.getElementById("main-label-1").innerText = data.main.label1;
-      document.getElementById("main-value-1").innerText = data.main.value1;
-      document.getElementById("main-label-2").innerText = data.main.label2;
-      document.getElementById("main-value-2").innerText = data.main.value2;
+      document.getElementById("main-prob").innerText = scenario.main.probability + "%";
+      document.getElementById("main-title").innerText = scenario.main.title;
+      document.getElementById("main-desc").innerText = scenario.main.description;
+      document.getElementById("main-label-1").innerText = scenario.main.label1;
+      document.getElementById("main-value-1").innerText = scenario.main.value1;
+      document.getElementById("main-label-2").innerText = scenario.main.label2;
+      document.getElementById("main-value-2").innerText = scenario.main.value2;
 
-      document.getElementById("sec-prob").innerText = data.secondary.probability + "%";
-      document.getElementById("sec-title").innerText = data.secondary.title;
-      document.getElementById("sec-desc").innerText = data.secondary.description;
-      document.getElementById("sec-label-1").innerText = data.secondary.label1;
-      document.getElementById("sec-value-1").innerText = data.secondary.value1;
-      document.getElementById("sec-label-2").innerText = data.secondary.label2;
-      document.getElementById("sec-value-2").innerText = data.secondary.value2;
+      document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
+      document.getElementById("sec-title").innerText = scenario.secondary.title;
+      document.getElementById("sec-desc").innerText = scenario.secondary.description;
+      document.getElementById("sec-label-1").innerText = scenario.secondary.label1;
+      document.getElementById("sec-value-1").innerText = scenario.secondary.value1;
+      document.getElementById("sec-label-2").innerText = scenario.secondary.label2;
+      document.getElementById("sec-value-2").innerText = scenario.secondary.value2;
 
-      document.getElementById("alt-prob").innerText = data.alternative.probability + "%";
-      document.getElementById("alt-title").innerText = data.alternative.title;
-      document.getElementById("alt-desc").innerText = data.alternative.description;
-      document.getElementById("alt-label-1").innerText = data.alternative.label1;
-      document.getElementById("alt-value-1").innerText = data.alternative.value1;
-      document.getElementById("alt-label-2").innerText = data.alternative.label2;
-      document.getElementById("alt-value-2").innerText = data.alternative.value2;
+      document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
+      document.getElementById("alt-title").innerText = scenario.alternative.title;
+      document.getElementById("alt-desc").innerText = scenario.alternative.description;
+      document.getElementById("alt-label-1").innerText = scenario.alternative.label1;
+      document.getElementById("alt-value-1").innerText = scenario.alternative.value1;
+      document.getElementById("alt-label-2").innerText = scenario.alternative.label2;
+      document.getElementById("alt-value-2").innerText = scenario.alternative.value2;
+
+      localStorage.setItem("auren_previous_type", scenario.type);
+      localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
     }
 
-    function updateScenarioIfNeeded() {
-      const currentHourKey = getCurrentHourKey();
-      const savedHourKey = localStorage.getItem("auren_scenario_hour_key");
-      const savedScenario = JSON.parse(localStorage.getItem("auren_current_scenario") || "null");
-      const savedMessage = localStorage.getItem("auren_scenario_message");
-      const savedUpdateTime = localStorage.getItem("auren_scenario_update_time");
+    async function loadLiveScenario() {
+      try {
+        const response = await fetch("/api/scenario", {
+          cache: "no-store"
+        });
 
-      if (savedHourKey === currentHourKey && savedScenario && savedMessage && savedUpdateTime) {
-        renderScenario(savedScenario, savedMessage, new Date(savedUpdateTime));
-        return;
+        if (!response.ok) {
+          throw new Error("Risposta API non valida");
+        }
+
+        const data = await response.json();
+
+        if (!data || !data.scenario) {
+          throw new Error("Scenario mancante");
+        }
+
+        renderScenarioFromApi(data);
+      } catch (error) {
+        const saved = localStorage.getItem("auren_last_api_scenario");
+
+        if (saved) {
+          renderScenarioFromApi(JSON.parse(saved));
+          document.getElementById("scenario-message").innerText =
+            "Dati live temporaneamente non disponibili. Mostro l'ultimo scenario salvato.";
+        } else {
+          document.getElementById("scenario-message").innerText =
+            "Dati live temporaneamente non disponibili. Riprova tra poco.";
+        }
       }
-
-      const previousScenario = savedScenario;
-      const newScenario = pickScenario();
-      const now = new Date();
-      const message = buildScenarioMessage(previousScenario, newScenario);
-
-      localStorage.setItem("auren_previous_scenario", JSON.stringify(previousScenario));
-      localStorage.setItem("auren_current_scenario", JSON.stringify(newScenario));
-      localStorage.setItem("auren_scenario_message", message);
-      localStorage.setItem("auren_scenario_update_time", now.toISOString());
-      localStorage.setItem("auren_scenario_hour_key", currentHourKey);
-
-      renderScenario(newScenario, message, now);
     }
 
     function updateTimer() {
@@ -1494,15 +1370,15 @@
         String(seconds).padStart(2, "0");
 
       if (diff <= 1000) {
-        setTimeout(updateScenarioIfNeeded, 1200);
+        setTimeout(loadLiveScenario, 1200);
       }
     }
 
-    updateScenarioIfNeeded();
+    loadLiveScenario();
     updateTimer();
 
     setInterval(updateTimer, 1000);
-    setInterval(updateScenarioIfNeeded, 60000);
+    setInterval(loadLiveScenario, 3600000);
 
     const waitlistForm = document.getElementById("waitlistForm");
     const emailInput = document.getElementById("emailInput");
