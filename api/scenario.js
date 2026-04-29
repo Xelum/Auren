@@ -11,10 +11,7 @@ export default async function handler(req, res) {
   const nextHour = new Date(now);
   nextHour.setHours(now.getHours() + 1, 0, 0, 0);
 
-  const secondsUntilNextHour = Math.max(
-    60,
-    Math.floor((nextHour - now) / 1000)
-  );
+  const secondsUntilNextHour = Math.max(60, Math.floor((nextHour - now) / 1000));
 
   res.setHeader(
     "Cache-Control",
@@ -28,8 +25,7 @@ export default async function handler(req, res) {
       fetchCandles("4h", API_KEY)
     ]);
 
-    const candles1h = tf1h;
-    const last = candles1h[candles1h.length - 1];
+    const last = tf1h[tf1h.length - 1];
     const price = last.close;
 
     const ema20_15m = ema(tf15.map(c => c.close), 20);
@@ -44,47 +40,40 @@ export default async function handler(req, res) {
     const rsi1h = rsi(tf1h.map(c => c.close), 14);
     const atr1h = atr(tf1h, 14);
 
-    const recent = candles1h.slice(-30);
-    const support = findSupport(recent);
-    const resistance = findResistance(recent);
+    const recent = tf1h.slice(-40);
+
+    const support = findSupportBelow(recent, price, atr1h);
+    const resistance = findResistanceAbove(recent, price, atr1h);
 
     const structure = marketStructure(tf1h);
     const volatilityRatio = atr1h / price;
 
     let score = 0;
 
-    // Trend principale 4H
     if (price > ema20_4h && ema20_4h > ema50_4h) score += 3;
     if (price < ema20_4h && ema20_4h < ema50_4h) score -= 3;
 
-    // Trend operativo 1H
     if (price > ema20_1h && ema20_1h > ema50_1h) score += 3;
     if (price < ema20_1h && ema20_1h < ema50_1h) score -= 3;
 
-    // Momentum breve 15M
     if (ema20_15m > ema50_15m) score += 1;
     if (ema20_15m < ema50_15m) score -= 1;
 
-    // Struttura
     if (structure === "bullish") score += 2;
     if (structure === "bearish") score -= 2;
 
-    // RSI
     if (rsi1h > 58 && rsi1h < 72) score += 1.5;
     if (rsi1h < 42 && rsi1h > 28) score -= 1.5;
 
-    // Evita segnali troppo aggressivi in ipercomprato/ipervenduto
     if (rsi1h >= 72) score -= 1;
     if (rsi1h <= 28) score += 1;
 
-    // Vicinanza a livelli chiave
     const distanceFromResistance = Math.abs(resistance - price);
     const distanceFromSupport = Math.abs(price - support);
 
     if (distanceFromResistance < atr1h * 0.8 && score > 0) score -= 1.5;
     if (distanceFromSupport < atr1h * 0.8 && score < 0) score += 1.5;
 
-    // Mercato troppo compresso: riduce sicurezza direzionale
     if (volatilityRatio < 0.0018) {
       score *= 0.65;
     }
@@ -96,8 +85,6 @@ export default async function handler(req, res) {
       resistance,
       atr1h,
       rsi1h,
-      ema20_1h,
-      ema50_1h,
       structure
     });
 
@@ -169,11 +156,8 @@ function rsi(values, period) {
   for (let i = values.length - period; i < values.length; i++) {
     const diff = values[i] - values[i - 1];
 
-    if (diff >= 0) {
-      gains += diff;
-    } else {
-      losses += Math.abs(diff);
-    }
+    if (diff >= 0) gains += diff;
+    else losses += Math.abs(diff);
   }
 
   if (losses === 0) return 100;
@@ -190,30 +174,40 @@ function atr(candles, period) {
     const current = recent[i];
     const previous = recent[i - 1];
 
-    const tr = Math.max(
+    trueRanges.push(Math.max(
       current.high - current.low,
       Math.abs(current.high - previous.close),
       Math.abs(current.low - previous.close)
-    );
-
-    trueRanges.push(tr);
+    ));
   }
 
   return trueRanges.reduce((a, b) => a + b, 0) / trueRanges.length;
 }
 
-function findSupport(candles) {
-  const lows = candles.map(c => c.low);
-  lows.sort((a, b) => a - b);
+function findSupportBelow(candles, price, atrValue) {
+  const lowsBelowPrice = candles
+    .map(c => c.low)
+    .filter(level => level < price)
+    .sort((a, b) => b - a);
 
-  return lows[Math.floor(lows.length * 0.15)];
+  if (lowsBelowPrice.length > 0) {
+    return lowsBelowPrice[0];
+  }
+
+  return price - atrValue * 1.5;
 }
 
-function findResistance(candles) {
-  const highs = candles.map(c => c.high);
-  highs.sort((a, b) => b - a);
+function findResistanceAbove(candles, price, atrValue) {
+  const highsAbovePrice = candles
+    .map(c => c.high)
+    .filter(level => level > price)
+    .sort((a, b) => a - b);
 
-  return highs[Math.floor(highs.length * 0.15)];
+  if (highsAbovePrice.length > 0) {
+    return highsAbovePrice[0];
+  }
+
+  return price + atrValue * 1.5;
 }
 
 function marketStructure(candles) {
@@ -235,15 +229,7 @@ function marketStructure(candles) {
 }
 
 function buildScenario(data) {
-  const {
-    score,
-    price,
-    support,
-    resistance,
-    atr1h,
-    rsi1h,
-    structure
-  } = data;
+  const { score, support, resistance, atr1h, rsi1h } = data;
 
   const strongBullish = score >= 6;
   const bullish = score >= 3 && score < 6;
