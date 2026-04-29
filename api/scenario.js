@@ -7,6 +7,20 @@ export default async function handler(req, res) {
     });
   }
 
+  const now = new Date();
+  const nextHour = new Date(now);
+  nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+
+  const secondsUntilNextHour = Math.max(
+    60,
+    Math.floor((nextHour - now) / 1000)
+  );
+
+  res.setHeader(
+    "Cache-Control",
+    `s-maxage=${secondsUntilNextHour}, stale-while-revalidate=60`
+  );
+
   try {
     const url =
       "https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=1h&outputsize=50&apikey=" +
@@ -48,8 +62,6 @@ export default async function handler(req, res) {
     if (last.close < average) {
       scenario = {
         type: "bearish",
-        message:
-          "La lettura principale resta ribassista sotto la media delle ultime candele.",
         main: {
           probability: 65,
           title: "Continuazione ribassista",
@@ -84,8 +96,6 @@ export default async function handler(req, res) {
     } else {
       scenario = {
         type: "bullish",
-        message:
-          "Il prezzo si mantiene sopra la media oraria: la lettura diventa piu costruttiva.",
         main: {
           probability: 60,
           title: "Recupero rialzista",
@@ -125,7 +135,9 @@ export default async function handler(req, res) {
       average: Number(average.toFixed(2)),
       support: Number(support.toFixed(2)),
       resistance: Number(resistance.toFixed(2)),
-      updatedAt: new Date().toISOString(),
+      updatedAt: now.toISOString(),
+      nextUpdateAt: nextHour.toISOString(),
+      cacheSeconds: secondsUntilNextHour,
       scenario
     });
   } catch (error) {
