@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auren | Comprendi l'oro in pochi secondi</title>
+  <title>Auren | Analisi probabilistica sull'oro</title>
 
   <style>
     :root {
@@ -14,6 +14,7 @@
       --gold-light: #FFD978;
       --gold-dark: #6E5523;
       --danger: #E66B6B;
+      --green: #28C76F;
     }
 
     * {
@@ -84,7 +85,7 @@
       height: 140px;
       background: linear-gradient(to bottom, transparent, rgba(255,217,120,0.9), transparent);
       filter: drop-shadow(0 0 12px rgba(255, 217, 120, 0.75));
-      opacity: 0.65;
+      opacity: 0.55;
       animation: fall linear infinite;
     }
 
@@ -94,9 +95,13 @@
         opacity: 0;
       }
 
-      10% { opacity: 0.85; }
+      10% {
+        opacity: 0.75;
+      }
 
-      85% { opacity: 0.55; }
+      85% {
+        opacity: 0.45;
+      }
 
       100% {
         transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg);
@@ -138,9 +143,13 @@
         opacity: 0;
       }
 
-      12% { opacity: 0.95; }
+      12% {
+        opacity: 0.85;
+      }
 
-      80% { opacity: 0.65; }
+      80% {
+        opacity: 0.55;
+      }
 
       100% {
         transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1);
@@ -158,9 +167,9 @@
       border-radius: 50%;
       pointer-events: none;
       z-index: 9998;
-      background: radial-gradient(circle, rgba(255,217,120,0.20), rgba(198,168,90,0.08) 35%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,217,120,0.18), rgba(198,168,90,0.08) 35%, transparent 70%);
       filter: blur(8px);
-      opacity: 0.85;
+      opacity: 0.8;
     }
 
     .mouse-trail {
@@ -170,15 +179,15 @@
       border-radius: 50%;
       pointer-events: none;
       z-index: 9997;
-      background: radial-gradient(circle, rgba(255, 217, 120, 0.42), rgba(198,168,90,0.16) 45%, transparent 72%);
-      box-shadow: 0 0 22px rgba(255, 217, 120, 0.42);
+      background: radial-gradient(circle, rgba(255, 217, 120, 0.38), rgba(198,168,90,0.13) 45%, transparent 72%);
+      box-shadow: 0 0 22px rgba(255, 217, 120, 0.34);
       animation: trailFade 0.7s ease-out forwards;
     }
 
     @keyframes trailFade {
       from {
         transform: translate(-50%, -50%) scale(1);
-        opacity: 0.9;
+        opacity: 0.8;
       }
 
       to {
@@ -260,6 +269,7 @@
       color: var(--soft-white);
       font-weight: 600;
       transition: 0.2s ease;
+      cursor: pointer;
     }
 
     .btn:hover {
@@ -321,7 +331,7 @@
     }
 
     h1 {
-      font-size: clamp(48px, 7vw, 86px);
+      font-size: clamp(48px, 7vw, 82px);
       line-height: 0.98;
       letter-spacing: -0.07em;
       margin-bottom: 24px;
@@ -353,6 +363,34 @@
       color: #777;
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .proof-strip {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 560px;
+    }
+
+    .proof-item {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .proof-item strong {
+      display: block;
+      color: var(--gold-light);
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .proof-item span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
     }
 
     .terminal-card {
@@ -423,6 +461,38 @@
     .tradingview-widget-container__widget {
       width: 100%;
       min-height: 138px;
+    }
+
+    .auren-interpretation {
+      margin-bottom: 22px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(198,168,90,0.08);
+      border: 1px solid rgba(198,168,90,0.18);
+    }
+
+    .auren-interpretation h3 {
+      font-size: 16px;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+
+    .interpretation-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .interpretation-row:last-child {
+      border-bottom: none;
+    }
+
+    .interpretation-row strong {
+      color: var(--soft-white);
     }
 
     .metrics {
@@ -506,7 +576,7 @@
 
     .section-heading {
       text-align: center;
-      max-width: 760px;
+      max-width: 780px;
       margin: 0 auto 48px;
     }
 
@@ -523,22 +593,27 @@
     }
 
     .features,
-    .scenario-grid {
+    .scenario-grid,
+    .steps-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
 
     .feature-card,
-    .scenario-card {
+    .scenario-card,
+    .step-card {
       padding: 28px;
       border-radius: 28px;
       background: rgba(255,255,255,0.045);
       border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.25s ease;
     }
 
-    .feature-card:hover {
-      transform: translateY(-6px);
+    .feature-card:hover,
+    .scenario-card:hover,
+    .step-card:hover {
+      transform: translateY(-6px) scale(1.01);
       border-color: rgba(198,168,90,0.35);
       background: rgba(198,168,90,0.06);
     }
@@ -554,16 +629,19 @@
       color: var(--gold-light);
       margin-bottom: 24px;
       font-size: 21px;
+      font-weight: 700;
     }
 
     .feature-card h3,
-    .scenario-card h3 {
+    .scenario-card h3,
+    .step-card h3 {
       font-size: 21px;
       margin-bottom: 12px;
     }
 
     .feature-card p,
-    .scenario-card p {
+    .scenario-card p,
+    .step-card p {
       color: var(--muted);
       line-height: 1.65;
       font-size: 15px;
@@ -574,6 +652,85 @@
       font-weight: 800;
       color: var(--gold-light);
       margin-bottom: 18px;
+    }
+
+    .daily-signal {
+      padding: 34px;
+      border-radius: 32px;
+      background:
+        linear-gradient(135deg, rgba(198,168,90,0.16), rgba(255,255,255,0.04)),
+        rgba(255,255,255,0.035);
+      border: 1px solid rgba(198,168,90,0.22);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .daily-signal h2 {
+      font-size: clamp(30px, 4vw, 48px);
+      letter-spacing: -0.05em;
+      margin-bottom: 16px;
+    }
+
+    .daily-signal p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .signal-panel {
+      background: rgba(0,0,0,0.24);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .signal-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+    }
+
+    .signal-row:last-child {
+      border-bottom: none;
+    }
+
+    .signal-row strong {
+      color: var(--soft-white);
+    }
+
+    .waitlist-form {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      max-width: 560px;
+    }
+
+    .waitlist-form input {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--soft-white);
+      padding: 0 18px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .waitlist-form input:focus {
+      border-color: rgba(255,217,120,0.55);
+      box-shadow: 0 0 24px rgba(198,168,90,0.14);
+    }
+
+    .form-message {
+      margin-top: 12px;
+      color: var(--gold-light);
+      font-size: 13px;
+      display: none;
     }
 
     .premium {
@@ -634,11 +791,17 @@
       }
 
       .features,
-      .scenario-grid {
+      .scenario-grid,
+      .steps-grid,
+      .daily-signal {
         grid-template-columns: 1fr;
       }
 
       .premium {
+        grid-template-columns: 1fr;
+      }
+
+      .proof-strip {
         grid-template-columns: 1fr;
       }
     }
@@ -655,15 +818,25 @@
       }
 
       h1 {
-        font-size: 48px;
+        font-size: 46px;
       }
 
-      .hero-actions .btn {
+      .hero-actions .btn,
+      .waitlist-form .btn {
         width: 100%;
       }
 
       .metrics {
         grid-template-columns: 1fr;
+      }
+
+      .waitlist-form {
+        flex-direction: column;
+      }
+
+      .daily-signal,
+      .premium {
+        padding: 28px;
       }
     }
   </style>
@@ -683,11 +856,12 @@
 
       <div class="nav-links">
         <a href="#analisi">Analisi</a>
+        <a href="#funziona">Come funziona</a>
         <a href="#scenari">Scenari</a>
         <a href="#premium">Premium</a>
       </div>
 
-      <a href="#premium" class="btn">Accesso anticipato</a>
+      <a href="#premium" class="btn">Entra nella beta</a>
     </nav>
   </header>
 
@@ -699,11 +873,11 @@
           Intelligenza sul mercato dell'oro, semplificata
         </div>
 
-        <h1>Comprendi <span class="gold-text">l'oro</span> in pochi secondi.</h1>
+        <h1>Decisioni sull'<span class="gold-text">oro</span> basate su probabilita.</h1>
 
         <p>
-          Auren trasforma la complessita del mercato XAU in una lettura chiara:
-          trend, livelli chiave, zone di rischio e scenari basati su probabilita.
+          Auren aiuta trader e investitori a leggere XAU/USD con piu chiarezza:
+          trend, livelli chiave, rischio e scenari operativi in una dashboard semplice.
         </p>
 
         <div class="hero-actions">
@@ -711,9 +885,24 @@
           <a href="#scenari" class="btn">Esplora scenari</a>
         </div>
 
+        <div class="proof-strip">
+          <div class="proof-item">
+            <strong>3</strong>
+            <span>scenari sintetici per ogni analisi</span>
+          </div>
+          <div class="proof-item">
+            <strong>65%</strong>
+            <span>probabilita stimata dello scenario principale</span>
+          </div>
+          <div class="proof-item">
+            <strong>24/7</strong>
+            <span>lettura del mercato sempre consultabile</span>
+          </div>
+        </div>
+
         <div class="small-note">
           Le analisi sono fornite solo a scopo informativo ed educativo.
-          Non costituiscono consulenza finanziaria.
+          Non costituiscono consulenza finanziaria, raccomandazione o invito all'investimento.
         </div>
       </div>
 
@@ -740,6 +929,22 @@
                 "locale": "it"
               }
               </script>
+            </div>
+          </div>
+
+          <div class="auren-interpretation">
+            <h3>Interpretazione Auren</h3>
+            <div class="interpretation-row">
+              <span>Bias operativo</span>
+              <strong class="bearish">Ribassista</strong>
+            </div>
+            <div class="interpretation-row">
+              <span>Scenario prevalente</span>
+              <strong>Continuazione ribassista</strong>
+            </div>
+            <div class="interpretation-row">
+              <span>Livello da osservare</span>
+              <strong>4.600</strong>
             </div>
           </div>
 
@@ -812,6 +1017,70 @@
       </div>
     </section>
 
+    <section id="funziona">
+      <div class="section-heading">
+        <h2>Come funziona Auren.</h2>
+        <p>
+          L'obiettivo non e prevedere il futuro con certezza, ma trasformare il mercato in scenari leggibili e confrontabili.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="icon">1</div>
+          <h3>Analisi struttura</h3>
+          <p>Auren osserva direzione, momentum e posizione del prezzo rispetto alle zone chiave.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="icon">2</div>
+          <h3>Livelli decisivi</h3>
+          <p>Vengono evidenziati supporti, resistenze, aree di rischio e livelli di invalidazione.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="icon">3</div>
+          <h3>Scenari probabilistici</h3>
+          <p>Il mercato viene tradotto in piu possibilita, ognuna con una probabilita e una logica chiara.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="daily-signal">
+        <div>
+          <h2>Segnale Auren di oggi.</h2>
+          <p>
+            Una sintesi immediata per capire cosa sta facendo l'oro, quali livelli contano
+            e quale scenario ha maggiore probabilita.
+          </p>
+        </div>
+
+        <div class="signal-panel">
+          <div class="signal-row">
+            <span>Mercato</span>
+            <strong>XAU/USD</strong>
+          </div>
+          <div class="signal-row">
+            <span>Bias</span>
+            <strong class="bearish">Ribassista</strong>
+          </div>
+          <div class="signal-row">
+            <span>Scenario principale</span>
+            <strong>65%</strong>
+          </div>
+          <div class="signal-row">
+            <span>Livello chiave</span>
+            <strong>4.600</strong>
+          </div>
+          <div class="signal-row">
+            <span>Invalidazione</span>
+            <strong>Recupero sopra 4.720</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="scenari">
       <div class="section-heading">
         <h2>Tre scenari. Una visione chiara.</h2>
@@ -849,9 +1118,18 @@
             La versione Premium includera analisi multi-timeframe, avvisi live,
             modelli probabilistici avanzati, dashboard del rischio e briefing personalizzati.
           </p>
+
+          <form class="waitlist-form" id="waitlistForm">
+            <input type="email" id="emailInput" placeholder="Inserisci la tua email" required />
+            <button type="submit" class="btn btn-primary">Richiedi accesso</button>
+          </form>
+
+          <div class="form-message" id="formMessage">
+            Richiesta registrata. Verrai contattato appena la beta sara disponibile.
+          </div>
         </div>
 
-        <a href="mailto:hello@auren.ai" class="btn btn-primary">Richiedi accesso</a>
+        <a href="mailto:hello@auren.ai" class="btn btn-primary">Contattaci</a>
       </div>
     </section>
   </main>
@@ -862,32 +1140,32 @@
 
   <script>
     const goldRain = document.getElementById("goldRain");
-    const streakCount = 32;
+    const streakCount = 24;
 
     for (let i = 0; i < streakCount; i++) {
       const streak = document.createElement("span");
       streak.className = "gold-streak";
       streak.style.left = Math.random() * 100 + "vw";
-      streak.style.animationDuration = 3.5 + Math.random() * 5 + "s";
-      streak.style.animationDelay = Math.random() * 6 + "s";
-      streak.style.height = 70 + Math.random() * 150 + "px";
-      streak.style.opacity = 0.18 + Math.random() * 0.5;
+      streak.style.animationDuration = 4.5 + Math.random() * 6 + "s";
+      streak.style.animationDelay = Math.random() * 7 + "s";
+      streak.style.height = 60 + Math.random() * 130 + "px";
+      streak.style.opacity = 0.14 + Math.random() * 0.42;
       goldRain.appendChild(streak);
     }
 
     const meteorRain = document.getElementById("meteorRain");
-    const meteorCount = 55;
+    const meteorCount = 38;
 
     for (let i = 0; i < meteorCount; i++) {
       const meteor = document.createElement("span");
       meteor.className = "meteor";
-      const size = 2 + Math.random() * 5;
+      const size = 2 + Math.random() * 4;
       meteor.style.width = size + "px";
       meteor.style.height = size + "px";
       meteor.style.left = Math.random() * 100 + "vw";
-      meteor.style.animationDuration = 4 + Math.random() * 8 + "s";
-      meteor.style.animationDelay = Math.random() * 10 + "s";
-      meteor.style.opacity = 0.25 + Math.random() * 0.75;
+      meteor.style.animationDuration = 5 + Math.random() * 9 + "s";
+      meteor.style.animationDelay = Math.random() * 11 + "s";
+      meteor.style.opacity = 0.18 + Math.random() * 0.62;
       meteorRain.appendChild(meteor);
     }
 
@@ -904,7 +1182,7 @@
 
       const now = Date.now();
 
-      if (now - lastTrail > 28) {
+      if (now - lastTrail > 36) {
         const trail = document.createElement("span");
         trail.className = "mouse-trail";
         trail.style.left = mouseX + "px";
@@ -924,6 +1202,30 @@
     }
 
     animateGlow();
+
+    const waitlistForm = document.getElementById("waitlistForm");
+    const emailInput = document.getElementById("emailInput");
+    const formMessage = document.getElementById("formMessage");
+
+    waitlistForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        return;
+      }
+
+      const savedEmails = JSON.parse(localStorage.getItem("auren_waitlist") || "[]");
+
+      if (!savedEmails.includes(email)) {
+        savedEmails.push(email);
+        localStorage.setItem("auren_waitlist", JSON.stringify(savedEmails));
+      }
+
+      emailInput.value = "";
+      formMessage.style.display = "block";
+    });
   </script>
 </body>
 </html>
