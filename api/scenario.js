@@ -8,21 +8,23 @@ export default async function handler(req, res) {
   }
 
   const now = new Date();
-  const nextHour = new Date(now);
-  nextHour.setHours(now.getHours() + 1, 0, 0, 0);
-
-  const secondsUntilNextHour = Math.max(60, Math.floor((nextHour - now) / 1000));
+  const nextUpdate = getNextHalfHour(now);
+  const secondsUntilNextUpdate = Math.max(
+    60,
+    Math.floor((nextUpdate - now) / 1000)
+  );
 
   res.setHeader(
     "Cache-Control",
-    `s-maxage=${secondsUntilNextHour}, stale-while-revalidate=60`
+    `s-maxage=${secondsUntilNextUpdate}, stale-while-revalidate=60`
   );
 
   try {
-    const [tf15, tf1h, tf4h] = await Promise.all([
-      fetchCandles("15min", API_KEY),
-      fetchCandles("1h", API_KEY),
-      fetchCandles("4h", API_KEY)
+    const [tf15, tf1h, tf4h, tf1d] = await Promise.all([
+      fetchCandles("15min", API_KEY, 120),
+      fetchCandles("1h", API_KEY, 180),
+      fetchCandles("4h", API_KEY, 180),
+      fetchCandles("1day", API_KEY, 120)
     ]);
 
     const last = tf1h[tf1h.length - 1];
@@ -37,18 +39,40 @@ export default async function handler(req, res) {
     const ema20_4h = ema(tf4h.map(c => c.close), 20);
     const ema50_4h = ema(tf4h.map(c => c.close), 50);
 
+    const ema20_1d = ema(tf1d.map(c => c.close), 20);
+    const ema50_1d = ema(tf1d.map(c => c.close), 50);
+
     const rsi1h = rsi(tf1h.map(c => c.close), 14);
     const atr1h = atr(tf1h, 14);
+    const atr4h = atr(tf4h, 14);
 
-    const recent = tf1h.slice(-40);
+    const support = findMeaningfulSupport({
+      candles1h: tf1h,
+      candles4h: tf4h,
+      candles1d: tf1d,
+      price,
+      atr1h,
+      atr4h
+    });
 
-    const support = findSupportBelow(recent, price, atr1h);
-    const resistance = findResistanceAbove(recent, price, atr1h);
+    const resistance = findMeaningfulResistance({
+      candles1h: tf1h,
+      candles4h: tf4h,
+      candles1d: tf1d,
+      price,
+      atr1h,
+      atr4h
+    });
 
-    const structure = marketStructure(tf1h);
+    const structure1h = marketStructure(tf1h);
+    const structure4h = marketStructure(tf4h);
+
     const volatilityRatio = atr1h / price;
 
     let score = 0;
+
+    if (price > ema20_1d && ema20_1d > ema50_1d) score += 2;
+    if (price < ema20_1d && ema20_1d < ema50_1d) score -= 2;
 
     if (price > ema20_4h && ema20_4h > ema50_4h) score += 3;
     if (price < ema20_4h && ema20_4h < ema50_4h) score -= 3;
@@ -59,22 +83,25 @@ export default async function handler(req, res) {
     if (ema20_15m > ema50_15m) score += 1;
     if (ema20_15m < ema50_15m) score -= 1;
 
-    if (structure === "bullish") score += 2;
-    if (structure === "bearish") score -= 2;
+    if (structure4h === "bullish") score += 2;
+    if (structure4h === "bearish") score -= 2;
 
-    if (rsi1h > 58 && rsi1h < 72) score += 1.5;
-    if (rsi1h < 42 && rsi1h > 28) score -= 1.5;
+    if (structure1h === "bullish") score += 1.5;
+    if (structure1h === "bearish") score -= 1.5;
 
-    if (rsi1h >= 72) score -= 1;
-    if (rsi1h <= 28) score += 1;
+    if (rsi1h > 55 && rsi1h < 70) score += 1;
+    if (rsi1h < 45 && rsi1h > 30) score -= 1;
+
+    if (rsi1h >= 72) score -= 1.5;
+    if (rsi1h <= 28) score += 1.5;
 
     const distanceFromResistance = Math.abs(resistance - price);
     const distanceFromSupport = Math.abs(price - support);
 
-    if (distanceFromResistance < atr1h * 0.8 && score > 0) score -= 1.5;
-    if (distanceFromSupport < atr1h * 0.8 && score < 0) score += 1.5;
+    if (distanceFromResistance < atr1h * 1.2 && score > 0) score -= 1.5;
+    if (distanceFromSupport < atr1h * 1.2 && score < 0) score += 1.5;
 
-    if (volatilityRatio < 0.0018) {
+    if (volatilityRatio < 0.0016) {
       score *= 0.65;
     }
 
@@ -84,8 +111,10 @@ export default async function handler(req, res) {
       support,
       resistance,
       atr1h,
+      atr4h,
       rsi1h,
-      structure
+      structure1h,
+      structure4h
     });
 
     return res.status(200).json({
@@ -95,10 +124,13 @@ export default async function handler(req, res) {
       resistance: Number(resistance.toFixed(2)),
       rsi: Number(rsi1h.toFixed(2)),
       atr: Number(atr1h.toFixed(2)),
+      atr4h: Number(atr4h.toFixed(2)),
       score: Number(score.toFixed(2)),
+      structure1h,
+      structure4h,
       updatedAt: now.toISOString(),
-      nextUpdateAt: nextHour.toISOString(),
-      cacheSeconds: secondsUntilNextHour,
+      nextUpdateAt: nextUpdate.toISOString(),
+      cacheSeconds: secondsUntilNextUpdate,
       scenario
     });
 
@@ -110,9 +142,21 @@ export default async function handler(req, res) {
   }
 }
 
-async function fetchCandles(interval, API_KEY) {
+function getNextHalfHour(now) {
+  const next = new Date(now);
+
+  if (now.getMinutes() < 30) {
+    next.setMinutes(30, 0, 0);
+  } else {
+    next.setHours(now.getHours() + 1, 0, 0, 0);
+  }
+
+  return next;
+}
+
+async function fetchCandles(interval, API_KEY, outputsize = 100) {
   const url =
-    `https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=${interval}&outputsize=100&apikey=${API_KEY}`;
+    `https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=${interval}&outputsize=${outputsize}&apikey=${API_KEY}`;
 
   const response = await fetch(url);
   const data = await response.json();
@@ -139,6 +183,8 @@ async function fetchCandles(interval, API_KEY) {
 }
 
 function ema(values, period) {
+  if (!values || values.length === 0) return 0;
+
   const k = 2 / (period + 1);
   let result = values[0];
 
@@ -150,6 +196,8 @@ function ema(values, period) {
 }
 
 function rsi(values, period) {
+  if (!values || values.length < period + 1) return 50;
+
   let gains = 0;
   let losses = 0;
 
@@ -167,6 +215,8 @@ function rsi(values, period) {
 }
 
 function atr(candles, period) {
+  if (!candles || candles.length < period + 1) return 0;
+
   const recent = candles.slice(-period - 1);
   const trueRanges = [];
 
@@ -184,37 +234,11 @@ function atr(candles, period) {
   return trueRanges.reduce((a, b) => a + b, 0) / trueRanges.length;
 }
 
-function findSupportBelow(candles, price, atrValue) {
-  const lowsBelowPrice = candles
-    .map(c => c.low)
-    .filter(level => level < price)
-    .sort((a, b) => b - a);
-
-  if (lowsBelowPrice.length > 0) {
-    return lowsBelowPrice[0];
-  }
-
-  return price - atrValue * 1.5;
-}
-
-function findResistanceAbove(candles, price, atrValue) {
-  const highsAbovePrice = candles
-    .map(c => c.high)
-    .filter(level => level > price)
-    .sort((a, b) => a - b);
-
-  if (highsAbovePrice.length > 0) {
-    return highsAbovePrice[0];
-  }
-
-  return price + atrValue * 1.5;
-}
-
 function marketStructure(candles) {
-  const recent = candles.slice(-12);
+  const recent = candles.slice(-20);
 
-  const firstHalf = recent.slice(0, 6);
-  const secondHalf = recent.slice(6);
+  const firstHalf = recent.slice(0, 10);
+  const secondHalf = recent.slice(10);
 
   const firstHigh = Math.max(...firstHalf.map(c => c.high));
   const secondHigh = Math.max(...secondHalf.map(c => c.high));
@@ -228,91 +252,217 @@ function marketStructure(candles) {
   return "neutral";
 }
 
-function buildScenario(data) {
-  const { score, support, resistance, atr1h, rsi1h } = data;
+function findMeaningfulSupport({ candles1h, candles4h, candles1d, price, atr1h, atr4h }) {
+  const minDistance = Math.max(atr1h * 1.8, price * 0.0025);
 
-  const strongBullish = score >= 6;
-  const bullish = score >= 3 && score < 6;
-  const neutral = score > -3 && score < 3;
-  const bearish = score <= -3 && score > -6;
-  const strongBearish = score <= -6;
+  const levels = [
+    ...extractSwingLows(candles1h, 2),
+    ...extractSwingLows(candles4h, 2),
+    ...extractSwingLows(candles1d, 2)
+  ];
+
+  const valid = levels
+    .filter(level => level < price - minDistance)
+    .map(level => ({
+      level,
+      score: levelStrength(level, levels, Math.max(atr1h * 0.7, price * 0.0012))
+    }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.level - a.level;
+    });
+
+  if (valid.length > 0) {
+    return valid[0].level;
+  }
+
+  return price - Math.max(atr4h * 0.9, atr1h * 3, price * 0.004);
+}
+
+function findMeaningfulResistance({ candles1h, candles4h, candles1d, price, atr1h, atr4h }) {
+  const minDistance = Math.max(atr1h * 1.8, price * 0.0025);
+
+  const levels = [
+    ...extractSwingHighs(candles1h, 2),
+    ...extractSwingHighs(candles4h, 2),
+    ...extractSwingHighs(candles1d, 2)
+  ];
+
+  const valid = levels
+    .filter(level => level > price + minDistance)
+    .map(level => ({
+      level,
+      score: levelStrength(level, levels, Math.max(atr1h * 0.7, price * 0.0012))
+    }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.level - b.level;
+    });
+
+  if (valid.length > 0) {
+    return valid[0].level;
+  }
+
+  return price + Math.max(atr4h * 0.9, atr1h * 3, price * 0.004);
+}
+
+function extractSwingLows(candles, lookback = 2) {
+  const levels = [];
+
+  for (let i = lookback; i < candles.length - lookback; i++) {
+    const current = candles[i];
+
+    let isSwing = true;
+
+    for (let j = 1; j <= lookback; j++) {
+      if (
+        current.low >= candles[i - j].low ||
+        current.low >= candles[i + j].low
+      ) {
+        isSwing = false;
+        break;
+      }
+    }
+
+    if (isSwing) {
+      levels.push(current.low);
+    }
+  }
+
+  return levels;
+}
+
+function extractSwingHighs(candles, lookback = 2) {
+  const levels = [];
+
+  for (let i = lookback; i < candles.length - lookback; i++) {
+    const current = candles[i];
+
+    let isSwing = true;
+
+    for (let j = 1; j <= lookback; j++) {
+      if (
+        current.high <= candles[i - j].high ||
+        current.high <= candles[i + j].high
+      ) {
+        isSwing = false;
+        break;
+      }
+    }
+
+    if (isSwing) {
+      levels.push(current.high);
+    }
+  }
+
+  return levels;
+}
+
+function levelStrength(level, allLevels, tolerance) {
+  return allLevels.filter(other => Math.abs(other - level) <= tolerance).length;
+}
+
+function buildScenario(data) {
+  const {
+    score,
+    price,
+    support,
+    resistance,
+    atr1h,
+    atr4h,
+    rsi1h,
+    structure1h,
+    structure4h
+  } = data;
+
+  const strongBullish = score >= 7;
+  const bullish = score >= 3.5 && score < 7;
+  const neutral = score > -3.5 && score < 3.5;
+  const bearish = score <= -3.5 && score > -7;
+  const strongBearish = score <= -7;
+
+  const supportText = support.toFixed(2);
+  const resistanceText = resistance.toFixed(2);
+
+  const operatingRange = supportText + " - " + resistanceText;
+  const atrText = atr1h.toFixed(2);
 
   if (strongBearish || bearish) {
-    const mainProb = strongBearish ? 70 : 62;
-    const secondProb = strongBearish ? 20 : 28;
+    const mainProb = strongBearish ? 72 : 63;
+    const secondProb = strongBearish ? 18 : 27;
     const altProb = 100 - mainProb - secondProb;
 
     return {
       type: "bearish",
       main: {
         probability: mainProb,
-        title: "Continuazione ribassista",
+        title: "Bias ribassista",
         description:
-          "La lettura multi-timeframe resta debole. Il prezzo lavora sotto le medie operative e la struttura favorisce pressione verso il supporto.",
-        label1: "Supporto da osservare",
-        value1: support.toFixed(2),
-        label2: "Resistenza",
-        value2: resistance.toFixed(2)
+          "La pressione principale resta orientata al ribasso. Finché il prezzo rimane sotto la zona di resistenza, il mercato conserva una lettura debole.",
+        label1: "Target / supporto utile",
+        value1: supportText,
+        label2: "Invalidazione",
+        value2: "sopra " + resistanceText
       },
       secondary: {
         probability: secondProb,
-        title: "Rimbalzo tecnico",
+        title: "Rimbalzo correttivo",
         description:
-          "Un recupero verso la resistenza resta possibile, ma finche il prezzo non consolida sopra quel livello il movimento resta correttivo.",
-        label1: "Area target",
-        value1: resistance.toFixed(2),
-        label2: "Forza scenario",
+          "Un recupero tecnico è possibile, ma sarebbe considerato solo una correzione finché non avviene una rottura stabile della resistenza.",
+        label1: "Area di rimbalzo",
+        value1: resistanceText,
+        label2: "Forza",
         value2: strongBearish ? "Bassa" : "Media"
       },
       alternative: {
         probability: altProb,
-        title: "Inversione rialzista",
+        title: "Cambio scenario rialzista",
         description:
-          "La lettura ribassista verrebbe indebolita solo da un recupero deciso sopra la resistenza, accompagnato da maggiore forza sul timeframe 1H.",
-        label1: "Invalidazione bearish",
-        value1: "oltre " + resistance.toFixed(2),
-        label2: "Forza scenario",
-        value2: "Bassa"
+          "Lo scenario ribassista verrebbe indebolito da una chiusura convincente sopra la resistenza, soprattutto se accompagnata da struttura 1H e 4H in miglioramento.",
+        label1: "Range operativo",
+        value1: operatingRange,
+        label2: "RSI 1H",
+        value2: rsi1h.toFixed(2)
       }
     };
   }
 
   if (strongBullish || bullish) {
-    const mainProb = strongBullish ? 70 : 62;
-    const secondProb = strongBullish ? 20 : 28;
+    const mainProb = strongBullish ? 72 : 63;
+    const secondProb = strongBullish ? 18 : 27;
     const altProb = 100 - mainProb - secondProb;
 
     return {
       type: "bullish",
       main: {
         probability: mainProb,
-        title: "Continuazione rialzista",
+        title: "Bias rialzista",
         description:
-          "La lettura multi-timeframe resta costruttiva. Il prezzo mantiene forza sopra le medie operative e potrebbe cercare continuita verso la resistenza.",
-        label1: "Supporto da mantenere",
-        value1: support.toFixed(2),
-        label2: "Target tecnico",
-        value2: resistance.toFixed(2)
+          "La pressione principale resta orientata al rialzo. Finché il prezzo mantiene la zona di supporto, il mercato conserva una lettura costruttiva.",
+        label1: "Target / resistenza utile",
+        value1: resistanceText,
+        label2: "Invalidazione",
+        value2: "sotto " + supportText
       },
       secondary: {
         probability: secondProb,
         title: "Ritracciamento tecnico",
         description:
-          "Un ritorno verso il supporto resta possibile prima di una nuova spinta. La struttura resta positiva finche il supporto viene mantenuto.",
-        label1: "Area di test",
-        value1: support.toFixed(2),
-        label2: "Forza scenario",
+          "Un ritorno verso il supporto resta possibile prima di una nuova spinta. La lettura rimane positiva finché la zona chiave viene mantenuta.",
+        label1: "Area di ritracciamento",
+        value1: supportText,
+        label2: "Forza",
         value2: strongBullish ? "Bassa" : "Media"
       },
       alternative: {
         probability: altProb,
-        title: "Falso breakout",
+        title: "Perdita di momentum",
         description:
-          "La lettura rialzista verrebbe indebolita da una perdita del supporto con chiusure orarie sotto la zona chiave.",
-        label1: "Invalidazione bullish",
-        value1: "sotto " + support.toFixed(2),
-        label2: "Forza scenario",
-        value2: "Bassa"
+          "Lo scenario rialzista perderebbe forza in caso di rottura del supporto, soprattutto con chiusure orarie deboli e peggioramento della struttura.",
+        label1: "Range operativo",
+        value1: operatingRange,
+        label2: "RSI 1H",
+        value2: rsi1h.toFixed(2)
       }
     };
   }
@@ -321,33 +471,33 @@ function buildScenario(data) {
     type: "neutral",
     main: {
       probability: 45,
-      title: "Fase laterale di attesa",
+      title: "Mercato laterale",
       description:
-        "Il mercato non mostra una direzione sufficientemente pulita. La lettura principale privilegia attesa e conferme sui livelli chiave.",
-      label1: "Supporto",
-      value1: support.toFixed(2),
-      label2: "Resistenza",
-      value2: resistance.toFixed(2)
+        "Il mercato non mostra una direzione abbastanza pulita. In questa fase il segnale principale è attendere una conferma fuori dal range operativo.",
+      label1: "Range operativo",
+      value1: operatingRange,
+      label2: "Volatilità ATR",
+      value2: atrText
     },
     secondary: {
       probability: 35,
       title: "Breakout direzionale",
       description:
-        "Una rottura confermata del range potrebbe riattivare momentum. La direzione dipendera dalla tenuta sopra resistenza o sotto supporto.",
-      label1: "Range operativo",
-      value1: support.toFixed(2) + " - " + resistance.toFixed(2),
-      label2: "Forza scenario",
-      value2: "Media"
+        "Una rottura confermata sopra resistenza o sotto supporto potrebbe riattivare momentum. Prima della rottura, il rischio di falso segnale resta elevato.",
+      label1: "Sopra resistenza",
+      value1: resistanceText,
+      label2: "Sotto supporto",
+      value2: supportText
     },
     alternative: {
       probability: 20,
-      title: "Falso segnale",
+      title: "Falso breakout",
       description:
-        "In condizioni laterali aumenta il rischio di falsi breakout. Serve conferma prima di considerare valido un movimento direzionale.",
-      label1: "Volatilita ATR",
-      value1: atr1h.toFixed(2),
-      label2: "RSI 1H",
-      value2: rsi1h.toFixed(2)
+        "In fase laterale possono verificarsi movimenti rapidi ma poco affidabili. Serve conferma con chiusure coerenti e aumento della volatilità.",
+      label1: "Struttura 1H",
+      value1: structure1h,
+      label2: "Struttura 4H",
+      value2: structure4h
     }
   };
 }
