@@ -13,6 +13,7 @@
       --gold: #C6A85A;
       --gold-light: #FFD978;
       --danger: #E66B6B;
+      --green: #79D98B;
       --border-gold: rgba(198, 168, 90, 0.42);
       --border-gold-soft: rgba(198, 168, 90, 0.28);
     }
@@ -661,6 +662,65 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .bias-board {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .bias-card {
+      padding: 28px;
+      border-radius: 28px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--border-gold-soft);
+    }
+
+    .bias-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .bias-value {
+      font-size: clamp(34px, 4vw, 52px);
+      font-weight: 950;
+      letter-spacing: -0.06em;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+    }
+
+    .bias-description {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .quality-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .quality-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .quality-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .quality-row strong {
+      color: var(--soft-white);
+      text-align: right;
+    }
+
     .scenario-grid {
       display: grid;
       grid-template-columns: 1.2fr 1fr 1fr;
@@ -802,7 +862,8 @@
 
       .features,
       .scenario-grid,
-      .scenario-board-top {
+      .scenario-board-top,
+      .bias-board {
         grid-template-columns: 1fr;
       }
 
@@ -923,18 +984,18 @@
       <div>
         <div class="eyebrow">
           <span class="pulse"></span>
-          Intelligenza sul mercato dell'oro, semplificata
+          Lettura probabilistica XAU/USD
         </div>
 
         <h1>Leggi <span class="gold-text">l'oro</span> senza rumore.</h1>
 
         <p>
-          Auren trasforma XAU/USD in una lettura essenziale: direzione del mercato,
-          livelli decisivi e scenario operativo piu probabile.
+          Auren non mostra solo il prezzo. Sintetizza il mercato in una direzione prevalente,
+          una zona operativa, un livello di invalidazione e una lettura del rischio.
         </p>
 
         <div class="hero-actions">
-          <a href="#scenario" class="btn btn-primary">Vedi scenario di oggi</a>
+          <a href="#scenario" class="btn btn-primary">Vedi scenario attuale</a>
           <a href="#grafico" class="btn">Apri grafico live</a>
         </div>
 
@@ -979,8 +1040,8 @@
           <div>
             <h2>Grafico live XAU/USD.</h2>
             <p>
-              Segui il movimento dell'oro in tempo reale con una lettura visiva piu ampia,
-              utile per osservare struttura, volatilita e livelli principali.
+              Segui il movimento dell'oro in tempo reale. La dashboard sotto trasforma il grafico
+              in una lettura più semplice: bias, probabilità, zona operativa e invalidazione.
             </p>
           </div>
 
@@ -1019,7 +1080,7 @@
       <div class="section-heading">
         <h2>Cosa legge Auren.</h2>
         <p>
-          Non serve riempire lo schermo di indicatori. Auren sintetizza il mercato in tre elementi davvero utili.
+          L'obiettivo non è riempire lo schermo di indicatori, ma dare una lettura chiara e utilizzabile.
         </p>
       </div>
 
@@ -1028,23 +1089,23 @@
           <div class="icon">01</div>
           <h3>Direzione</h3>
           <p>
-            Individua se il mercato e rialzista, ribassista o neutrale sui timeframe principali.
+            Capisce se la pressione prevalente è rialzista, ribassista o laterale sui timeframe principali.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">02</div>
-          <h3>Livelli chiave</h3>
+          <h3>Zona operativa</h3>
           <p>
-            Evidenzia supporti, resistenze, aree di rischio e punti in cui lo scenario cambia.
+            Mostra un'area di lavoro più ampia, evitando micro-livelli troppo vicini al prezzo corrente.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">03</div>
-          <h3>Scenario operativo</h3>
+          <h3>Invalidazione</h3>
           <p>
-            Traduce il mercato in una lettura probabilistica semplice, evitando decisioni impulsive.
+            Indica il livello oltre il quale la lettura principale perde valore e va rivalutata.
           </p>
         </div>
       </div>
@@ -1054,10 +1115,10 @@
       <div class="scenario-board">
         <div class="scenario-board-top">
           <div>
-            <h2>Scenario operativo di oggi.</h2>
+            <h2>Scenario operativo attuale.</h2>
             <p>
-              Una sola dashboard per capire cosa sta facendo l'oro, quali livelli contano
-              e cosa potrebbe invalidare la lettura principale.
+              Una dashboard essenziale per capire se l'oro sta mostrando forza, debolezza
+              oppure una fase incerta in cui è meglio attendere conferme.
             </p>
           </div>
 
@@ -1079,6 +1140,37 @@
           </div>
         </div>
 
+        <div class="bias-board">
+          <div class="bias-card">
+            <div class="bias-label">Lettura principale</div>
+            <div class="bias-value" id="bias-value">--</div>
+            <div class="bias-description" id="bias-description">
+              In attesa dei dati live.
+            </div>
+          </div>
+
+          <div class="bias-card">
+            <div class="quality-list">
+              <div class="quality-row">
+                <span>Qualità del segnale</span>
+                <strong id="signal-quality">--</strong>
+              </div>
+              <div class="quality-row">
+                <span>Distanza supporto</span>
+                <strong id="support-distance">--</strong>
+              </div>
+              <div class="quality-row">
+                <span>Distanza resistenza</span>
+                <strong id="resistance-distance">--</strong>
+              </div>
+              <div class="quality-row">
+                <span>Volatilità ATR</span>
+                <strong id="atr-value">--</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="scenario-grid">
           <div class="scenario-card main">
             <div class="prob" id="main-prob">--%</div>
@@ -1087,11 +1179,11 @@
 
             <div class="scenario-meta">
               <div>
-                <span id="main-label-1">Supporto</span>
+                <span id="main-label-1">Zona chiave</span>
                 <strong id="main-value-1">--</strong>
               </div>
               <div>
-                <span id="main-label-2">Resistenza</span>
+                <span id="main-label-2">Invalidazione</span>
                 <strong id="main-value-2">--</strong>
               </div>
             </div>
@@ -1104,11 +1196,11 @@
 
             <div class="scenario-meta">
               <div>
-                <span id="sec-label-1">Area target</span>
+                <span id="sec-label-1">Area</span>
                 <strong id="sec-value-1">--</strong>
               </div>
               <div>
-                <span id="sec-label-2">Forza scenario</span>
+                <span id="sec-label-2">Forza</span>
                 <strong id="sec-value-2">--</strong>
               </div>
             </div>
@@ -1121,11 +1213,11 @@
 
             <div class="scenario-meta">
               <div>
-                <span id="alt-label-1">Invalidazione</span>
+                <span id="alt-label-1">Rischio</span>
                 <strong id="alt-value-1">--</strong>
               </div>
               <div>
-                <span id="alt-label-2">Forza scenario</span>
+                <span id="alt-label-2">Forza</span>
                 <strong id="alt-value-2">--</strong>
               </div>
             </div>
@@ -1137,11 +1229,10 @@
     <section id="premium">
       <div class="premium">
         <div class="premium-content">
-          <h2>Costruito per la nuova generazione di analisi sull'oro.</h2>
+          <h2>Costruito per una lettura più utile dell'oro.</h2>
           <p>
-            La versione Premium includera analisi multi-timeframe, avvisi live,
+            La versione Premium includerà analisi multi-timeframe, avvisi live,
             modelli probabilistici avanzati, dashboard del rischio e briefing personalizzati.
-            Tutto pensato per offrire una lettura piu chiara, ordinata e immediata del mercato.
           </p>
 
           <form class="waitlist-form" id="waitlistForm">
@@ -1150,7 +1241,7 @@
           </form>
 
           <div class="form-message" id="formMessage">
-            Richiesta registrata. Verrai contattato appena la beta sara disponibile.
+            Richiesta registrata. Verrai contattato appena la beta sarà disponibile.
           </div>
         </div>
       </div>
@@ -1231,10 +1322,16 @@
         String(date.getMinutes()).padStart(2, "0");
     }
 
-    function getNextHour() {
+    function getNextFreeUpdate() {
       const now = new Date();
       const next = new Date(now);
-      next.setHours(now.getHours() + 1, 0, 0, 0);
+
+      if (now.getMinutes() < 30) {
+        next.setMinutes(30, 0, 0);
+      } else {
+        next.setHours(now.getHours() + 1, 0, 0, 0);
+      }
+
       return next;
     }
 
@@ -1249,42 +1346,108 @@
       });
     }
 
+    function formatDistance(price, level) {
+      if (!price || !level) return "--";
+
+      const distance = Math.abs(price - level);
+      const percentage = distance / price * 100;
+
+      return formatPrice(distance) + " punti · " + percentage.toFixed(2) + "%";
+    }
+
+    function getSignalQuality(data) {
+      const price = Number(data.price);
+      const support = Number(data.support);
+      const resistance = Number(data.resistance);
+      const atr = Number(data.atr);
+      const score = Math.abs(Number(data.score || 0));
+
+      if (!price || !support || !resistance || !atr) {
+        return "Non disponibile";
+      }
+
+      const range = Math.abs(resistance - support);
+      const rangeAtrRatio = range / atr;
+
+      if (rangeAtrRatio < 0.9) {
+        return "Bassa: livelli troppo vicini";
+      }
+
+      if (score >= 6 && rangeAtrRatio >= 1.4) {
+        return "Alta";
+      }
+
+      if (score >= 3 && rangeAtrRatio >= 1.1) {
+        return "Media";
+      }
+
+      return "Debole / attendere conferme";
+    }
+
     function buildLiveMessage(currentType) {
       const previousType = localStorage.getItem("auren_previous_type");
 
       if (!previousType) {
         if (currentType === "bearish") {
-          return "Scenario reale aggiornato: la lettura principale risulta ribassista.";
+          return "Scenario aggiornato: prevale una lettura ribassista.";
         }
 
         if (currentType === "bullish") {
-          return "Scenario reale aggiornato: la lettura principale risulta rialzista.";
+          return "Scenario aggiornato: prevale una lettura rialzista.";
         }
 
-        return "Scenario reale aggiornato sulla base dei dati disponibili.";
+        return "Scenario aggiornato: il mercato non mostra ancora una direzione pulita.";
       }
 
       if (previousType === currentType) {
         if (currentType === "bearish") {
-          return "Come nel precedente aggiornamento, la pressione resta ribassista.";
+          return "La pressione ribassista resta prevalente rispetto al precedente aggiornamento.";
         }
 
         if (currentType === "bullish") {
-          return "Come nel precedente aggiornamento, il recupero rialzista resta attivo.";
+          return "La pressione rialzista resta prevalente rispetto al precedente aggiornamento.";
         }
 
-        return "La lettura resta coerente con il precedente aggiornamento.";
+        return "La fase resta incerta: meglio attendere conferme sui livelli chiave.";
       }
 
       if (previousType === "bearish" && currentType === "bullish") {
-        return "Lo scenario ribassista precedente e stato invalidato: ora prevale una lettura piu costruttiva.";
+        return "Cambio scenario: la lettura ribassista precedente è stata invalidata.";
       }
 
       if (previousType === "bullish" && currentType === "bearish") {
-        return "La lettura rialzista precedente e stata invalidata: torna pressione ribassista.";
+        return "Cambio scenario: la lettura rialzista precedente è stata invalidata.";
       }
 
       return "Lo scenario si aggiorna con una nuova lettura rispetto al precedente aggiornamento.";
+    }
+
+    function renderBias(data) {
+      const scenario = data.scenario;
+      const price = Number(data.price);
+      const support = Number(data.support);
+      const resistance = Number(data.resistance);
+
+      let biasText = "Neutrale";
+      let description = "Il mercato non mostra una direzione abbastanza pulita. In questa fase la lettura migliore è attendere una conferma sopra resistenza o sotto supporto.";
+
+      if (scenario.type === "bullish") {
+        biasText = "Rialzista";
+        description = "Il modello vede maggiore probabilità di continuazione al rialzo. La lettura resta valida finché il prezzo mantiene la zona di supporto indicata.";
+      }
+
+      if (scenario.type === "bearish") {
+        biasText = "Ribassista";
+        description = "Il modello vede maggiore probabilità di continuazione al ribasso. La lettura resta valida finché il prezzo non recupera stabilmente la zona di resistenza.";
+      }
+
+      document.getElementById("bias-value").innerText = biasText;
+      document.getElementById("bias-description").innerText = description;
+
+      document.getElementById("signal-quality").innerText = getSignalQuality(data);
+      document.getElementById("support-distance").innerText = formatDistance(price, support);
+      document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
+      document.getElementById("atr-value").innerText = data.atr ? formatPrice(data.atr) : "--";
     }
 
     function renderScenarioFromApi(data) {
@@ -1295,6 +1458,8 @@
       document.getElementById("scenario-message").innerText = message;
       document.getElementById("last-update").innerText = formatTime(updateDate);
       document.getElementById("current-price").innerText = formatPrice(data.price);
+
+      renderBias(data);
 
       document.getElementById("main-prob").innerText = scenario.main.probability + "%";
       document.getElementById("main-title").innerText = scenario.main.title;
@@ -1357,7 +1522,7 @@
 
     function updateTimer() {
       const now = new Date();
-      const next = getNextHour();
+      const next = getNextFreeUpdate();
       const diff = Math.max(0, next - now);
 
       const hours = Math.floor(diff / 1000 / 60 / 60);
@@ -1378,7 +1543,7 @@
     updateTimer();
 
     setInterval(updateTimer, 1000);
-    setInterval(loadLiveScenario, 3600000);
+    setInterval(loadLiveScenario, 1800000);
 
     const waitlistForm = document.getElementById("waitlistForm");
     const emailInput = document.getElementById("emailInput");
