@@ -696,6 +696,18 @@
       font-size: 15px;
     }
 
+    .plain-signal {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(198,168,90,0.10);
+      border: 1px solid rgba(255,217,120,0.24);
+      color: var(--soft-white);
+      line-height: 1.6;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
     .quality-list {
       display: grid;
       gap: 12px;
@@ -719,6 +731,50 @@
     .quality-row strong {
       color: var(--soft-white);
       text-align: right;
+    }
+
+    .info {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      margin-left: 6px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      background: rgba(198,168,90,0.15);
+      color: var(--gold-light);
+      border: 1px solid var(--border-gold);
+      position: relative;
+      vertical-align: middle;
+    }
+
+    .tooltip {
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 230px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15,15,15,0.97);
+      border: 1px solid var(--border-gold-soft);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s ease;
+      z-index: 9999;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.45);
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .info:hover .tooltip {
+      opacity: 1;
     }
 
     .scenario-grid {
@@ -951,6 +1007,13 @@
       .advanced-chart-wrap .tradingview-widget-container__widget {
         min-height: 390px;
       }
+
+      .tooltip {
+        left: auto;
+        right: -20px;
+        transform: none;
+        width: 210px;
+      }
     }
   </style>
 </head>
@@ -984,14 +1047,14 @@
       <div>
         <div class="eyebrow">
           <span class="pulse"></span>
-          Lettura probabilistica XAU/USD
+          Lettura semplice del mercato XAU/USD
         </div>
 
         <h1>Leggi <span class="gold-text">l'oro</span> senza rumore.</h1>
 
         <p>
-          Auren non mostra solo il prezzo. Sintetizza il mercato in una direzione prevalente,
-          una zona operativa, un livello di invalidazione e una lettura del rischio.
+          Auren trasforma i dati dell'oro in una lettura chiara: mercato in salita,
+          mercato in discesa o fase incerta, con le zone di prezzo più importanti da osservare.
         </p>
 
         <div class="hero-actions">
@@ -1040,8 +1103,8 @@
           <div>
             <h2>Grafico live XAU/USD.</h2>
             <p>
-              Segui il movimento dell'oro in tempo reale. La dashboard sotto trasforma il grafico
-              in una lettura più semplice: bias, probabilità, zona operativa e invalidazione.
+              Segui il movimento dell'oro in tempo reale. La dashboard sotto traduce il grafico
+              in una lettura più semplice: direzione, probabilità, zone importanti e scenario alternativo.
             </p>
           </div>
 
@@ -1080,7 +1143,7 @@
       <div class="section-heading">
         <h2>Cosa legge Auren.</h2>
         <p>
-          L'obiettivo non è riempire lo schermo di indicatori, ma dare una lettura chiara e utilizzabile.
+          L'obiettivo non è mostrare più dati possibili, ma aiutare l'utente a capire meglio cosa sta succedendo.
         </p>
       </div>
 
@@ -1089,23 +1152,23 @@
           <div class="icon">01</div>
           <h3>Direzione</h3>
           <p>
-            Capisce se la pressione prevalente è rialzista, ribassista o laterale sui timeframe principali.
+            Capisce se in questo momento l'oro mostra più forza in salita, in discesa o se è ancora indeciso.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">02</div>
-          <h3>Zona operativa</h3>
+          <h3>Zone importanti</h3>
           <p>
-            Mostra un'area di lavoro più ampia, evitando micro-livelli troppo vicini al prezzo corrente.
+            Mostra le aree dove il prezzo potrebbe rallentare, rimbalzare o cambiare comportamento.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">03</div>
-          <h3>Invalidazione</h3>
+          <h3>Scenario chiaro</h3>
           <p>
-            Indica il livello oltre il quale la lettura principale perde valore e va rivalutata.
+            Riassume il mercato in una frase semplice, con scenario principale e possibile alternativa.
           </p>
         </div>
       </div>
@@ -1115,10 +1178,10 @@
       <div class="scenario-board">
         <div class="scenario-board-top">
           <div>
-            <h2>Scenario operativo attuale.</h2>
+            <h2>Scenario attuale sull'oro.</h2>
             <p>
-              Una dashboard essenziale per capire se l'oro sta mostrando forza, debolezza
-              oppure una fase incerta in cui è meglio attendere conferme.
+              Una lettura semplice per capire se il prezzo dell'oro sta mostrando pressione al rialzo,
+              pressione al ribasso o una fase ancora incerta.
             </p>
           </div>
 
@@ -1147,24 +1210,58 @@
             <div class="bias-description" id="bias-description">
               In attesa dei dati live.
             </div>
+            <div class="plain-signal" id="plain-signal">
+              Sto leggendo i dati del mercato.
+            </div>
           </div>
 
           <div class="bias-card">
             <div class="quality-list">
               <div class="quality-row">
-                <span>Qualità del segnale</span>
+                <span>
+                  Chiarezza del segnale
+                  <span class="info">i
+                    <span class="tooltip">
+                      Indica quanto la lettura del mercato è chiara. Alta significa che più elementi stanno andando nella stessa direzione.
+                    </span>
+                  </span>
+                </span>
                 <strong id="signal-quality">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Distanza supporto</span>
+                <span>
+                  Distanza dalla zona di rimbalzo
+                  <span class="info">i
+                    <span class="tooltip">
+                      Indica quanto il prezzo è lontano da una zona dove potrebbe rallentare o provare a rimbalzare.
+                    </span>
+                  </span>
+                </span>
                 <strong id="support-distance">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Distanza resistenza</span>
+                <span>
+                  Distanza dalla zona di blocco
+                  <span class="info">i
+                    <span class="tooltip">
+                      Indica quanto il prezzo è lontano da una zona dove potrebbe fermarsi, rallentare o invertire.
+                    </span>
+                  </span>
+                </span>
                 <strong id="resistance-distance">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Volatilità ATR</span>
+                <span>
+                  Movimento medio del prezzo
+                  <span class="info">i
+                    <span class="tooltip">
+                      Indica di quanto si muove mediamente il prezzo nell'ultimo periodo. Più è alto, più il mercato è veloce e instabile.
+                    </span>
+                  </span>
+                </span>
                 <strong id="atr-value">--</strong>
               </div>
             </div>
@@ -1179,11 +1276,11 @@
 
             <div class="scenario-meta">
               <div>
-                <span id="main-label-1">Zona chiave</span>
+                <span id="main-label-1">Zona importante</span>
                 <strong id="main-value-1">--</strong>
               </div>
               <div>
-                <span id="main-label-2">Invalidazione</span>
+                <span id="main-label-2">Scenario cambia se</span>
                 <strong id="main-value-2">--</strong>
               </div>
             </div>
@@ -1196,11 +1293,11 @@
 
             <div class="scenario-meta">
               <div>
-                <span id="sec-label-1">Area</span>
+                <span id="sec-label-1">Zona da osservare</span>
                 <strong id="sec-value-1">--</strong>
               </div>
               <div>
-                <span id="sec-label-2">Forza</span>
+                <span id="sec-label-2">Probabilità</span>
                 <strong id="sec-value-2">--</strong>
               </div>
             </div>
@@ -1213,11 +1310,11 @@
 
             <div class="scenario-meta">
               <div>
-                <span id="alt-label-1">Rischio</span>
+                <span id="alt-label-1">Area complessiva</span>
                 <strong id="alt-value-1">--</strong>
               </div>
               <div>
-                <span id="alt-label-2">Forza</span>
+                <span id="alt-label-2">Dato utile</span>
                 <strong id="alt-value-2">--</strong>
               </div>
             </div>
@@ -1229,10 +1326,10 @@
     <section id="premium">
       <div class="premium">
         <div class="premium-content">
-          <h2>Costruito per una lettura più utile dell'oro.</h2>
+          <h2>Costruito per una lettura più semplice dell'oro.</h2>
           <p>
-            La versione Premium includerà analisi multi-timeframe, avvisi live,
-            modelli probabilistici avanzati, dashboard del rischio e briefing personalizzati.
+            La versione Premium includerà analisi più frequenti, avvisi live, spiegazioni più dettagliate,
+            dashboard del rischio e briefing personalizzati.
           </p>
 
           <form class="waitlist-form" id="waitlistForm">
@@ -1355,6 +1452,32 @@
       return formatPrice(distance) + " punti · " + percentage.toFixed(2) + "%";
     }
 
+    function cleanLabel(label) {
+      if (!label) return "";
+
+      return label
+        .replace("Target / supporto utile", "Prima zona da osservare")
+        .replace("Target / resistenza utile", "Prima zona da osservare")
+        .replace("Invalidazione", "Scenario cambia se")
+        .replace("Area di rimbalzo", "Zona di possibile rimbalzo")
+        .replace("Area di ritracciamento", "Zona di possibile pausa")
+        .replace("Forza", "Probabilità")
+        .replace("Range operativo", "Area complessiva")
+        .replace("RSI 1H", "Forza del movimento")
+        .replace("Volatilità ATR", "Movimento medio");
+    }
+
+    function cleanValue(value) {
+      if (!value) return "";
+
+      return String(value)
+        .replace("sopra ", "prezzo sopra ")
+        .replace("sotto ", "prezzo sotto ")
+        .replace("Bassa", "Bassa")
+        .replace("Media", "Media")
+        .replace("Alta", "Alta");
+    }
+
     function getSignalQuality(data) {
       const price = Number(data.price);
       const support = Number(data.support);
@@ -1370,7 +1493,7 @@
       const rangeAtrRatio = range / atr;
 
       if (rangeAtrRatio < 0.9) {
-        return "Bassa: livelli troppo vicini";
+        return "Bassa";
       }
 
       if (score >= 6 && rangeAtrRatio >= 1.4) {
@@ -1381,7 +1504,66 @@
         return "Media";
       }
 
-      return "Debole / attendere conferme";
+      return "Debole";
+    }
+
+    function getSimpleTitle(title, type) {
+      const t = title || "";
+
+      if (t.includes("Bias ribassista")) return "Mercato in discesa";
+      if (t.includes("Bias rialzista")) return "Mercato in salita";
+      if (t.includes("Mercato laterale")) return "Mercato indeciso";
+      if (t.includes("Rimbalzo correttivo")) return "Possibile rimbalzo";
+      if (t.includes("Ritracciamento tecnico")) return "Possibile pausa";
+      if (t.includes("Cambio scenario")) return "Possibile inversione";
+      if (t.includes("Perdita di momentum")) return "Possibile indebolimento";
+      if (t.includes("Breakout direzionale")) return "Possibile uscita dal range";
+      if (t.includes("Falso breakout")) return "Possibile falso segnale";
+
+      if (type === "bearish") return "Mercato in discesa";
+      if (type === "bullish") return "Mercato in salita";
+
+      return t;
+    }
+
+    function getSimpleDescription(description) {
+      if (!description) return "";
+
+      return description
+        .replaceAll("pressione principale", "direzione principale")
+        .replaceAll("orientata al ribasso", "rivolta verso il basso")
+        .replaceAll("orientata al rialzo", "rivolta verso l'alto")
+        .replaceAll("resistenza", "zona di blocco")
+        .replaceAll("supporto", "zona di rimbalzo")
+        .replaceAll("rottura stabile", "superamento chiaro")
+        .replaceAll("chiusura convincente", "movimento chiaro")
+        .replaceAll("scenario ribassista", "scenario di discesa")
+        .replaceAll("scenario rialzista", "scenario di salita")
+        .replaceAll("struttura", "direzione recente")
+        .replaceAll("momentum", "forza del movimento")
+        .replaceAll("range operativo", "area di prezzo");
+    }
+
+    function buildPlainSignal(data) {
+      const type = data.scenario.type;
+      const price = formatPrice(data.price);
+      const support = formatPrice(data.support);
+      const resistance = formatPrice(data.resistance);
+
+      if (type === "bearish") {
+        return "Il mercato mostra pressione in discesa. Finché il prezzo resta sotto " + resistance +
+          ", lo scenario principale rimane debole. Una discesa verso " + support +
+          " è possibile, ma possono verificarsi rimbalzi temporanei.";
+      }
+
+      if (type === "bullish") {
+        return "Il mercato mostra pressione in salita. Finché il prezzo resta sopra " + support +
+          ", lo scenario principale rimane positivo. Un movimento verso " + resistance +
+          " è possibile, ma possono verificarsi pause o ritracciamenti.";
+      }
+
+      return "Il mercato è ancora indeciso. Il prezzo si trova tra " + support + " e " + resistance +
+        ". In questa fase è meglio attendere una conferma chiara sopra o sotto queste zone.";
     }
 
     function buildLiveMessage(currentType) {
@@ -1389,34 +1571,34 @@
 
       if (!previousType) {
         if (currentType === "bearish") {
-          return "Scenario aggiornato: prevale una lettura ribassista.";
+          return "Scenario aggiornato: il mercato mostra pressione in discesa.";
         }
 
         if (currentType === "bullish") {
-          return "Scenario aggiornato: prevale una lettura rialzista.";
+          return "Scenario aggiornato: il mercato mostra pressione in salita.";
         }
 
-        return "Scenario aggiornato: il mercato non mostra ancora una direzione pulita.";
+        return "Scenario aggiornato: il mercato è ancora indeciso.";
       }
 
       if (previousType === currentType) {
         if (currentType === "bearish") {
-          return "La pressione ribassista resta prevalente rispetto al precedente aggiornamento.";
+          return "La pressione in discesa resta presente rispetto al precedente aggiornamento.";
         }
 
         if (currentType === "bullish") {
-          return "La pressione rialzista resta prevalente rispetto al precedente aggiornamento.";
+          return "La pressione in salita resta presente rispetto al precedente aggiornamento.";
         }
 
-        return "La fase resta incerta: meglio attendere conferme sui livelli chiave.";
+        return "La fase resta incerta: servono conferme sulle zone principali.";
       }
 
       if (previousType === "bearish" && currentType === "bullish") {
-        return "Cambio scenario: la lettura ribassista precedente è stata invalidata.";
+        return "Cambio scenario: il mercato passa da debole a più costruttivo.";
       }
 
       if (previousType === "bullish" && currentType === "bearish") {
-        return "Cambio scenario: la lettura rialzista precedente è stata invalidata.";
+        return "Cambio scenario: il mercato passa da positivo a più debole.";
       }
 
       return "Lo scenario si aggiorna con una nuova lettura rispetto al precedente aggiornamento.";
@@ -1428,26 +1610,27 @@
       const support = Number(data.support);
       const resistance = Number(data.resistance);
 
-      let biasText = "Neutrale";
-      let description = "Il mercato non mostra una direzione abbastanza pulita. In questa fase la lettura migliore è attendere una conferma sopra resistenza o sotto supporto.";
+      let biasText = "Mercato indeciso";
+      let description = "Il mercato non mostra ancora una direzione abbastanza chiara. In questa fase è meglio osservare le zone principali prima di trarre conclusioni.";
 
       if (scenario.type === "bullish") {
-        biasText = "Rialzista";
-        description = "Il modello vede maggiore probabilità di continuazione al rialzo. La lettura resta valida finché il prezzo mantiene la zona di supporto indicata.";
+        biasText = "Mercato in salita";
+        description = "In questo momento l'oro mostra più forza verso l'alto. Lo scenario resta positivo finché il prezzo mantiene la zona di rimbalzo indicata.";
       }
 
       if (scenario.type === "bearish") {
-        biasText = "Ribassista";
-        description = "Il modello vede maggiore probabilità di continuazione al ribasso. La lettura resta valida finché il prezzo non recupera stabilmente la zona di resistenza.";
+        biasText = "Mercato in discesa";
+        description = "In questo momento l'oro mostra più debolezza. Lo scenario resta negativo finché il prezzo non recupera la zona di blocco indicata.";
       }
 
       document.getElementById("bias-value").innerText = biasText;
       document.getElementById("bias-description").innerText = description;
+      document.getElementById("plain-signal").innerText = buildPlainSignal(data);
 
       document.getElementById("signal-quality").innerText = getSignalQuality(data);
       document.getElementById("support-distance").innerText = formatDistance(price, support);
       document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
-      document.getElementById("atr-value").innerText = data.atr ? formatPrice(data.atr) : "--";
+      document.getElementById("atr-value").innerText = data.atr ? formatPrice(data.atr) + " punti" : "--";
     }
 
     function renderScenarioFromApi(data) {
@@ -1462,28 +1645,28 @@
       renderBias(data);
 
       document.getElementById("main-prob").innerText = scenario.main.probability + "%";
-      document.getElementById("main-title").innerText = scenario.main.title;
-      document.getElementById("main-desc").innerText = scenario.main.description;
-      document.getElementById("main-label-1").innerText = scenario.main.label1;
-      document.getElementById("main-value-1").innerText = scenario.main.value1;
-      document.getElementById("main-label-2").innerText = scenario.main.label2;
-      document.getElementById("main-value-2").innerText = scenario.main.value2;
+      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type);
+      document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
+      document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
+      document.getElementById("main-value-1").innerText = cleanValue(scenario.main.value1);
+      document.getElementById("main-label-2").innerText = cleanLabel(scenario.main.label2);
+      document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
 
       document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
-      document.getElementById("sec-title").innerText = scenario.secondary.title;
-      document.getElementById("sec-desc").innerText = scenario.secondary.description;
-      document.getElementById("sec-label-1").innerText = scenario.secondary.label1;
-      document.getElementById("sec-value-1").innerText = scenario.secondary.value1;
-      document.getElementById("sec-label-2").innerText = scenario.secondary.label2;
-      document.getElementById("sec-value-2").innerText = scenario.secondary.value2;
+      document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type);
+      document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
+      document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
+      document.getElementById("sec-value-1").innerText = cleanValue(scenario.secondary.value1);
+      document.getElementById("sec-label-2").innerText = cleanLabel(scenario.secondary.label2);
+      document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
 
       document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
-      document.getElementById("alt-title").innerText = scenario.alternative.title;
-      document.getElementById("alt-desc").innerText = scenario.alternative.description;
-      document.getElementById("alt-label-1").innerText = scenario.alternative.label1;
-      document.getElementById("alt-value-1").innerText = scenario.alternative.value1;
-      document.getElementById("alt-label-2").innerText = scenario.alternative.label2;
-      document.getElementById("alt-value-2").innerText = scenario.alternative.value2;
+      document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type);
+      document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
+      document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
+      document.getElementById("alt-value-1").innerText = cleanValue(scenario.alternative.value1);
+      document.getElementById("alt-label-2").innerText = cleanLabel(scenario.alternative.label2);
+      document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
 
       localStorage.setItem("auren_previous_type", scenario.type);
       localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
