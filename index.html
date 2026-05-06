@@ -1237,18 +1237,6 @@
 
               <div class="quality-row">
                 <span>
-                  Lettura volumi
-                  <span class="info">i
-                    <span class="tooltip">
-                      Indica se il movimento e' accompagnato da volumi bassi, normali o sopra la media.
-                    </span>
-                  </span>
-                </span>
-                <strong id="volume-reading">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
                   Distanza dalla zona di rimbalzo
                   <span class="info">i
                     <span class="tooltip">
@@ -1503,35 +1491,12 @@
 
     function getSignalQuality(data) {
       const score = Math.abs(Number(data.score || 0));
-      const volumeStatus = data.volume?.m30?.status || "unknown";
 
-      if (score >= 8 && volumeStatus !== "basso") return "Alta";
+      if (score >= 8) return "Alta";
       if (score >= 4) return "Media";
       if (score >= 2) return "Debole";
 
       return "Bassa";
-    }
-
-    function getVolumeReading(data) {
-      const volume = data.volume?.m30;
-
-      if (!volume || volume.status === "unknown") {
-        return "Non disponibile";
-      }
-
-      if (volume.status === "alto") {
-        return "Alti";
-      }
-
-      if (volume.status === "sopra media") {
-        return "Sopra media";
-      }
-
-      if (volume.status === "basso") {
-        return "Bassi";
-      }
-
-      return "Normali";
     }
 
     function getSimpleTitle(title, type) {
@@ -1577,22 +1542,20 @@
       const type = data.scenario.type;
       const support = formatPrice(data.support);
       const resistance = formatPrice(data.resistance);
-      const volumeMessage = data.scenario.volumeNote || data.volume?.m30?.message || "";
 
       if (type === "bearish") {
         return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
-          ", lo scenario principale rimane debole. La prima zona da osservare e' " + support +
-          ". " + volumeMessage;
+          ", lo scenario principale rimane debole. La prima zona da osservare e' " + support;
       }
 
       if (type === "bullish") {
         return "Il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
           ", lo scenario principale rimane positivo. La prima zona da osservare e' " + resistance +
-          ". " + volumeMessage;
+          ";
       }
 
       return "Il mercato si muove senza una direzione chiara. Il prezzo si trova tra " + support +
-        " e " + resistance + ". In questa fase e' meglio attendere una conferma. " + volumeMessage;
+        " e " + resistance + ". In questa fase e' meglio attendere una conferma;
     }
 
     function buildLiveMessage(currentType) {
@@ -1660,11 +1623,6 @@
       document.getElementById("support-distance").innerText = formatDistance(price, support);
       document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
       document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
-
-      const volumeEl = document.getElementById("volume-reading");
-      if (volumeEl) {
-        volumeEl.innerText = getVolumeReading(data);
-      }
     }
 
     function renderScenarioFromApi(data) {
