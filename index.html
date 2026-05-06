@@ -1539,24 +1539,23 @@
     }
 
     function buildPlainSignal(data) {
-      const type = data.scenario.type;
-      const support = formatPrice(data.support);
-      const resistance = formatPrice(data.resistance);
+  const type = data.scenario.type;
+  const support = formatPrice(data.support);
+  const resistance = formatPrice(data.resistance);
 
-      if (type === "bearish") {
-        return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
-          ", lo scenario principale rimane debole. La prima zona da osservare e' " + support;
-      }
+  if (type === "bearish") {
+    return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
+      ", lo scenario principale rimane debole. La prima zona da osservare e' " + support + ".";
+  }
 
-      if (type === "bullish") {
-        return "Il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
-          ", lo scenario principale rimane positivo. La prima zona da osservare e' " + resistance +
-          ";
-      }
+  if (type === "bullish") {
+    return "Il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
+      ", lo scenario principale rimane positivo. La prima zona da osservare e' " + resistance + ".";
+  }
 
-      return "Il mercato si muove senza una direzione chiara. Il prezzo si trova tra " + support +
-        " e " + resistance + ". In questa fase e' meglio attendere una conferma;
-    }
+  return "Il mercato si muove senza una direzione chiara. Il prezzo si trova tra " + support +
+    " e " + resistance + ". In questa fase e' meglio attendere una conferma.";
+}
 
     function buildLiveMessage(currentType) {
       const previousType = localStorage.getItem("auren_previous_type");
