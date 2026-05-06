@@ -1237,18 +1237,6 @@
 
               <div class="quality-row">
                 <span>
-                  Lettura volumi
-                  <span class="info">i
-                    <span class="tooltip">
-                      Indica se il movimento e' accompagnato da volumi bassi, normali o sopra la media.
-                    </span>
-                  </span>
-                </span>
-                <strong id="volume-reading">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
                   Distanza dalla zona di rimbalzo
                   <span class="info">i
                     <span class="tooltip">
@@ -1660,12 +1648,6 @@
       document.getElementById("support-distance").innerText = formatDistance(price, support);
       document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
       document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
-
-      const volumeEl = document.getElementById("volume-reading");
-      if (volumeEl) {
-        volumeEl.innerText = getVolumeReading(data);
-      }
-    }
 
     function renderScenarioFromApi(data) {
       const scenario = data.scenario;
