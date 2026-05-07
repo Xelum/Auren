@@ -1494,13 +1494,17 @@
     }
 
     function formatDistance(price, level) {
-      if (!price || !level) return "--";
+  if (!price || !level) return "--";
 
-      const distance = Math.abs(price - level);
-      const percentage = distance / price * 100;
+  const distance = Math.abs(price - level);
+  const percentage = distance / price * 100;
 
-      return formatPrice(level) + " · distanza " + formatPrice(distance) + " punti · " + percentage.toFixed(2) + "%";
-    }
+  return (
+    "Livello: " + formatPrice(level) +
+    "\nDistanza: " + formatPrice(distance) +
+    " punti (" + percentage.toFixed(2) + "%)"
+  );
+}
 
     function cleanLabel(label) {
       if (!label) return "";
