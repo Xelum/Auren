@@ -654,12 +654,31 @@
     .scenario-update-text {
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.5;
     }
 
     .timer-pill span {
       margin-left: 8px;
       color: var(--soft-white);
       font-variant-numeric: tabular-nums;
+    }
+
+    .history-action-wrap {
+      margin: -6px 0 22px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .history-btn {
+      min-height: 38px;
+      padding: 0 16px;
+      font-size: 13px;
+      color: var(--gold-light);
+      background: rgba(0,0,0,0.22);
+    }
+
+    .history-btn:hover {
+      background: rgba(198,168,90,0.14);
     }
 
     .bias-board {
@@ -1184,14 +1203,14 @@
       <div class="scenario-board">
         <div class="scenario-board-top">
           <div>
-            <h2>Scenario attuale sull'oro.</h2>
+            <h2>Scenario a 30 minuti sull'oro.</h2>
             <p>
-              Una lettura semplice per capire se il prezzo dell'oro sta mostrando pressione al rialzo,
-              pressione al ribasso o una fase ancora senza direzione chiara.
+              Una lettura semplice per capire la direzione piu probabile di XAU/USD nei prossimi 30 minuti:
+              salita, discesa o fase laterale.
             </p>
           </div>
 
-          <div class="market-pill">XAU/USD</div>
+          <div class="market-pill">XAU/USD · 30M</div>
         </div>
 
         <div class="scenario-status">
@@ -1199,7 +1218,8 @@
             <div class="scenario-message" id="scenario-message">Scenario in caricamento...</div>
             <div class="scenario-update-text">
               Prezzo XAU/USD: <strong id="current-price">--</strong> ·
-              Ultima analisi: <strong id="last-update">--:--</strong>
+              Ultima analisi: <strong id="last-update">--:--</strong> ·
+              <strong>Scenario aggiornato automaticamente ogni 30 minuti</strong>
             </div>
           </div>
 
@@ -1209,9 +1229,13 @@
           </div>
         </div>
 
+        <div class="history-action-wrap">
+          <a href="/storico.html" class="btn history-btn">Visualizza storico scenari</a>
+        </div>
+
         <div class="bias-board">
           <div class="bias-card">
-            <div class="bias-label">Lettura principale</div>
+            <div class="bias-label">Direzione attesa nei prossimi 30 minuti</div>
             <div class="bias-value" id="bias-value">--</div>
             <div class="bias-description" id="bias-description">
               In attesa dei dati live.
@@ -1233,6 +1257,18 @@
                   </span>
                 </span>
                 <strong id="signal-quality">--</strong>
+              </div>
+
+              <div class="quality-row">
+                <span>
+                  Soglia minima movimento
+                  <span class="info">i
+                    <span class="tooltip">
+                      Movimento minimo richiesto per considerare lo scenario corretto dopo 30 minuti.
+                    </span>
+                  </span>
+                </span>
+                <strong id="threshold-value">--</strong>
               </div>
 
               <div class="quality-row">
@@ -1261,10 +1297,10 @@
 
               <div class="quality-row">
                 <span>
-                  Movimento medio del prezzo
+                  Movimento medio M30
                   <span class="info">i
                     <span class="tooltip">
-                      Indica di quanto si muove mediamente il prezzo nell'ultimo periodo. Piu e' alto, piu il mercato e' veloce e instabile.
+                      Indica di quanto si muove mediamente il prezzo sul timeframe M30. Piu e' alto, piu il mercato e' veloce e instabile.
                     </span>
                   </span>
                 </span>
@@ -1303,7 +1339,7 @@
                 <strong id="sec-value-1">--</strong>
               </div>
               <div>
-                <span id="sec-label-2">Probabilita</span>
+                <span id="sec-label-2">Chiarezza</span>
                 <strong id="sec-value-2">--</strong>
               </div>
             </div>
@@ -1467,9 +1503,10 @@
         .replace("Invalidazione", "Scenario cambia se")
         .replace("Area di rimbalzo", "Zona di possibile rimbalzo")
         .replace("Area di ritracciamento", "Zona di possibile pausa")
-        .replace("Forza", "Probabilita")
+        .replace("Forza", "Chiarezza")
         .replace("Range operativo", "Area complessiva")
         .replace("RSI 1H", "Forza del movimento")
+        .replace("RSI M30", "Forza M30")
         .replace("Volatilita ATR", "Movimento medio")
         .replace("Volatilità ATR", "Movimento medio")
         .replace("Sopra resistenza", "Se supera la zona alta")
@@ -1486,15 +1523,17 @@
         .replace("sotto ", "prezzo sotto ")
         .replace("bullish", "in salita")
         .replace("bearish", "in discesa")
-        .replace("neutral", "incerta");
+        .replace("neutral", "laterale");
     }
 
     function getSignalQuality(data) {
+      if (data.confidence) return data.confidence;
+
       const score = Math.abs(Number(data.score || 0));
 
       if (score >= 8) return "Alta";
-      if (score >= 4) return "Media";
-      if (score >= 2) return "Debole";
+      if (score >= 4.5) return "Media";
+      if (score >= 2.5) return "Debole";
 
       return "Bassa";
     }
@@ -1502,15 +1541,15 @@
     function getSimpleTitle(title, type) {
       const t = title || "";
 
-      if (t.includes("Bias ribassista")) return "Mercato in discesa";
-      if (t.includes("Bias rialzista")) return "Mercato in salita";
+      if (t.includes("Pressione ribassista")) return "Mercato in discesa";
+      if (t.includes("Pressione rialzista")) return "Mercato in salita";
       if (t.includes("Mercato laterale")) return "Mercato laterale";
-      if (t.includes("Rimbalzo correttivo")) return "Possibile rimbalzo";
-      if (t.includes("Ritracciamento tecnico")) return "Possibile pausa";
-      if (t.includes("Cambio scenario")) return "Possibile cambio direzione";
-      if (t.includes("Perdita di momentum")) return "Possibile indebolimento";
-      if (t.includes("Breakout direzionale")) return "Possibile uscita dal range";
-      if (t.includes("Falso breakout")) return "Possibile falso segnale";
+      if (t.includes("Rimbalzo")) return "Possibile rimbalzo";
+      if (t.includes("pausa")) return "Possibile pausa";
+      if (t.includes("Cambio")) return "Possibile cambio direzione";
+      if (t.includes("Perdita")) return "Possibile indebolimento";
+      if (t.includes("uscita")) return "Possibile uscita dal range";
+      if (t.includes("falso")) return "Possibile falso segnale";
 
       if (type === "bearish") return "Mercato in discesa";
       if (type === "bullish") return "Mercato in salita";
@@ -1533,66 +1572,56 @@
         .replaceAll("scenario rialzista", "scenario di salita")
         .replaceAll("struttura", "direzione recente")
         .replaceAll("momentum", "forza del movimento")
-        .replaceAll("range operativo", "area di prezzo")
-        .replaceAll("e'", "e'")
-        .replaceAll("piu", "piu");
+        .replaceAll("range operativo", "area di prezzo");
     }
 
     function buildPlainSignal(data) {
-  const type = data.scenario.type;
-  const support = formatPrice(data.support);
-  const resistance = formatPrice(data.resistance);
+      const type = data.scenario.type;
+      const support = formatPrice(data.support);
+      const resistance = formatPrice(data.resistance);
+      const threshold = data.threshold ? formatPrice(data.threshold) : "--";
 
-  if (type === "bearish") {
-    return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
-      ", lo scenario principale rimane debole. La prima zona da osservare e' " + support + ".";
-  }
+      if (type === "bearish") {
+        return "Nei prossimi 30 minuti il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
+          ", lo scenario principale rimane debole. Prima zona da osservare: " + support +
+          ". Soglia minima per valutare l'esito: " + threshold + " punti.";
+      }
 
-  if (type === "bullish") {
-    return "Il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
-      ", lo scenario principale rimane positivo. La prima zona da osservare e' " + resistance + ".";
-  }
+      if (type === "bullish") {
+        return "Nei prossimi 30 minuti il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
+          ", lo scenario principale rimane positivo. Prima zona da osservare: " + resistance +
+          ". Soglia minima per valutare l'esito: " + threshold + " punti.";
+      }
 
-  return "Il mercato si muove senza una direzione chiara. Il prezzo si trova tra " + support +
-    " e " + resistance + ". In questa fase e' meglio attendere una conferma.";
-}
+      return "Nei prossimi 30 minuti il mercato non mostra una direzione abbastanza chiara. Il prezzo si trova tra " + support +
+        " e " + resistance + ". In questa fase e' meglio attendere una conferma.";
+    }
 
-    function buildLiveMessage(currentType) {
+    function buildLiveMessage(data) {
+      const currentType = data.scenario.type;
       const previousType = localStorage.getItem("auren_previous_type");
 
       if (!previousType) {
-        if (currentType === "bearish") {
-          return "Analisi aggiornata: il mercato mostra pressione in discesa.";
-        }
-
-        if (currentType === "bullish") {
-          return "Analisi aggiornata: il mercato mostra pressione in salita.";
-        }
-
-        return "Analisi aggiornata: il mercato non ha ancora una direzione chiara.";
+        if (currentType === "bearish") return "Analisi M30 aggiornata: pressione in discesa sui prossimi 30 minuti.";
+        if (currentType === "bullish") return "Analisi M30 aggiornata: pressione in salita sui prossimi 30 minuti.";
+        return "Analisi M30 aggiornata: fase laterale sui prossimi 30 minuti.";
       }
 
       if (previousType === currentType) {
-        if (currentType === "bearish") {
-          return "La pressione in discesa resta presente rispetto alla precedente analisi.";
-        }
-
-        if (currentType === "bullish") {
-          return "La pressione in salita resta presente rispetto alla precedente analisi.";
-        }
-
+        if (currentType === "bearish") return "La pressione in discesa resta presente rispetto alla precedente analisi.";
+        if (currentType === "bullish") return "La pressione in salita resta presente rispetto alla precedente analisi.";
         return "La fase resta laterale: servono conferme sulle zone principali.";
       }
 
       if (previousType === "bearish" && currentType === "bullish") {
-        return "Cambio scenario: il mercato passa da debole a piu costruttivo.";
+        return "Cambio scenario M30: il mercato passa da debole a piu costruttivo.";
       }
 
       if (previousType === "bullish" && currentType === "bearish") {
-        return "Cambio scenario: il mercato passa da positivo a piu debole.";
+        return "Cambio scenario M30: il mercato passa da positivo a piu debole.";
       }
 
-      return "Lo scenario si aggiorna con una nuova lettura rispetto alla precedente analisi.";
+      return "Lo scenario M30 si aggiorna con una nuova lettura rispetto alla precedente analisi.";
     }
 
     function renderBias(data) {
@@ -1602,16 +1631,16 @@
       const resistance = Number(data.resistance);
 
       let biasText = "Mercato laterale";
-      let description = "Il mercato non mostra ancora una direzione abbastanza chiara. Meglio osservare le zone principali prima di trarre conclusioni.";
+      let description = "Nei prossimi 30 minuti il mercato non mostra ancora una direzione abbastanza chiara. Meglio osservare le zone principali prima di trarre conclusioni.";
 
       if (scenario.type === "bullish") {
         biasText = "Mercato in salita";
-        description = "In questo momento l'oro mostra piu forza verso l'alto. La lettura resta positiva finche' il prezzo mantiene la zona di rimbalzo indicata.";
+        description = "Nei prossimi 30 minuti l'oro mostra piu forza verso l'alto. La lettura resta positiva finche' il prezzo mantiene la zona di rimbalzo indicata.";
       }
 
       if (scenario.type === "bearish") {
         biasText = "Mercato in discesa";
-        description = "In questo momento l'oro mostra piu debolezza. La lettura resta negativa finche' il prezzo non recupera la zona di blocco indicata.";
+        description = "Nei prossimi 30 minuti l'oro mostra piu debolezza. La lettura resta negativa finche' il prezzo non recupera la zona di blocco indicata.";
       }
 
       document.getElementById("bias-value").innerText = biasText;
@@ -1622,12 +1651,17 @@
       document.getElementById("support-distance").innerText = formatDistance(price, support);
       document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
       document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
+
+      const thresholdEl = document.getElementById("threshold-value");
+      if (thresholdEl) {
+        thresholdEl.innerText = data.threshold ? formatPrice(data.threshold) + " punti" : "--";
+      }
     }
 
     function renderScenarioFromApi(data) {
       const scenario = data.scenario;
       const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
-      const message = buildLiveMessage(scenario.type);
+      const message = buildLiveMessage(data);
 
       document.getElementById("scenario-message").innerText = message;
       document.getElementById("last-update").innerText = formatTime(updateDate);
