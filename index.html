@@ -507,6 +507,19 @@
       white-space: nowrap;
     }
 
+    .market-pill-live {
+      gap: 9px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 16px rgba(255,217,120,0.9);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
     .advanced-chart-wrap {
       width: 100%;
       height: 520px;
@@ -725,6 +738,13 @@
       line-height: 1.6;
       font-size: 15px;
       font-weight: 650;
+    }
+
+    .technical-title {
+      color: var(--gold-light);
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 16px;
     }
 
     .quality-list {
@@ -1205,12 +1225,11 @@
           <div>
             <h2>Scenario attuale sull'oro.</h2>
             <p>
-              Una lettura semplice per capire cosa sta facendo XAU/USD adesso:
-              pressione in salita, pressione in discesa o fase laterale.
+              Una lettura semplice per capire cosa sta facendo XAU/USD.
             </p>
           </div>
 
-          <div class="market-pill">XAU/USD</div>
+          <div class="market-pill market-pill-live"><span class="live-dot"></span>XAU/USD</div>
         </div>
 
         <div class="scenario-status">
@@ -1246,6 +1265,7 @@
           </div>
 
           <div class="bias-card">
+            <div class="technical-title">Dettagli tecnici</div>
             <div class="quality-list">
               <div class="quality-row">
                 <span>
@@ -1261,7 +1281,7 @@
 
               <div class="quality-row">
                 <span>
-                  Distanza dalla zona di rimbalzo
+                  Zona di rimbalzo
                   <span class="info">i
                     <span class="tooltip">
                       Indica quanto il prezzo e' lontano da una zona dove potrebbe rallentare o provare a rimbalzare.
@@ -1273,7 +1293,7 @@
 
               <div class="quality-row">
                 <span>
-                  Distanza dalla zona di blocco
+                  Zona di blocco
                   <span class="info">i
                     <span class="tooltip">
                       Indica quanto il prezzo e' lontano da una zona dove potrebbe fermarsi, rallentare o invertire.
@@ -1479,7 +1499,7 @@
       const distance = Math.abs(price - level);
       const percentage = distance / price * 100;
 
-      return formatPrice(distance) + " punti · " + percentage.toFixed(2) + "%";
+      return formatPrice(level) + " · distanza " + formatPrice(distance) + " punti · " + percentage.toFixed(2) + "%";
     }
 
     function cleanLabel(label) {
