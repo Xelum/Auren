@@ -23,48 +23,64 @@ export default async function handler(req, res) {
 
   try {
     const [tf15, tf30, tf1h, tf4h, tf1d] = await Promise.all([
-      fetchCandles("15min", API_KEY, 160),
-      fetchCandles("30min", API_KEY, 160),
+      fetchCandles("15min", API_KEY, 180),
+      fetchCandles("30min", API_KEY, 180),
       fetchCandles("1h", API_KEY, 180),
-      fetchCandles("4h", API_KEY, 180),
-      fetchCandles("1day", API_KEY, 120)
+      fetchCandles("4h", API_KEY, 160),
+      fetchCandles("1day", API_KEY, 100)
     ]);
 
     const last = tf30[tf30.length - 1];
     const price = last.close;
 
-    const ema20_15m = ema(tf15.map(c => c.close), 20);
-    const ema50_15m = ema(tf15.map(c => c.close), 50);
+    const closes15 = tf15.map(c => c.close);
+    const closes30 = tf30.map(c => c.close);
+    const closes1h = tf1h.map(c => c.close);
+    const closes4h = tf4h.map(c => c.close);
+    const closes1d = tf1d.map(c => c.close);
 
-    const ema20_30m = ema(tf30.map(c => c.close), 20);
-    const ema50_30m = ema(tf30.map(c => c.close), 50);
+    const ema9_15m = ema(closes15, 9);
+    const ema21_15m = ema(closes15, 21);
+    const ema50_15m = ema(closes15, 50);
 
-    const ema20_1h = ema(tf1h.map(c => c.close), 20);
-    const ema50_1h = ema(tf1h.map(c => c.close), 50);
+    const ema9_30m = ema(closes30, 9);
+    const ema21_30m = ema(closes30, 21);
+    const ema50_30m = ema(closes30, 50);
+    const ema100_30m = ema(closes30, 100);
 
-    const ema20_4h = ema(tf4h.map(c => c.close), 20);
-    const ema50_4h = ema(tf4h.map(c => c.close), 50);
+    const ema20_1h = ema(closes1h, 20);
+    const ema50_1h = ema(closes1h, 50);
 
-    const ema20_1d = ema(tf1d.map(c => c.close), 20);
-    const ema50_1d = ema(tf1d.map(c => c.close), 50);
+    const ema20_4h = ema(closes4h, 20);
+    const ema50_4h = ema(closes4h, 50);
 
-    const rsi15m = rsi(tf15.map(c => c.close), 14);
-    const rsi30m = rsi(tf30.map(c => c.close), 14);
-    const rsi1h = rsi(tf1h.map(c => c.close), 14);
+    const ema20_1d = ema(closes1d, 20);
+    const ema50_1d = ema(closes1d, 50);
+
+    const rsi15m = rsi(closes15, 14);
+    const rsi30m = rsi(closes30, 14);
+    const rsi1h = rsi(closes1h, 14);
 
     const atr15m = atr(tf15, 14);
     const atr30m = atr(tf30, 14);
     const atr1h = atr(tf1h, 14);
     const atr4h = atr(tf4h, 14);
 
-    const structure15m = marketStructure(tf15);
-    const structure30m = marketStructure(tf30);
-    const structure1h = marketStructure(tf1h);
-    const structure4h = marketStructure(tf4h);
+    const structure15m = marketStructure(tf15, 20);
+    const structure30m = marketStructure(tf30, 24);
+    const structure1h = marketStructure(tf1h, 24);
+    const structure4h = marketStructure(tf4h, 24);
 
-    const volume15m = volumeAnalysis(tf15);
-    const volume30m = volumeAnalysis(tf30);
-    const volume1h = volumeAnalysis(tf1h);
+    const momentum15m = momentumScore(tf15, atr15m, 4);
+    const momentum30m = momentumScore(tf30, atr30m, 4);
+    const impulse15m = candleImpulse(tf15, atr15m);
+    const impulse30m = candleImpulse(tf30, atr30m);
+
+    const slope15m = emaSlope(closes15, 21, 6, atr15m);
+    const slope30m = emaSlope(closes30, 21, 6, atr30m);
+    const slope1h = emaSlope(closes1h, 20, 5, atr1h);
+
+    const recentRange30m = recentRange(tf30, 10);
 
     const support = findMeaningfulSupport({
       candles15m: tf15,
@@ -90,88 +106,45 @@ export default async function handler(req, res) {
       atr4h
     });
 
-    let score = 0;
-
-    // D1 - contesto macro leggero
-    if (price > ema20_1d && ema20_1d > ema50_1d) score += 1;
-    if (price < ema20_1d && ema20_1d < ema50_1d) score -= 1;
-
-    // H4 - contesto principale
-    if (price > ema20_4h && ema20_4h > ema50_4h) score += 2;
-    if (price < ema20_4h && ema20_4h < ema50_4h) score -= 2;
-
-    // H1 - struttura breve
-    if (price > ema20_1h && ema20_1h > ema50_1h) score += 2.5;
-    if (price < ema20_1h && ema20_1h < ema50_1h) score -= 2.5;
-
-    // M30 - timeframe operativo principale
-    if (price > ema20_30m && ema20_30m > ema50_30m) score += 2.2;
-    if (price < ema20_30m && ema20_30m < ema50_30m) score -= 2.2;
-
-    // M15 - conferma rapida
-    if (price > ema20_15m && ema20_15m > ema50_15m) score += 1.3;
-    if (price < ema20_15m && ema20_15m < ema50_15m) score -= 1.3;
-
-    // Struttura mercato
-    if (structure4h === "bullish") score += 1.5;
-    if (structure4h === "bearish") score -= 1.5;
-
-    if (structure1h === "bullish") score += 2;
-    if (structure1h === "bearish") score -= 2;
-
-    if (structure30m === "bullish") score += 1.7;
-    if (structure30m === "bearish") score -= 1.7;
-
-    if (structure15m === "bullish") score += 0.8;
-    if (structure15m === "bearish") score -= 0.8;
-
-    // RSI multi timeframe
-    if (rsi1h > 55 && rsi1h < 70) score += 1;
-    if (rsi1h < 45 && rsi1h > 30) score -= 1;
-
-    if (rsi30m > 55 && rsi30m < 70) score += 0.8;
-    if (rsi30m < 45 && rsi30m > 30) score -= 0.8;
-
-    if (rsi15m >= 72) score -= 0.8;
-    if (rsi15m <= 28) score += 0.8;
-
-    // Volumi M30
-    if (volume30m.direction === "bullish" && volume30m.status !== "basso") {
-      score += volume30m.strength;
-    }
-
-    if (volume30m.direction === "bearish" && volume30m.status !== "basso") {
-      score -= volume30m.strength;
-    }
-
-    // Volumi H1
-    if (volume1h.direction === "bullish" && volume1h.status === "alto") {
-      score += 1;
-    }
-
-    if (volume1h.direction === "bearish" && volume1h.status === "alto") {
-      score -= 1;
-    }
-
-    // Penalizza segnali con volume basso
-    if (volume30m.status === "basso") {
-      score *= 0.82;
-    }
-
-    const distanceFromResistance = Math.abs(resistance - price);
-    const distanceFromSupport = Math.abs(price - support);
-
-    if (distanceFromResistance < atr30m * 1.4 && score > 0) score -= 1.2;
-    if (distanceFromSupport < atr30m * 1.4 && score < 0) score += 1.2;
-
-    const volatilityRatio = atr30m / price;
-
-    if (volatilityRatio < 0.0012) {
-      score *= 0.7;
-    }
+    const directionData = calculateM30DirectionScore({
+      price,
+      support,
+      resistance,
+      atr15m,
+      atr30m,
+      atr1h,
+      ema9_15m,
+      ema21_15m,
+      ema50_15m,
+      ema9_30m,
+      ema21_30m,
+      ema50_30m,
+      ema100_30m,
+      ema20_1h,
+      ema50_1h,
+      ema20_4h,
+      ema50_4h,
+      ema20_1d,
+      ema50_1d,
+      rsi15m,
+      rsi30m,
+      rsi1h,
+      structure15m,
+      structure30m,
+      structure1h,
+      structure4h,
+      momentum15m,
+      momentum30m,
+      impulse15m,
+      impulse30m,
+      slope15m,
+      slope30m,
+      slope1h,
+      recentRange30m
+    });
 
     const scenario = buildScenario({
-      score,
+      ...directionData,
       price,
       support,
       resistance,
@@ -186,13 +159,18 @@ export default async function handler(req, res) {
       structure30m,
       structure1h,
       structure4h,
-      volume15m,
-      volume30m,
-      volume1h
+      momentum15m,
+      momentum30m,
+      impulse15m,
+      impulse30m,
+      slope15m,
+      slope30m,
+      slope1h
     });
 
     return res.status(200).json({
       market: "XAU/USD",
+      horizon: "30m",
       price: Number(price.toFixed(2)),
       support: Number(support.toFixed(2)),
       resistance: Number(resistance.toFixed(2)),
@@ -203,22 +181,32 @@ export default async function handler(req, res) {
       atr30m: Number(atr30m.toFixed(2)),
       atr: Number(atr1h.toFixed(2)),
       atr4h: Number(atr4h.toFixed(2)),
-      score: Number(score.toFixed(2)),
+      score: Number(directionData.score.toFixed(2)),
+      confidence: directionData.confidence,
+      threshold: Number(directionData.threshold.toFixed(2)),
+      expectedMove: Number(directionData.expectedMove.toFixed(2)),
       structure15m,
       structure30m,
       structure1h,
       structure4h,
-      volume: {
-        m15: volume15m,
-        m30: volume30m,
-        h1: volume1h
+      momentum: {
+        m15: Number(momentum15m.toFixed(2)),
+        m30: Number(momentum30m.toFixed(2))
+      },
+      impulse: {
+        m15: impulse15m,
+        m30: impulse30m
+      },
+      slopes: {
+        m15: Number(slope15m.toFixed(2)),
+        m30: Number(slope30m.toFixed(2)),
+        h1: Number(slope1h.toFixed(2))
       },
       updatedAt: analysisTime.toISOString(),
       nextUpdateAt: nextUpdate.toISOString(),
       cacheSeconds: secondsUntilNextUpdate,
       scenario
     });
-
   } catch (error) {
     return res.status(500).json({
       error: "Errore durante il calcolo dello scenario",
@@ -268,8 +256,7 @@ async function fetchCandles(interval, API_KEY, outputsize = 100) {
       open: Number(item.open),
       high: Number(item.high),
       low: Number(item.low),
-      close: Number(item.close),
-      volume: Number(item.volume || 0)
+      close: Number(item.close)
     }))
     .filter(c =>
       !Number.isNaN(c.open) &&
@@ -291,6 +278,29 @@ function ema(values, period) {
   }
 
   return result;
+}
+
+function emaSeries(values, period) {
+  if (!values || values.length === 0) return [];
+
+  const k = 2 / (period + 1);
+  const result = [values[0]];
+
+  for (let i = 1; i < values.length; i++) {
+    result.push(values[i] * k + result[i - 1] * (1 - k));
+  }
+
+  return result;
+}
+
+function emaSlope(values, period, barsBack, atrValue) {
+  if (!values || values.length < period + barsBack + 2 || !atrValue) return 0;
+
+  const series = emaSeries(values, period);
+  const last = series[series.length - 1];
+  const previous = series[series.length - 1 - barsBack];
+
+  return (last - previous) / atrValue;
 }
 
 function rsi(values, period) {
@@ -332,8 +342,8 @@ function atr(candles, period) {
   return trueRanges.reduce((a, b) => a + b, 0) / trueRanges.length;
 }
 
-function marketStructure(candles) {
-  const recent = candles.slice(-24);
+function marketStructure(candles, length = 24) {
+  const recent = candles.slice(-length);
 
   if (recent.length < 12) return "neutral";
 
@@ -352,73 +362,260 @@ function marketStructure(candles) {
   return "neutral";
 }
 
-function volumeAnalysis(candles, period = 20) {
-  const recent = candles.slice(-period);
+function momentumScore(candles, atrValue, bars = 4) {
+  if (!candles || candles.length < bars + 1 || !atrValue) return 0;
+
+  const recent = candles.slice(-bars - 1);
+  const start = recent[0].close;
+  const end = recent[recent.length - 1].close;
+
+  return (end - start) / atrValue;
+}
+
+function candleImpulse(candles, atrValue) {
   const last = candles[candles.length - 1];
 
-  if (!recent.length || !last || !last.volume) {
+  if (!last || !atrValue) {
     return {
-      status: "unknown",
       direction: "neutral",
-      ratio: 0,
-      strength: 0,
-      message: "Volumi non disponibili per questa lettura."
+      strength: 0
     };
   }
 
-  const avgVolume =
-    recent.reduce((sum, c) => sum + (c.volume || 0), 0) / recent.length;
+  const body = Math.abs(last.close - last.open);
+  const range = Math.max(last.high - last.low, 0.00001);
+  const bodyRatio = body / range;
+  const atrRatio = body / atrValue;
 
-  const lastVolume = last.volume;
-  const volumeRatio = avgVolume > 0 ? lastVolume / avgVolume : 1;
-
-  const candleDirection =
+  const direction =
     last.close > last.open ? "bullish" :
     last.close < last.open ? "bearish" :
     "neutral";
 
-  let status = "normale";
   let strength = 0;
 
-  if (volumeRatio >= 1.6) {
-    status = "alto";
-    strength = 1.5;
-  } else if (volumeRatio >= 1.2) {
-    status = "sopra media";
-    strength = 0.8;
-  } else if (volumeRatio <= 0.65) {
-    status = "basso";
-    strength = -0.8;
-  }
-
-  let message = "I volumi sono nella media.";
-
-  if (status === "alto" && candleDirection === "bullish") {
-    message = "I volumi stanno aumentando durante la salita.";
-  }
-
-  if (status === "alto" && candleDirection === "bearish") {
-    message = "I volumi stanno aumentando durante la discesa.";
-  }
-
-  if (status === "sopra media" && candleDirection === "bullish") {
-    message = "La salita e' accompagnata da volumi sopra la media.";
-  }
-
-  if (status === "sopra media" && candleDirection === "bearish") {
-    message = "La discesa e' accompagnata da volumi sopra la media.";
-  }
-
-  if (status === "basso") {
-    message = "Il movimento attuale mostra volumi bassi, quindi il segnale e' meno forte.";
-  }
+  if (bodyRatio >= 0.55 && atrRatio >= 0.35) strength = 0.8;
+  if (bodyRatio >= 0.65 && atrRatio >= 0.55) strength = 1.2;
+  if (bodyRatio >= 0.75 && atrRatio >= 0.75) strength = 1.6;
 
   return {
-    status,
-    direction: candleDirection,
-    ratio: Number(volumeRatio.toFixed(2)),
-    strength,
-    message
+    direction,
+    strength: Number(strength.toFixed(2)),
+    bodyRatio: Number(bodyRatio.toFixed(2)),
+    atrRatio: Number(atrRatio.toFixed(2))
+  };
+}
+
+function recentRange(candles, length = 10) {
+  const recent = candles.slice(-length);
+
+  if (!recent.length) {
+    return {
+      high: 0,
+      low: 0,
+      middle: 0
+    };
+  }
+
+  const high = Math.max(...recent.map(c => c.high));
+  const low = Math.min(...recent.map(c => c.low));
+
+  return {
+    high,
+    low,
+    middle: (high + low) / 2
+  };
+}
+
+function calculateM30DirectionScore(data) {
+  const {
+    price,
+    support,
+    resistance,
+    atr15m,
+    atr30m,
+    atr1h,
+    ema9_15m,
+    ema21_15m,
+    ema50_15m,
+    ema9_30m,
+    ema21_30m,
+    ema50_30m,
+    ema100_30m,
+    ema20_1h,
+    ema50_1h,
+    ema20_4h,
+    ema50_4h,
+    ema20_1d,
+    ema50_1d,
+    rsi15m,
+    rsi30m,
+    rsi1h,
+    structure15m,
+    structure30m,
+    structure1h,
+    structure4h,
+    momentum15m,
+    momentum30m,
+    impulse15m,
+    impulse30m,
+    slope15m,
+    slope30m,
+    slope1h,
+    recentRange30m
+  } = data;
+
+  let score = 0;
+  const reasons = [];
+
+  // M30 is the main timeframe for the 30-minute output.
+  if (price > ema9_30m && ema9_30m > ema21_30m && ema21_30m > ema50_30m) {
+    score += 3.2;
+    reasons.push("M30 mostra medie allineate al rialzo");
+  } else if (price < ema9_30m && ema9_30m < ema21_30m && ema21_30m < ema50_30m) {
+    score -= 3.2;
+    reasons.push("M30 mostra medie allineate al ribasso");
+  } else if (price > ema21_30m && ema21_30m > ema50_30m) {
+    score += 1.8;
+    reasons.push("M30 resta costruttivo sopra le medie principali");
+  } else if (price < ema21_30m && ema21_30m < ema50_30m) {
+    score -= 1.8;
+    reasons.push("M30 resta debole sotto le medie principali");
+  }
+
+  // M15 gives fast confirmation.
+  if (price > ema9_15m && ema9_15m > ema21_15m && ema21_15m > ema50_15m) {
+    score += 2.2;
+    reasons.push("M15 conferma spinta veloce al rialzo");
+  } else if (price < ema9_15m && ema9_15m < ema21_15m && ema21_15m < ema50_15m) {
+    score -= 2.2;
+    reasons.push("M15 conferma spinta veloce al ribasso");
+  } else if (price > ema21_15m) {
+    score += 0.8;
+  } else if (price < ema21_15m) {
+    score -= 0.8;
+  }
+
+  // H1 confirms but does not dominate.
+  if (price > ema20_1h && ema20_1h > ema50_1h) {
+    score += 1.5;
+    reasons.push("H1 conferma contesto positivo");
+  }
+  if (price < ema20_1h && ema20_1h < ema50_1h) {
+    score -= 1.5;
+    reasons.push("H1 conferma contesto debole");
+  }
+
+  // H4 and D1 are only filters.
+  if (price > ema20_4h && ema20_4h > ema50_4h) score += 0.7;
+  if (price < ema20_4h && ema20_4h < ema50_4h) score -= 0.7;
+
+  if (price > ema20_1d && ema20_1d > ema50_1d) score += 0.3;
+  if (price < ema20_1d && ema20_1d < ema50_1d) score -= 0.3;
+
+  // Market structure.
+  if (structure30m === "bullish") score += 2.0;
+  if (structure30m === "bearish") score -= 2.0;
+
+  if (structure15m === "bullish") score += 1.2;
+  if (structure15m === "bearish") score -= 1.2;
+
+  if (structure1h === "bullish") score += 1.0;
+  if (structure1h === "bearish") score -= 1.0;
+
+  if (structure4h === "bullish") score += 0.4;
+  if (structure4h === "bearish") score -= 0.4;
+
+  // EMA slope / short-term acceleration.
+  score += clamp(slope30m, -1.8, 1.8) * 1.2;
+  score += clamp(slope15m, -1.5, 1.5) * 0.8;
+  score += clamp(slope1h, -1.0, 1.0) * 0.5;
+
+  // Recent price momentum.
+  score += clamp(momentum30m, -2.0, 2.0) * 1.2;
+  score += clamp(momentum15m, -1.8, 1.8) * 0.8;
+
+  // Last candle impulse.
+  if (impulse30m.direction === "bullish") score += impulse30m.strength;
+  if (impulse30m.direction === "bearish") score -= impulse30m.strength;
+
+  if (impulse15m.direction === "bullish") score += impulse15m.strength * 0.6;
+  if (impulse15m.direction === "bearish") score -= impulse15m.strength * 0.6;
+
+  // RSI interpretation for 30-minute horizon.
+  if (rsi30m >= 54 && rsi30m <= 68) score += 1.2;
+  if (rsi30m <= 46 && rsi30m >= 32) score -= 1.2;
+
+  if (rsi15m >= 55 && rsi15m <= 68) score += 0.8;
+  if (rsi15m <= 45 && rsi15m >= 32) score -= 0.8;
+
+  // Avoid chasing extreme short-term overextension.
+  if (rsi15m >= 76 && score > 0) score -= 1.3;
+  if (rsi15m <= 24 && score < 0) score += 1.3;
+
+  if (rsi30m >= 74 && score > 0) score -= 1.0;
+  if (rsi30m <= 26 && score < 0) score += 1.0;
+
+  // Breakout from recent M30 range.
+  const breakoutBuffer = Math.max(atr30m * 0.12, price * 0.00025);
+
+  if (price > recentRange30m.high - breakoutBuffer && score > 0) {
+    score += 0.8;
+    reasons.push("Prezzo vicino alla parte alta del range M30");
+  }
+
+  if (price < recentRange30m.low + breakoutBuffer && score < 0) {
+    score -= 0.8;
+    reasons.push("Prezzo vicino alla parte bassa del range M30");
+  }
+
+  // Support / resistance risk control.
+  const distanceFromResistance = Math.abs(resistance - price);
+  const distanceFromSupport = Math.abs(price - support);
+
+  if (distanceFromResistance < atr30m * 1.0 && score > 0) {
+    score -= 1.8;
+    reasons.push("Prezzo vicino a una zona di blocco");
+  }
+
+  if (distanceFromSupport < atr30m * 1.0 && score < 0) {
+    score += 1.8;
+    reasons.push("Prezzo vicino a una zona di rimbalzo");
+  }
+
+  // Low volatility means lower reliability.
+  const volatilityRatio = atr30m / price;
+  if (volatilityRatio < 0.0010) {
+    score *= 0.68;
+    reasons.push("Volatilita bassa: segnale meno pulito");
+  } else if (volatilityRatio < 0.0014) {
+    score *= 0.82;
+  }
+
+  // If M15 and M30 are opposite, reduce conviction.
+  const fastConflict =
+    (structure15m === "bullish" && structure30m === "bearish") ||
+    (structure15m === "bearish" && structure30m === "bullish");
+
+  if (fastConflict) {
+    score *= 0.72;
+    reasons.push("M15 e M30 non sono allineati");
+  }
+
+  const absScore = Math.abs(score);
+
+  const confidence =
+    absScore >= 8 ? "Alta" :
+    absScore >= 4.5 ? "Media" :
+    absScore >= 2.5 ? "Debole" :
+    "Bassa";
+
+  return {
+    score,
+    confidence,
+    threshold: Math.max(atr30m * 0.15, price * 0.00035),
+    expectedMove: Math.max(atr30m * 0.55, atr15m * 0.9),
+    reasons: reasons.slice(0, 4)
   };
 }
 
@@ -433,7 +630,7 @@ function findMeaningfulSupport({
   atr1h,
   atr4h
 }) {
-  const minDistance = Math.max(atr30m * 1.8, price * 0.0018);
+  const minDistance = Math.max(atr30m * 1.2, price * 0.0012);
 
   const levels = [
     ...extractSwingLows(candles15m, 2),
@@ -447,7 +644,7 @@ function findMeaningfulSupport({
     .filter(level => level < price - minDistance)
     .map(level => ({
       level,
-      score: levelStrength(level, levels, Math.max(atr30m * 0.8, price * 0.001))
+      score: levelStrength(level, levels, Math.max(atr30m * 0.7, price * 0.0009))
     }))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
@@ -458,7 +655,7 @@ function findMeaningfulSupport({
     return valid[0].level;
   }
 
-  return price - Math.max(atr4h * 0.7, atr1h * 2, atr30m * 3, price * 0.003);
+  return price - Math.max(atr1h * 0.9, atr30m * 2.2, price * 0.0025);
 }
 
 function findMeaningfulResistance({
@@ -472,7 +669,7 @@ function findMeaningfulResistance({
   atr1h,
   atr4h
 }) {
-  const minDistance = Math.max(atr30m * 1.8, price * 0.0018);
+  const minDistance = Math.max(atr30m * 1.2, price * 0.0012);
 
   const levels = [
     ...extractSwingHighs(candles15m, 2),
@@ -486,7 +683,7 @@ function findMeaningfulResistance({
     .filter(level => level > price + minDistance)
     .map(level => ({
       level,
-      score: levelStrength(level, levels, Math.max(atr30m * 0.8, price * 0.001))
+      score: levelStrength(level, levels, Math.max(atr30m * 0.7, price * 0.0009))
     }))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
@@ -497,7 +694,7 @@ function findMeaningfulResistance({
     return valid[0].level;
   }
 
-  return price + Math.max(atr4h * 0.7, atr1h * 2, atr30m * 3, price * 0.003);
+  return price + Math.max(atr1h * 0.9, atr30m * 2.2, price * 0.0025);
 }
 
 function extractSwingLows(candles, lookback = 2) {
@@ -559,158 +756,190 @@ function levelStrength(level, allLevels, tolerance) {
 function buildScenario(data) {
   const {
     score,
+    confidence,
+    threshold,
+    expectedMove,
+    reasons,
     price,
     support,
     resistance,
     atr30m,
-    atr1h,
-    rsi1h,
+    rsi30m,
+    structure15m,
     structure30m,
-    structure1h,
-    structure4h,
-    volume30m,
-    volume1h
+    structure1h
   } = data;
 
   const strongBullish = score >= 8;
-  const bullish = score >= 4 && score < 8;
-  const neutral = score > -4 && score < 4;
-  const bearish = score <= -4 && score > -8;
+  const bullish = score >= 4.5 && score < 8;
+  const neutral = score > -4.5 && score < 4.5;
+  const bearish = score <= -4.5 && score > -8;
   const strongBearish = score <= -8;
 
   const supportText = support.toFixed(2);
   const resistanceText = resistance.toFixed(2);
-
+  const priceText = price.toFixed(2);
   const operatingRange = supportText + " - " + resistanceText;
   const atrText = atr30m.toFixed(2);
 
-  const volumeMessage =
-    volume30m && volume30m.message
-      ? volume30m.message
-      : "I volumi non aggiungono conferme rilevanti in questa fase.";
-
-  const signalStrength =
-    Math.abs(score) >= 8 ? "Alta" :
-    Math.abs(score) >= 4 ? "Media" :
-    "Bassa";
+  const whyText = buildWhyText(reasons, structure15m, structure30m, structure1h);
 
   if (strongBearish || bearish) {
-    const mainProb = strongBearish ? 72 : 63;
-    const secondProb = strongBearish ? 18 : 27;
+    const mainProb = strongBearish ? 70 : 61;
+    const secondProb = strongBearish ? 20 : 29;
     const altProb = 100 - mainProb - secondProb;
 
     return {
       type: "bearish",
+      horizon: "30m",
+      interpretation: "Direzione attesa nei prossimi 30 minuti: ribassista.",
       main: {
         probability: mainProb,
-        title: "Bias ribassista",
+        title: "Pressione ribassista a 30 minuti",
         description:
-          "La pressione principale resta orientata al ribasso. Il segnale e' piu affidabile finche' il prezzo rimane sotto la zona di blocco indicata. " +
-          volumeMessage,
-        label1: "Target / supporto utile",
+          "Nel breve termine il mercato mostra maggiore pressione in discesa. " +
+          "Lo scenario resta valido finche' il prezzo rimane sotto la zona di blocco indicata. " +
+          whyText,
+        label1: "Prima zona da osservare",
         value1: supportText,
-        label2: "Invalidazione",
+        label2: "Scenario cambia se",
         value2: "sopra " + resistanceText
       },
       secondary: {
         probability: secondProb,
-        title: "Rimbalzo correttivo",
+        title: "Possibile rimbalzo temporaneo",
         description:
-          "Un recupero tecnico e' possibile, ma sarebbe considerato solo una correzione finche' non avviene un superamento chiaro della zona di blocco.",
-        label1: "Area di rimbalzo",
+          "Un recupero tecnico puo avvenire, ma per ora viene letto come reazione temporanea se non supera la zona alta.",
+        label1: "Zona di possibile rimbalzo",
         value1: resistanceText,
-        label2: "Forza",
-        value2: signalStrength
+        label2: "Chiarezza",
+        value2: confidence
       },
       alternative: {
         probability: altProb,
-        title: "Cambio scenario rialzista",
+        title: "Cambio direzione",
         description:
-          "Lo scenario di discesa verrebbe indebolito da un movimento chiaro sopra la zona di blocco, soprattutto se accompagnato da volumi in aumento e struttura M30/H1 in miglioramento.",
-        label1: "Range operativo",
+          "La lettura ribassista perderebbe forza se il prezzo tornasse sopra la zona di blocco con movimento chiaro su M15 e M30.",
+        label1: "Area complessiva",
         value1: operatingRange,
-        label2: "RSI 1H",
-        value2: rsi1h.toFixed(2)
+        label2: "RSI M30",
+        value2: rsi30m.toFixed(2)
       },
-      volumeNote: volumeMessage
+      evaluation: {
+        direction: "bearish",
+        entryPrice: Number(priceText),
+        threshold: Number(threshold.toFixed(2)),
+        expectedMove: Number(expectedMove.toFixed(2)),
+        rule: "Corretto se dopo 30 minuti il prezzo e' inferiore al prezzo di analisi oltre la soglia minima."
+      }
     };
   }
 
   if (strongBullish || bullish) {
-    const mainProb = strongBullish ? 72 : 63;
-    const secondProb = strongBullish ? 18 : 27;
+    const mainProb = strongBullish ? 70 : 61;
+    const secondProb = strongBullish ? 20 : 29;
     const altProb = 100 - mainProb - secondProb;
 
     return {
       type: "bullish",
+      horizon: "30m",
+      interpretation: "Direzione attesa nei prossimi 30 minuti: rialzista.",
       main: {
         probability: mainProb,
-        title: "Bias rialzista",
+        title: "Pressione rialzista a 30 minuti",
         description:
-          "La pressione principale resta orientata al rialzo. Il segnale e' piu affidabile finche' il prezzo mantiene la zona di rimbalzo indicata. " +
-          volumeMessage,
-        label1: "Target / resistenza utile",
+          "Nel breve termine il mercato mostra maggiore pressione in salita. " +
+          "Lo scenario resta valido finche' il prezzo mantiene la zona di rimbalzo indicata. " +
+          whyText,
+        label1: "Prima zona da osservare",
         value1: resistanceText,
-        label2: "Invalidazione",
+        label2: "Scenario cambia se",
         value2: "sotto " + supportText
       },
       secondary: {
         probability: secondProb,
-        title: "Ritracciamento tecnico",
+        title: "Possibile pausa temporanea",
         description:
-          "Un ritorno verso la zona di rimbalzo resta possibile prima di una nuova spinta. La lettura rimane positiva finche' la zona chiave viene mantenuta.",
-        label1: "Area di ritracciamento",
+          "Un ritorno verso la zona bassa puo avvenire, ma per ora viene letto come pausa se la struttura M30 resta positiva.",
+        label1: "Zona di possibile pausa",
         value1: supportText,
-        label2: "Forza",
-        value2: signalStrength
+        label2: "Chiarezza",
+        value2: confidence
       },
       alternative: {
         probability: altProb,
-        title: "Perdita di momentum",
+        title: "Perdita di forza",
         description:
-          "Lo scenario di salita perderebbe forza in caso di rottura della zona di rimbalzo, soprattutto con volumi in aumento sulla discesa e peggioramento della struttura M30/H1.",
-        label1: "Range operativo",
+          "La lettura rialzista perderebbe forza se il prezzo scendesse sotto la zona di rimbalzo con movimento chiaro su M15 e M30.",
+        label1: "Area complessiva",
         value1: operatingRange,
-        label2: "RSI 1H",
-        value2: rsi1h.toFixed(2)
+        label2: "RSI M30",
+        value2: rsi30m.toFixed(2)
       },
-      volumeNote: volumeMessage
+      evaluation: {
+        direction: "bullish",
+        entryPrice: Number(priceText),
+        threshold: Number(threshold.toFixed(2)),
+        expectedMove: Number(expectedMove.toFixed(2)),
+        rule: "Corretto se dopo 30 minuti il prezzo e' superiore al prezzo di analisi oltre la soglia minima."
+      }
     };
   }
 
   return {
     type: "neutral",
+    horizon: "30m",
+    interpretation: "Direzione attesa nei prossimi 30 minuti: laterale.",
     main: {
       probability: 45,
-      title: "Mercato laterale",
+      title: "Mercato laterale a 30 minuti",
       description:
-        "Il mercato non mostra una direzione abbastanza pulita. In questa fase e' meglio attendere una conferma fuori dall'area principale. " +
-        volumeMessage,
-      label1: "Range operativo",
+        "Nel breve termine il mercato non mostra una direzione abbastanza pulita. " +
+        "In questa fase e' meglio attendere una conferma fuori dall'area principale. " +
+        whyText,
+      label1: "Area complessiva",
       value1: operatingRange,
-      label2: "Volatilita ATR",
+      label2: "Movimento medio M30",
       value2: atrText
     },
     secondary: {
       probability: 35,
-      title: "Breakout direzionale",
+      title: "Possibile uscita dal range",
       description:
-        "Un movimento chiaro sopra la zona alta o sotto la zona bassa potrebbe riattivare direzione. Prima della conferma, il rischio di falso segnale resta elevato.",
-      label1: "Sopra resistenza",
+        "Un movimento chiaro sopra la zona alta o sotto la zona bassa potrebbe riattivare una direzione piu definita.",
+      label1: "Se supera la zona alta",
       value1: resistanceText,
-      label2: "Sotto supporto",
+      label2: "Se perde la zona bassa",
       value2: supportText
     },
     alternative: {
       probability: 20,
-      title: "Falso breakout",
+      title: "Possibile falso segnale",
       description:
-        "In fase laterale possono verificarsi movimenti rapidi ma poco affidabili. Serve conferma con chiusure coerenti e aumento dei volumi.",
+        "In fase laterale possono verificarsi movimenti rapidi ma poco affidabili. Serve conferma su M15 e M30.",
       label1: "Struttura M30",
       value1: structure30m,
       label2: "Struttura H1",
       value2: structure1h
     },
-    volumeNote: volumeMessage
+    evaluation: {
+      direction: "neutral",
+      entryPrice: Number(priceText),
+      threshold: Number(threshold.toFixed(2)),
+      expectedMove: Number(expectedMove.toFixed(2)),
+      rule: "Corretto se dopo 30 minuti il prezzo resta vicino al prezzo di analisi entro la soglia minima."
+    }
   };
+}
+
+function buildWhyText(reasons, structure15m, structure30m, structure1h) {
+  if (reasons && reasons.length > 0) {
+    return "Motivo: " + reasons.slice(0, 2).join("; ") + ".";
+  }
+
+  return "Motivo: M15=" + structure15m + ", M30=" + structure30m + ", H1=" + structure1h + ".";
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
