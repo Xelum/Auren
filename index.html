@@ -1203,22 +1203,22 @@
       <div class="scenario-board">
         <div class="scenario-board-top">
           <div>
-            <h2>Scenario a 30 minuti sull'oro.</h2>
+            <h2>Scenario attuale sull'oro.</h2>
             <p>
-              Una lettura semplice per capire la direzione piu probabile di XAU/USD nei prossimi 30 minuti:
-              salita, discesa o fase laterale.
+              Una lettura semplice per capire cosa sta facendo XAU/USD adesso:
+              pressione in salita, pressione in discesa o fase laterale.
             </p>
           </div>
 
-          <div class="market-pill">XAU/USD · 30M</div>
+          <div class="market-pill">XAU/USD</div>
         </div>
 
         <div class="scenario-status">
           <div class="scenario-status-left">
             <div class="scenario-message" id="scenario-message">Scenario in caricamento...</div>
             <div class="scenario-update-text">
-              Prezzo XAU/USD: <strong id="current-price">--</strong> ·
-              Ultima analisi: <strong id="last-update">--:--</strong> ·
+              Prezzo XAU/USD: <strong id="current-price">--</strong><br>
+              Ultima analisi alle ore: <strong id="last-update">--:--</strong><br>
               <strong>Scenario aggiornato automaticamente ogni 30 minuti</strong>
             </div>
           </div>
@@ -1235,7 +1235,7 @@
 
         <div class="bias-board">
           <div class="bias-card">
-            <div class="bias-label">Direzione attesa nei prossimi 30 minuti</div>
+            
             <div class="bias-value" id="bias-value">--</div>
             <div class="bias-description" id="bias-description">
               In attesa dei dati live.
@@ -1257,18 +1257,6 @@
                   </span>
                 </span>
                 <strong id="signal-quality">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
-                  Soglia minima movimento
-                  <span class="info">i
-                    <span class="tooltip">
-                      Movimento minimo richiesto per considerare lo scenario corretto dopo 30 minuti.
-                    </span>
-                  </span>
-                </span>
-                <strong id="threshold-value">--</strong>
               </div>
 
               <div class="quality-row">
@@ -1579,22 +1567,21 @@
       const type = data.scenario.type;
       const support = formatPrice(data.support);
       const resistance = formatPrice(data.resistance);
-      const threshold = data.threshold ? formatPrice(data.threshold) : "--";
 
       if (type === "bearish") {
-        return "Nei prossimi 30 minuti il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
-          ", lo scenario principale rimane debole. Prima zona da osservare: " + support +
-          ". Soglia minima per valutare l'esito: " + threshold + " punti.";
+        return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
+          ", la lettura principale rimane debole. La prima zona da osservare e' " + support +
+          ". Se il prezzo torna sopra la zona di blocco, lo scenario potrebbe cambiare.";
       }
 
       if (type === "bullish") {
-        return "Nei prossimi 30 minuti il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
-          ", lo scenario principale rimane positivo. Prima zona da osservare: " + resistance +
-          ". Soglia minima per valutare l'esito: " + threshold + " punti.";
+        return "Il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
+          ", la lettura principale rimane positiva. La prima zona da osservare e' " + resistance +
+          ". Se il prezzo perde la zona di rimbalzo, lo scenario potrebbe indebolirsi.";
       }
 
-      return "Nei prossimi 30 minuti il mercato non mostra una direzione abbastanza chiara. Il prezzo si trova tra " + support +
-        " e " + resistance + ". In questa fase e' meglio attendere una conferma.";
+      return "Il mercato non mostra ancora una direzione chiara. Il prezzo si trova tra " + support +
+        " e " + resistance + ". In questa fase e' meglio attendere una conferma prima di dare peso alla direzione.";
     }
 
     function buildLiveMessage(data) {
@@ -1651,11 +1638,6 @@
       document.getElementById("support-distance").innerText = formatDistance(price, support);
       document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
       document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
-
-      const thresholdEl = document.getElementById("threshold-value");
-      if (thresholdEl) {
-        thresholdEl.innerText = data.threshold ? formatPrice(data.threshold) + " punti" : "--";
-      }
     }
 
     function renderScenarioFromApi(data) {
@@ -1779,3 +1761,4 @@
   </script>
 </body>
 </html>
+
