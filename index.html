@@ -2006,7 +2006,77 @@ Distanza: " + formatPrice(distance) +
       renderQualityBars(data.signalQuality);
     }
 
-    function renderScenarioFromApi(data) {
+    function safeScenario(data) {
+      const scenario = data && data.scenario ? data.scenario : {};
+
+      return {
+        type: scenario.type || data.direction || "neutral",
+        action: scenario.action || data.action || "wait",
+        main: scenario.main || {
+          probability: data.reliability || 0,
+          title: "Scenario in lettura",
+          description: "Auren sta leggendo i dati disponibili dal mercato.",
+          label1: "Zona di rimbalzo",
+          value1: data.support || "--",
+          label2: "Zona di blocco",
+          value2: data.resistance || "--"
+        },
+        secondary: scenario.secondary || {
+          probability: 0,
+          title: "Attendere conferma",
+          description: "Servono più dati per costruire lo scenario secondario.",
+          label1: "Supporto",
+          value1: data.support || "--",
+          label2: "Resistenza",
+          value2: data.resistance || "--"
+        },
+        alternative: scenario.alternative || {
+          probability: 0,
+          title: "Scenario alternativo",
+          description: "Scenario alternativo non disponibile al momento.",
+          label1: "Area complessiva",
+          value1: (data.support && data.resistance) ? data.support + " - " + data.resistance : "--",
+          label2: "Regime",
+          value2: data.marketRegime || "--"
+        }
+      };
+    }
+
+    function normalizeApiData(rawData) {
+      const data = rawData || {};
+      const scenario = safeScenario(data);
+
+      return {
+        ...data,
+        scenario,
+        action: data.action || scenario.action || "wait",
+        direction: data.direction || scenario.type || "neutral",
+        tradable: Boolean(data.tradable),
+        reliability: typeof data.reliability === "number"
+          ? data.reliability
+          : data.signalQuality && typeof data.signalQuality.overall === "number"
+            ? data.signalQuality.overall
+            : 0,
+        signalQuality: data.signalQuality || {
+          overall: typeof data.reliability === "number" ? data.reliability : 0,
+          trendAlignment: 0,
+          volatility: 0,
+          structure: 0,
+          momentum: 0,
+          riskReward: 0,
+          cleanliness: 0
+        },
+        tradability: data.tradability || {
+          tradable: Boolean(data.tradable),
+          action: data.action || scenario.action || "wait",
+          direction: data.direction || scenario.type || "neutral",
+          reasons: data.tradable ? ["Segnale utilizzabile secondo i parametri attuali"] : ["Segnale non abbastanza pulito"]
+        }
+      };
+    }
+
+    function renderScenarioFromApi(rawData) {
+      const data = normalizeApiData(rawData);
       const scenario = data.scenario;
       const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
       const message = buildLiveMessage(data);
@@ -2019,7 +2089,7 @@ Distanza: " + formatPrice(distance) +
       renderDecisionStrip(data);
       renderBias(data);
 
-      document.getElementById("main-prob").innerText = scenario.main.probability + "%";
+      document.getElementById("main-prob").innerText = (scenario.main.probability ?? 0) + "%";
       document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action);
       document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
       document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
@@ -2027,7 +2097,7 @@ Distanza: " + formatPrice(distance) +
       document.getElementById("main-label-2").innerText = cleanLabel(scenario.main.label2);
       document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
 
-      document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
+      document.getElementById("sec-prob").innerText = (scenario.secondary.probability ?? 0) + "%";
       document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type, action);
       document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
       document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
@@ -2035,7 +2105,7 @@ Distanza: " + formatPrice(distance) +
       document.getElementById("sec-label-2").innerText = cleanLabel(scenario.secondary.label2);
       document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
 
-      document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
+      document.getElementById("alt-prob").innerText = (scenario.alternative.probability ?? 0) + "%";
       document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type, action);
       document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
       document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
@@ -2050,18 +2120,22 @@ Distanza: " + formatPrice(distance) +
 
     async function loadLiveScenario() {
       try {
-        const response = await fetch("/api/scenario", {
+        const response = await fetch("/api/scenario?t=" + Date.now(), {
           cache: "no-store"
         });
 
         if (!response.ok) {
-          throw new Error("Risposta API non valida");
+          let errorText = "";
+          try {
+            errorText = await response.text();
+          } catch (e) {}
+          throw new Error("Risposta API non valida: " + response.status + " " + errorText);
         }
 
         const data = await response.json();
 
-        if (!data || !data.scenario) {
-          throw new Error("Scenario mancante");
+        if (!data) {
+          throw new Error("Risposta API vuota");
         }
 
         renderScenarioFromApi(data);
@@ -2074,7 +2148,8 @@ Distanza: " + formatPrice(distance) +
             "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.";
         } else {
           document.getElementById("scenario-message").innerText =
-            "Dati live temporaneamente non disponibili. Riprova tra poco.";
+            "Dati live temporaneamente non disponibili. Controlla /api/scenario oppure la chiave Twelve Data.";
+          console.error("Errore caricamento scenario:", error);
         }
       }
     }
