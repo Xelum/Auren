@@ -14,6 +14,7 @@
       --gold-light: #FFD978;
       --danger: #E66B6B;
       --green: #79D98B;
+      --blue: #78B7FF;
       --border-gold: rgba(198, 168, 90, 0.42);
       --border-gold-soft: rgba(198, 168, 90, 0.28);
     }
@@ -71,13 +72,8 @@
       overflow: hidden;
     }
 
-    .gold-rain {
-      z-index: -3;
-    }
-
-    .meteor-rain {
-      z-index: -2;
-    }
+    .gold-rain { z-index: -3; }
+    .meteor-rain { z-index: -2; }
 
     .gold-streak {
       position: absolute;
@@ -90,23 +86,10 @@
     }
 
     @keyframes fall {
-      0% {
-        transform: translateY(-220px) translateX(0) rotate(10deg);
-        opacity: 0;
-      }
-
-      10% {
-        opacity: 0.65;
-      }
-
-      85% {
-        opacity: 0.35;
-      }
-
-      100% {
-        transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(-220px) translateX(0) rotate(10deg); opacity: 0; }
+      10% { opacity: 0.65; }
+      85% { opacity: 0.35; }
+      100% { transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg); opacity: 0; }
     }
 
     .meteor {
@@ -137,23 +120,10 @@
     }
 
     @keyframes meteorFall {
-      0% {
-        transform: translateY(-80px) translateX(0) scale(0.6);
-        opacity: 0;
-      }
-
-      12% {
-        opacity: 0.75;
-      }
-
-      80% {
-        opacity: 0.45;
-      }
-
-      100% {
-        transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1);
-        opacity: 0;
-      }
+      0% { transform: translateY(-80px) translateX(0) scale(0.6); opacity: 0; }
+      12% { opacity: 0.75; }
+      80% { opacity: 0.45; }
+      100% { transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1); opacity: 0; }
     }
 
     .cursor-glow {
@@ -184,15 +154,8 @@
     }
 
     @keyframes trailFade {
-      from {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.75;
-      }
-
-      to {
-        transform: translate(-50%, -50%) scale(1.9);
-        opacity: 0;
-      }
+      from { transform: translate(-50%, -50%) scale(1); opacity: 0.75; }
+      to { transform: translate(-50%, -50%) scale(1.9); opacity: 0; }
     }
 
     header {
@@ -234,9 +197,7 @@
       transition: all 0.3s ease;
     }
 
-    .brand:hover .logo-img-big {
-      transform: scale(1.04);
-    }
+    .brand:hover .logo-img-big { transform: scale(1.04); }
 
     .nav-links {
       display: flex;
@@ -246,9 +207,7 @@
       font-size: 14px;
     }
 
-    .nav-links a:hover {
-      color: var(--gold-light);
-    }
+    .nav-links a:hover { color: var(--gold-light); }
 
     .btn {
       display: inline-flex;
@@ -312,15 +271,8 @@
     }
 
     @keyframes pulse {
-      0%, 100% {
-        opacity: 0.45;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.35);
-      }
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.35); }
     }
 
     h1 {
@@ -389,10 +341,7 @@
       margin-bottom: 22px;
     }
 
-    .window-dots {
-      display: flex;
-      gap: 7px;
-    }
+    .window-dots { display: flex; gap: 7px; }
 
     .window-dots span {
       width: 9px;
@@ -466,9 +415,7 @@
       overflow: hidden;
     }
 
-    .chart-board {
-      padding: 28px;
-    }
+    .chart-board { padding: 28px; }
 
     .chart-top {
       display: flex;
@@ -493,7 +440,8 @@
 
     .chart-pill,
     .market-pill,
-    .timer-pill {
+    .timer-pill,
+    .action-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -507,9 +455,7 @@
       white-space: nowrap;
     }
 
-    .market-pill-live {
-      gap: 9px;
-    }
+    .market-pill-live { gap: 9px; }
 
     .live-dot {
       width: 8px;
@@ -538,9 +484,7 @@
       pointer-events: auto;
     }
 
-    #cosa-legge {
-      padding-top: 34px;
-    }
+    #cosa-legge { padding-top: 34px; }
 
     .section-heading {
       text-align: center;
@@ -612,13 +556,9 @@
       font-size: 15px;
     }
 
-    .scenario-section {
-      padding-top: 46px;
-    }
+    .scenario-section { padding-top: 46px; }
 
-    .scenario-board {
-      padding: 30px;
-    }
+    .scenario-board { padding: 30px; }
 
     .scenario-board-top {
       display: grid;
@@ -641,7 +581,7 @@
     }
 
     .scenario-status {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
       padding: 18px 20px;
       border-radius: 22px;
       border: 1px solid var(--border-gold-soft);
@@ -676,6 +616,55 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .decision-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .decision-box {
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .decision-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .decision-value {
+      color: var(--soft-white);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .decision-value.gold { color: var(--gold-light); }
+    .decision-value.green { color: var(--green); }
+    .decision-value.red { color: var(--danger); }
+    .decision-value.blue { color: var(--blue); }
+
+    .reliability-bar {
+      width: 100%;
+      height: 9px;
+      margin-top: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .reliability-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transition: width 0.4s ease;
+    }
+
     .history-action-wrap {
       margin: -6px 0 22px;
       display: flex;
@@ -690,9 +679,7 @@
       background: rgba(0,0,0,0.22);
     }
 
-    .history-btn:hover {
-      background: rgba(198,168,90,0.14);
-    }
+    .history-btn:hover { background: rgba(198,168,90,0.14); }
 
     .bias-board {
       display: grid;
@@ -740,6 +727,21 @@
       font-weight: 650;
     }
 
+    .plain-signal.wait {
+      background: rgba(120,183,255,0.08);
+      border-color: rgba(120,183,255,0.22);
+    }
+
+    .plain-signal.buy {
+      background: rgba(121,217,139,0.08);
+      border-color: rgba(121,217,139,0.22);
+    }
+
+    .plain-signal.sell {
+      background: rgba(230,107,107,0.08);
+      border-color: rgba(230,107,107,0.22);
+    }
+
     .technical-title {
       color: var(--gold-light);
       font-size: 14px;
@@ -760,6 +762,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
       color: var(--muted);
       font-size: 14px;
+      white-space: pre-line;
     }
 
     .quality-row:last-child {
@@ -770,6 +773,7 @@
     .quality-row strong {
       color: var(--soft-white);
       text-align: right;
+      white-space: pre-line;
     }
 
     .info {
@@ -812,8 +816,36 @@
       font-weight: 500;
     }
 
-    .info:hover .tooltip {
-      opacity: 1;
+    .info:hover .tooltip { opacity: 1; }
+
+    .quality-bars {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .quality-bar-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 44px;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .mini-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(198,168,90,0.7), var(--gold-light));
+      border-radius: 999px;
+      transition: width 0.4s ease;
     }
 
     .scenario-grid {
@@ -861,9 +893,7 @@
       display: block;
     }
 
-    .premium-content {
-      max-width: 820px;
-    }
+    .premium-content { max-width: 820px; }
 
     .premium h2 {
       font-size: clamp(32px, 4vw, 52px);
@@ -921,26 +951,12 @@
 
     @media (max-width: 900px) {
       .cursor-glow,
-      .mouse-trail {
-        display: none;
-      }
+      .mouse-trail { display: none; }
 
-      .nav {
-        min-height: 72px;
-      }
-
-      .logo-img-big {
-        height: 54px;
-        max-width: 170px;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .brand {
-        min-width: auto;
-      }
+      .nav { min-height: 72px; }
+      .logo-img-big { height: 54px; max-width: 170px; }
+      .nav-links { display: none; }
+      .brand { min-width: auto; }
 
       .hero {
         grid-template-columns: 1fr;
@@ -958,17 +974,14 @@
       .features,
       .scenario-grid,
       .scenario-board-top,
-      .bias-board {
+      .bias-board,
+      .decision-strip {
         grid-template-columns: 1fr;
       }
 
-      .chart-top {
-        flex-direction: column;
-      }
+      .chart-top { flex-direction: column; }
 
-      .advanced-chart-wrap {
-        height: 460px;
-      }
+      .advanced-chart-wrap { height: 460px; }
 
       .advanced-chart-wrap .tradingview-widget-container,
       .advanced-chart-wrap .tradingview-widget-container__widget {
@@ -976,28 +989,15 @@
       }
 
       .market-pill,
-      .chart-pill {
-        justify-self: start;
-      }
+      .chart-pill { justify-self: start; }
 
-      section {
-        padding: 42px 24px;
-      }
-
-      #cosa-legge {
-        padding-top: 24px;
-      }
-
-      .premium {
-        padding: 34px;
-      }
+      section { padding: 42px 24px; }
+      #cosa-legge { padding-top: 24px; }
+      .premium { padding: 34px; }
     }
 
     @media (max-width: 520px) {
-      .logo-img-big {
-        height: 50px;
-        max-width: 150px;
-      }
+      .logo-img-big { height: 50px; max-width: 150px; }
 
       .nav {
         min-height: 70px;
@@ -1010,9 +1010,7 @@
         font-size: 13px;
       }
 
-      h1 {
-        font-size: 46px;
-      }
+      h1 { font-size: 46px; }
 
       .hero {
         padding: 104px 20px 26px;
@@ -1020,27 +1018,17 @@
       }
 
       .hero-actions .btn,
-      .waitlist-form .btn {
-        width: 100%;
-      }
+      .waitlist-form .btn { width: 100%; }
 
-      .waitlist-form {
-        flex-direction: column;
-      }
+      .waitlist-form { flex-direction: column; }
 
       .scenario-board,
       .premium,
-      .chart-board {
-        padding: 24px;
-      }
+      .chart-board { padding: 24px; }
 
-      .premium h2 {
-        font-size: 34px;
-      }
+      .premium h2 { font-size: 34px; }
 
-      .advanced-chart-wrap {
-        height: 390px;
-      }
+      .advanced-chart-wrap { height: 390px; }
 
       .advanced-chart-wrap .tradingview-widget-container,
       .advanced-chart-wrap .tradingview-widget-container__widget {
@@ -1052,6 +1040,10 @@
         right: -20px;
         transform: none;
         width: 210px;
+      }
+
+      .quality-bar-row {
+        grid-template-columns: 92px 1fr 38px;
       }
     }
   </style>
@@ -1086,15 +1078,15 @@
       <div>
         <div class="eyebrow">
           <span class="pulse"></span>
-          Lettura semplice del mercato XAU/USD
+          Lettura operativa semplice del mercato XAU/USD
         </div>
 
         <h1><span class="gold-text">XAU</span>, spiegato in modo semplice.</h1>
 
         <p>
-          Auren trasforma i dati dell'oro in una lettura semplice: ti aiuta a capire
-          se il mercato sta salendo, scendendo o attraversando una fase laterale,
-          mostrando le zone chiave da osservare.
+          Auren trasforma i dati dell'oro in una lettura semplice: direzione, qualita del segnale,
+          regime di mercato e indicazione operativa. Non sempre bisogna comprare o vendere:
+          quando il mercato e' sporco, Auren ti dice di attendere.
         </p>
 
         <div class="hero-actions">
@@ -1194,26 +1186,23 @@
           <div class="icon">01</div>
           <h3>Direzione</h3>
           <p>
-            Ti dice subito se il mercato sta salendo, scendendo
-            o non ha ancora una direzione chiara.
+            Ti dice se il mercato sta salendo, scendendo o se non ha ancora una direzione chiara.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">02</div>
-          <h3>Zone importanti</h3>
+          <h3>Operabilita</h3>
           <p>
-            Evidenzia i livelli dove il prezzo puo fermarsi,
-            rimbalzare o cambiare direzione.
+            Non basta avere una direzione. Auren valuta anche se il segnale e' realmente utilizzabile o se e' meglio attendere.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">03</div>
-          <h3>Scenario chiaro</h3>
+          <h3>Qualita segnale</h3>
           <p>
-            In pochi secondi capisci cosa sta facendo il mercato
-            e quale e' lo scenario piu probabile.
+            Legge trend, volatilita, struttura, momentum, rischio e pulizia del mercato per evitare segnali deboli.
           </p>
         </div>
       </div>
@@ -1225,7 +1214,7 @@
           <div>
             <h2>Scenario attuale sull'oro.</h2>
             <p>
-              Una lettura semplice per capire cosa sta facendo XAU/USD.
+              Una lettura semplice per capire cosa sta facendo XAU/USD e se il segnale e' operativo oppure no.
             </p>
           </div>
 
@@ -1248,13 +1237,38 @@
           </div>
         </div>
 
+        <div class="decision-strip">
+          <div class="decision-box">
+            <div class="decision-label">Azione</div>
+            <div class="decision-value gold" id="action-value">WAIT</div>
+          </div>
+
+          <div class="decision-box">
+            <div class="decision-label">Operabilita</div>
+            <div class="decision-value" id="tradable-value">In attesa</div>
+          </div>
+
+          <div class="decision-box">
+            <div class="decision-label">Regime mercato</div>
+            <div class="decision-value blue" id="regime-value">--</div>
+          </div>
+
+          <div class="decision-box">
+            <div class="decision-label">Affidabilita</div>
+            <div class="decision-value gold" id="reliability-value">--%</div>
+            <div class="reliability-bar">
+              <div class="reliability-fill" id="reliability-fill"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="history-action-wrap">
           <a href="/storico.html" class="btn history-btn">Visualizza storico scenari</a>
         </div>
 
         <div class="bias-board">
           <div class="bias-card">
-            
+            <div class="bias-label">Lettura sintetica</div>
             <div class="bias-value" id="bias-value">--</div>
             <div class="bias-description" id="bias-description">
               In attesa dei dati live.
@@ -1313,6 +1327,56 @@
                   </span>
                 </span>
                 <strong id="atr-value">--</strong>
+              </div>
+
+              <div class="quality-row">
+                <span>
+                  Motivo operativo
+                  <span class="info">i
+                    <span class="tooltip">
+                      Se Auren dice di attendere, qui trovi il motivo principale del blocco operativo.
+                    </span>
+                  </span>
+                </span>
+                <strong id="trade-reason">--</strong>
+              </div>
+            </div>
+
+            <div class="quality-bars">
+              <div class="quality-bar-row">
+                <span>Trend</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-trend"></div></div>
+                <strong id="val-trend">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Volatilita</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-volatility"></div></div>
+                <strong id="val-volatility">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Struttura</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-structure"></div></div>
+                <strong id="val-structure">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Momentum</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-momentum"></div></div>
+                <strong id="val-momentum">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Rischio</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-riskReward"></div></div>
+                <strong id="val-riskReward">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Pulizia</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-cleanliness"></div></div>
+                <strong id="val-cleanliness">--</strong>
               </div>
             </div>
           </div>
@@ -1379,7 +1443,7 @@
           <h2>Costruito per una lettura piu semplice dell'oro.</h2>
           <p>
             La versione Premium includera analisi piu frequenti, avvisi live, spiegazioni piu dettagliate,
-            dashboard del rischio e briefing personalizzati.
+            dashboard del rischio, storico delle previsioni e statistiche di affidabilita reali.
           </p>
 
           <form class="waitlist-form" id="waitlistForm">
@@ -1493,18 +1557,26 @@
       });
     }
 
+    function formatPercent(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) {
+        return "--%";
+      }
+
+      return Math.round(Number(value)) + "%";
+    }
+
     function formatDistance(price, level) {
-  if (!price || !level) return "--";
+      if (!price || !level) return "--";
 
-  const distance = Math.abs(price - level);
-  const percentage = distance / price * 100;
+      const distance = Math.abs(price - level);
+      const percentage = distance / price * 100;
 
-  return (
-    "Livello: " + formatPrice(level) +
-    "\nDistanza: " + formatPrice(distance) +
-    " punti (" + percentage.toFixed(2) + "%)"
-  );
-}
+      return (
+        "Livello: " + formatPrice(level) +
+        "\nDistanza: " + formatPrice(distance) +
+        " punti (" + percentage.toFixed(2) + "%)"
+      );
+    }
 
     function cleanLabel(label) {
       if (!label) return "";
@@ -1528,31 +1600,44 @@
     }
 
     function cleanValue(value) {
-      if (!value) return "";
+      if (value === null || value === undefined) return "";
 
       return String(value)
         .replace("sopra ", "prezzo sopra ")
         .replace("sotto ", "prezzo sotto ")
         .replace("bullish", "in salita")
         .replace("bearish", "in discesa")
-        .replace("neutral", "laterale");
+        .replace("neutral", "laterale")
+        .replace("trend", "trend")
+        .replace("choppy", "sporco/laterale")
+        .replace("conflict", "in conflitto")
+        .replace("low_volatility", "bassa volatilita")
+        .replace("compression", "compressione")
+        .replace("impulse", "impulso")
+        .replace("balanced", "bilanciato");
     }
 
     function getSignalQuality(data) {
+      if (data.signalQuality && typeof data.signalQuality.overall === "number") {
+        return data.signalQuality.overall + "/100";
+      }
+
       if (data.confidence) return data.confidence;
 
       const score = Math.abs(Number(data.score || 0));
 
-      if (score >= 8) return "Alta";
+      if (score >= 9) return "Molto Alta";
+      if (score >= 7) return "Alta";
       if (score >= 4.5) return "Media";
-      if (score >= 2.5) return "Debole";
+      if (score >= 2.8) return "Debole";
 
       return "Bassa";
     }
 
-    function getSimpleTitle(title, type) {
+    function getSimpleTitle(title, type, action) {
       const t = title || "";
 
+      if (action === "wait" && t.includes("Nessun ingresso")) return "Meglio attendere";
       if (t.includes("Pressione ribassista")) return "Mercato in discesa";
       if (t.includes("Pressione rialzista")) return "Mercato in salita";
       if (t.includes("Mercato laterale")) return "Mercato laterale";
@@ -1584,13 +1669,34 @@
         .replaceAll("scenario rialzista", "scenario di salita")
         .replaceAll("struttura", "direzione recente")
         .replaceAll("momentum", "forza del movimento")
-        .replaceAll("range operativo", "area di prezzo");
+        .replaceAll("range operativo", "area di prezzo")
+        .replaceAll("Regime di mercato", "Condizione di mercato");
+    }
+
+    function translateAction(action) {
+      if (action === "buy") return "BUY";
+      if (action === "sell") return "SELL";
+      return "WAIT";
+    }
+
+    function translateRegime(regime) {
+      return cleanValue(regime || "--");
     }
 
     function buildPlainSignal(data) {
-      const type = data.scenario.type;
+      const scenario = data.scenario || {};
+      const type = scenario.type;
+      const action = data.action || scenario.action || "wait";
       const support = formatPrice(data.support);
       const resistance = formatPrice(data.resistance);
+      const reason = data.tradability && data.tradability.reasons && data.tradability.reasons.length
+        ? data.tradability.reasons[0]
+        : "Segnale non sufficientemente pulito";
+
+      if (action === "wait") {
+        return "Auren suggerisce di attendere. Il mercato non offre una condizione abbastanza pulita: " +
+          reason + ". Le zone principali da osservare sono " + support + " e " + resistance + ".";
+      }
 
       if (type === "bearish") {
         return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
@@ -1609,8 +1715,18 @@
     }
 
     function buildLiveMessage(data) {
-      const currentType = data.scenario.type;
+      const scenario = data.scenario || {};
+      const currentType = scenario.type || "neutral";
+      const action = data.action || scenario.action || "wait";
       const previousType = localStorage.getItem("auren_previous_type");
+      const previousAction = localStorage.getItem("auren_previous_action");
+
+      if (action === "wait") {
+        if (previousAction && previousAction !== "wait") {
+          return "Aggiornamento M30: Auren blocca il segnale operativo e suggerisce attesa.";
+        }
+        return "Analisi M30 aggiornata: nessun ingresso consigliato, meglio attendere conferma.";
+      }
 
       if (!previousType) {
         if (currentType === "bearish") return "Analisi M30 aggiornata: pressione in discesa sui prossimi 30 minuti.";
@@ -1635,48 +1751,117 @@
       return "Lo scenario M30 si aggiorna con una nuova lettura rispetto alla precedente analisi.";
     }
 
+    function renderDecisionStrip(data) {
+      const action = data.action || (data.scenario && data.scenario.action) || "wait";
+      const tradable = Boolean(data.tradable);
+      const regime = data.marketRegime || "--";
+      const reliability = typeof data.reliability === "number"
+        ? data.reliability
+        : data.signalQuality && typeof data.signalQuality.overall === "number"
+          ? data.signalQuality.overall
+          : 0;
+
+      const actionEl = document.getElementById("action-value");
+      const tradableEl = document.getElementById("tradable-value");
+      const regimeEl = document.getElementById("regime-value");
+      const reliabilityEl = document.getElementById("reliability-value");
+      const reliabilityFill = document.getElementById("reliability-fill");
+
+      actionEl.innerText = translateAction(action);
+      actionEl.className = "decision-value gold";
+
+      if (action === "buy") actionEl.className = "decision-value green";
+      if (action === "sell") actionEl.className = "decision-value red";
+      if (action === "wait") actionEl.className = "decision-value gold";
+
+      tradableEl.innerText = tradable ? "Operativo" : "Attendere";
+      tradableEl.className = tradable ? "decision-value green" : "decision-value gold";
+
+      regimeEl.innerText = translateRegime(regime);
+      reliabilityEl.innerText = formatPercent(reliability);
+      reliabilityFill.style.width = Math.max(0, Math.min(100, reliability)) + "%";
+    }
+
+    function setMiniBar(key, value) {
+      const fill = document.getElementById("bar-" + key);
+      const label = document.getElementById("val-" + key);
+
+      if (!fill || !label) return;
+
+      const safeValue = Math.max(0, Math.min(100, Number(value || 0)));
+      fill.style.width = safeValue + "%";
+      label.innerText = Math.round(safeValue);
+    }
+
+    function renderQualityBars(signalQuality) {
+      const q = signalQuality || {};
+
+      setMiniBar("trend", q.trendAlignment);
+      setMiniBar("volatility", q.volatility);
+      setMiniBar("structure", q.structure);
+      setMiniBar("momentum", q.momentum);
+      setMiniBar("riskReward", q.riskReward);
+      setMiniBar("cleanliness", q.cleanliness);
+    }
+
     function renderBias(data) {
-      const scenario = data.scenario;
+      const scenario = data.scenario || {};
       const price = Number(data.price);
       const support = Number(data.support);
       const resistance = Number(data.resistance);
+      const action = data.action || scenario.action || "wait";
 
       let biasText = "Mercato laterale";
       let description = "Nei prossimi 30 minuti il mercato non mostra ancora una direzione abbastanza chiara. Meglio osservare le zone principali prima di trarre conclusioni.";
 
-      if (scenario.type === "bullish") {
+      if (action === "wait") {
+        biasText = "Meglio attendere";
+        description = "Auren non rileva una condizione operativa sufficientemente pulita. La scelta piu prudente e' aspettare una conferma sulle zone principali.";
+      } else if (scenario.type === "bullish") {
         biasText = "Mercato in salita";
         description = "Nei prossimi 30 minuti l'oro mostra piu forza verso l'alto. La lettura resta positiva finche' il prezzo mantiene la zona di rimbalzo indicata.";
-      }
-
-      if (scenario.type === "bearish") {
+      } else if (scenario.type === "bearish") {
         biasText = "Mercato in discesa";
         description = "Nei prossimi 30 minuti l'oro mostra piu debolezza. La lettura resta negativa finche' il prezzo non recupera la zona di blocco indicata.";
       }
 
+      const plainSignal = document.getElementById("plain-signal");
+
       document.getElementById("bias-value").innerText = biasText;
       document.getElementById("bias-description").innerText = description;
-      document.getElementById("plain-signal").innerText = buildPlainSignal(data);
+      plainSignal.innerText = buildPlainSignal(data);
+      plainSignal.className = "plain-signal " + action;
 
       document.getElementById("signal-quality").innerText = getSignalQuality(data);
       document.getElementById("support-distance").innerText = formatDistance(price, support);
       document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
       document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
+
+      const reason = data.tradability && data.tradability.reasons && data.tradability.reasons.length
+        ? data.tradability.reasons.join("\n")
+        : data.tradable
+          ? "Segnale operativo confermato"
+          : "Nessun blocco specifico";
+
+      document.getElementById("trade-reason").innerText = reason;
+      renderQualityBars(data.signalQuality);
     }
 
     function renderScenarioFromApi(data) {
       const scenario = data.scenario;
       const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
       const message = buildLiveMessage(data);
+      const action = data.action || scenario.action || "wait";
 
       document.getElementById("scenario-message").innerText = message;
       document.getElementById("last-update").innerText = formatTime(updateDate);
       document.getElementById("current-price").innerText = formatPrice(data.price);
 
+      renderDecisionStrip(data);
       renderBias(data);
 
       document.getElementById("main-prob").innerText = scenario.main.probability + "%";
-      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type);
+      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action);
       document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
       document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
       document.getElementById("main-value-1").innerText = cleanValue(scenario.main.value1);
@@ -1684,7 +1869,7 @@
       document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
 
       document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
-      document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type);
+      document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type, action);
       document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
       document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
       document.getElementById("sec-value-1").innerText = cleanValue(scenario.secondary.value1);
@@ -1692,7 +1877,7 @@
       document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
 
       document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
-      document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type);
+      document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type, action);
       document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
       document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
       document.getElementById("alt-value-1").innerText = cleanValue(scenario.alternative.value1);
@@ -1700,6 +1885,7 @@
       document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
 
       localStorage.setItem("auren_previous_type", scenario.type);
+      localStorage.setItem("auren_previous_action", action);
       localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
     }
 
@@ -1785,4 +1971,3 @@
   </script>
 </body>
 </html>
-
