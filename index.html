@@ -1656,6 +1656,7 @@
     document.addEventListener("mousemove", (event) => {
       mouseX = event.clientX;
       mouseY = event.clientY;
+
       const now = Date.now();
 
       if (now - lastTrail > 42) {
@@ -1678,6 +1679,16 @@
     }
 
     animateGlow();
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = value;
+    }
+
+    function setClass(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.className = value;
+    }
 
     function formatTime(date) {
       return String(date.getHours()).padStart(2, "0") + ":" +
@@ -1708,14 +1719,6 @@
       });
     }
 
-    function formatPercent(value) {
-      if (value === null || value === undefined || Number.isNaN(Number(value))) {
-        return "--%";
-      }
-
-      return Math.round(Number(value)) + "%";
-    }
-
     function formatDistance(price, level) {
       if (!price || !level) return "--";
 
@@ -1733,7 +1736,7 @@ Distanza: " + formatPrice(distance) +
     function cleanLabel(label) {
       if (!label) return "";
 
-      return label
+      return String(label)
         .replace("Target / supporto utile", "Prima zona da osservare")
         .replace("Target / resistenza utile", "Prima zona da osservare")
         .replace("Invalidazione", "Scenario cambia se")
@@ -1760,12 +1763,13 @@ Distanza: " + formatPrice(distance) +
         .replace("bullish", "in salita")
         .replace("bearish", "in discesa")
         .replace("neutral", "laterale")
+        .replace("balanced", "bilanciato")
         .replace("choppy", "sporco/laterale")
         .replace("conflict", "in conflitto")
         .replace("low_volatility", "bassa volatilità")
         .replace("compression", "compressione")
         .replace("impulse", "impulso")
-        .replace("balanced", "bilanciato");
+        .replace("trend", "trend");
     }
 
     function getSignalQuality(data) {
@@ -1786,7 +1790,7 @@ Distanza: " + formatPrice(distance) +
     }
 
     function getSimpleTitle(title, type, action) {
-      const t = title || "";
+      const t = String(title || "");
 
       if (action === "wait" && t.includes("Nessun ingresso")) return "Attendere conferma";
       if (t.includes("Pressione ribassista")) return "Possibile discesa";
@@ -1802,13 +1806,13 @@ Distanza: " + formatPrice(distance) +
       if (type === "bearish") return "Possibile discesa";
       if (type === "bullish") return "Possibile salita";
 
-      return t;
+      return t || "Scenario in lettura";
     }
 
     function getSimpleDescription(description) {
       if (!description) return "";
 
-      return description
+      return String(description)
         .replaceAll("pressione principale", "direzione principale")
         .replaceAll("orientata al ribasso", "rivolta verso il basso")
         .replaceAll("orientata al rialzo", "rivolta verso l'alto")
@@ -1830,12 +1834,8 @@ Distanza: " + formatPrice(distance) +
       return "Attendere";
     }
 
-    function translateRegime(regime) {
-      return cleanValue(regime || "--");
-    }
-
     function getMainReason(data) {
-      if (data.tradability && data.tradability.reasons && data.tradability.reasons.length) {
+      if (data.tradability && Array.isArray(data.tradability.reasons) && data.tradability.reasons.length) {
         return data.tradability.reasons[0];
       }
 
@@ -1843,10 +1843,87 @@ Distanza: " + formatPrice(distance) +
       return "Segnale non abbastanza pulito";
     }
 
-    function buildPlainSignal(data) {
-      const scenario = data.scenario || {};
-      const type = scenario.type;
-      const action = data.action || scenario.action || "wait";
+    function normalizeScenario(rawData) {
+      const data = rawData || {};
+      const s = data.scenario || {};
+      const type = s.type || data.direction || "neutral";
+      const action = data.action || s.action || "wait";
+      const support = data.support || "--";
+      const resistance = data.resistance || "--";
+
+      return {
+        type,
+        action,
+        main: s.main || {
+          probability: data.reliability || 0,
+          title: action === "wait" ? "Attendere conferma" : type === "bullish" ? "Possibile salita" : type === "bearish" ? "Possibile discesa" : "Fase laterale",
+          description: "Auren sta leggendo i dati disponibili dal mercato.",
+          label1: "Zona importante",
+          value1: type === "bearish" ? support : resistance,
+          label2: "Scenario cambia se",
+          value2: type === "bearish" ? "prezzo sopra " + resistance : type === "bullish" ? "prezzo sotto " + support : support + " - " + resistance
+        },
+        secondary: s.secondary || {
+          probability: 0,
+          title: "Attendere conferma",
+          description: "Servono più dati per costruire lo scenario secondario.",
+          label1: "Zona da osservare",
+          value1: support,
+          label2: "Chiarezza",
+          value2: data.confidence || "--"
+        },
+        alternative: s.alternative || {
+          probability: 0,
+          title: "Scenario alternativo",
+          description: "Scenario alternativo non disponibile al momento.",
+          label1: "Area complessiva",
+          value1: support + " - " + resistance,
+          label2: "Dato utile",
+          value2: data.rsi30m || data.rsi || "--"
+        }
+      };
+    }
+
+    function normalizeApiData(rawData) {
+      const data = rawData || {};
+      const scenario = normalizeScenario(data);
+
+      return {
+        ...data,
+        scenario,
+        action: data.action || scenario.action || "wait",
+        direction: data.direction || scenario.type || "neutral",
+        tradable: Boolean(data.tradable),
+        marketRegime: data.marketRegime || "--",
+        reliability: typeof data.reliability === "number"
+          ? data.reliability
+          : data.signalQuality && typeof data.signalQuality.overall === "number"
+            ? data.signalQuality.overall
+            : typeof data.score === "number"
+              ? Math.min(100, Math.round(Math.abs(data.score) * 10))
+              : 0,
+        signalQuality: data.signalQuality || {
+          overall: 0,
+          trendAlignment: 0,
+          volatility: 0,
+          structure: 0,
+          momentum: 0,
+          riskReward: 0,
+          cleanliness: 0
+        },
+        tradability: data.tradability || {
+          tradable: Boolean(data.tradable),
+          action: data.action || scenario.action || "wait",
+          direction: data.direction || scenario.type || "neutral",
+          reasons: data.tradable ? ["Segnale utilizzabile secondo i parametri attuali"] : ["Segnale non abbastanza pulito"]
+        }
+      };
+    }
+
+    function buildPlainSignal(rawData) {
+      const data = normalizeApiData(rawData);
+      const type = data.scenario.type;
+      const action = data.action || "wait";
       const support = formatPrice(data.support);
       const resistance = formatPrice(data.resistance);
       const reason = getMainReason(data);
@@ -1872,17 +1949,15 @@ Distanza: " + formatPrice(distance) +
         " e " + resistance + ". In questa fase è meglio attendere una conferma prima di dare peso alla direzione.";
     }
 
-    function buildLiveMessage(data) {
-      const scenario = data.scenario || {};
-      const currentType = scenario.type || "neutral";
-      const action = data.action || scenario.action || "wait";
+    function buildLiveMessage(rawData) {
+      const data = normalizeApiData(rawData);
+      const currentType = data.scenario.type;
+      const action = data.action || "wait";
       const previousType = localStorage.getItem("auren_previous_type");
       const previousAction = localStorage.getItem("auren_previous_action");
 
       if (action === "wait") {
-        if (previousAction && previousAction !== "wait") {
-          return "Aggiornamento M30: Auren non conferma una direzione abbastanza pulita e suggerisce attesa.";
-        }
+        if (previousAction && previousAction !== "wait") return "Aggiornamento M30: Auren non conferma una direzione abbastanza pulita e suggerisce attesa.";
         return "Analisi M30 aggiornata: segnale non abbastanza pulito, meglio attendere conferma.";
       }
 
@@ -1898,62 +1973,44 @@ Distanza: " + formatPrice(distance) +
         return "La fase resta laterale: servono conferme sulle zone principali.";
       }
 
-      if (previousType === "bearish" && currentType === "bullish") {
-        return "Cambio scenario M30: il mercato passa da debole a più costruttivo.";
-      }
-
-      if (previousType === "bullish" && currentType === "bearish") {
-        return "Cambio scenario M30: il mercato passa da positivo a più debole.";
-      }
+      if (previousType === "bearish" && currentType === "bullish") return "Cambio scenario M30: il mercato passa da debole a più costruttivo.";
+      if (previousType === "bullish" && currentType === "bearish") return "Cambio scenario M30: il mercato passa da positivo a più debole.";
 
       return "Lo scenario M30 si aggiorna con una nuova lettura rispetto alla precedente analisi.";
     }
 
-    function renderDecisionStrip(data) {
-      const action = data.action || (data.scenario && data.scenario.action) || "wait";
+    function renderDecisionStrip(rawData) {
+      const data = normalizeApiData(rawData);
+      const action = data.action;
       const tradable = Boolean(data.tradable);
-      const regime = data.marketRegime || "--";
-      const reliability = typeof data.reliability === "number"
-        ? data.reliability
-        : data.signalQuality && typeof data.signalQuality.overall === "number"
-          ? data.signalQuality.overall
-          : 0;
+      const reliability = data.reliability || 0;
 
-      const actionEl = document.getElementById("action-value");
-      const tradableEl = document.getElementById("tradable-value");
-      const regimeEl = document.getElementById("regime-value");
-      const reliabilityEl = document.getElementById("reliability-value");
-      const reliabilityFill = document.getElementById("reliability-fill");
+      setText("action-value", translateAction(action));
+      setText("tradable-value", tradable ? "Utilizzabile" : "Non pulito");
+      setText("regime-value", cleanValue(data.marketRegime));
+      setText("reliability-value", Math.round(reliability) + "%");
 
-      actionEl.innerText = translateAction(action);
-      actionEl.className = "decision-value gold";
+      setClass("action-value", "decision-value gold");
+      if (action === "buy") setClass("action-value", "decision-value green");
+      if (action === "sell") setClass("action-value", "decision-value red");
 
-      if (action === "buy") actionEl.className = "decision-value green";
-      if (action === "sell") actionEl.className = "decision-value red";
-      if (action === "wait") actionEl.className = "decision-value gold";
+      setClass("tradable-value", tradable ? "decision-value green" : "decision-value gold");
 
-      tradableEl.innerText = tradable ? "Utilizzabile" : "Non pulito";
-      tradableEl.className = tradable ? "decision-value green" : "decision-value gold";
-
-      regimeEl.innerText = translateRegime(regime);
-      reliabilityEl.innerText = formatPercent(reliability);
-      reliabilityFill.style.width = Math.max(0, Math.min(100, reliability)) + "%";
+      const fill = document.getElementById("reliability-fill");
+      if (fill) fill.style.width = Math.max(0, Math.min(100, reliability)) + "%";
     }
 
     function setMiniBar(key, value) {
       const fill = document.getElementById("bar-" + key);
       const label = document.getElementById("val-" + key);
-
       if (!fill || !label) return;
-
       const safeValue = Math.max(0, Math.min(100, Number(value || 0)));
       fill.style.width = safeValue + "%";
-      label.innerText = Math.round(safeValue);
+      label.innerText = safeValue > 0 ? Math.round(safeValue) : "--";
     }
 
     function renderQualityBars(signalQuality) {
       const q = signalQuality || {};
-
       setMiniBar("trend", q.trendAlignment);
       setMiniBar("volatility", q.volatility);
       setMiniBar("structure", q.structure);
@@ -1962,12 +2019,13 @@ Distanza: " + formatPrice(distance) +
       setMiniBar("cleanliness", q.cleanliness);
     }
 
-    function renderBias(data) {
-      const scenario = data.scenario || {};
+    function renderBias(rawData) {
+      const data = normalizeApiData(rawData);
+      const scenario = data.scenario;
       const price = Number(data.price);
       const support = Number(data.support);
       const resistance = Number(data.resistance);
-      const action = data.action || scenario.action || "wait";
+      const action = data.action;
 
       let biasText = "Fase laterale";
       let description = "Nei prossimi 30 minuti il mercato non mostra ancora una direzione abbastanza chiara. Meglio osservare le zone principali prima di trarre conclusioni.";
@@ -1983,135 +2041,65 @@ Distanza: " + formatPrice(distance) +
         description = "Nei prossimi 30 minuti l'oro mostra più debolezza. La lettura resta negativa finché il prezzo non recupera la zona di blocco indicata.";
       }
 
+      setText("bias-value", biasText);
+      setText("bias-description", description);
+      setText("plain-signal", buildPlainSignal(data));
+
       const plainSignal = document.getElementById("plain-signal");
+      if (plainSignal) plainSignal.className = "plain-signal " + action;
 
-      document.getElementById("bias-value").innerText = biasText;
-      document.getElementById("bias-description").innerText = description;
-      plainSignal.innerText = buildPlainSignal(data);
-      plainSignal.className = "plain-signal " + action;
+      setText("signal-quality", getSignalQuality(data));
+      setText("support-distance", formatDistance(price, support));
+      setText("resistance-distance", formatDistance(price, resistance));
+      setText("atr-value", data.atr30m ? formatPrice(data.atr30m) + " punti" : data.atr ? formatPrice(data.atr) + " punti" : "--");
 
-      document.getElementById("signal-quality").innerText = getSignalQuality(data);
-      document.getElementById("support-distance").innerText = formatDistance(price, support);
-      document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
-      document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
-
-      const reason = data.tradability && data.tradability.reasons && data.tradability.reasons.length
+      const reason = data.tradability && Array.isArray(data.tradability.reasons) && data.tradability.reasons.length
         ? data.tradability.reasons.join("
 ")
         : data.tradable
           ? "Segnale utilizzabile secondo i parametri attuali"
           : "Segnale non abbastanza pulito";
 
-      document.getElementById("trade-reason").innerText = reason;
+      setText("trade-reason", reason);
       renderQualityBars(data.signalQuality);
-    }
-
-    function safeScenario(data) {
-      const scenario = data && data.scenario ? data.scenario : {};
-
-      return {
-        type: scenario.type || data.direction || "neutral",
-        action: scenario.action || data.action || "wait",
-        main: scenario.main || {
-          probability: data.reliability || 0,
-          title: "Scenario in lettura",
-          description: "Auren sta leggendo i dati disponibili dal mercato.",
-          label1: "Zona di rimbalzo",
-          value1: data.support || "--",
-          label2: "Zona di blocco",
-          value2: data.resistance || "--"
-        },
-        secondary: scenario.secondary || {
-          probability: 0,
-          title: "Attendere conferma",
-          description: "Servono più dati per costruire lo scenario secondario.",
-          label1: "Supporto",
-          value1: data.support || "--",
-          label2: "Resistenza",
-          value2: data.resistance || "--"
-        },
-        alternative: scenario.alternative || {
-          probability: 0,
-          title: "Scenario alternativo",
-          description: "Scenario alternativo non disponibile al momento.",
-          label1: "Area complessiva",
-          value1: (data.support && data.resistance) ? data.support + " - " + data.resistance : "--",
-          label2: "Regime",
-          value2: data.marketRegime || "--"
-        }
-      };
-    }
-
-    function normalizeApiData(rawData) {
-      const data = rawData || {};
-      const scenario = safeScenario(data);
-
-      return {
-        ...data,
-        scenario,
-        action: data.action || scenario.action || "wait",
-        direction: data.direction || scenario.type || "neutral",
-        tradable: Boolean(data.tradable),
-        reliability: typeof data.reliability === "number"
-          ? data.reliability
-          : data.signalQuality && typeof data.signalQuality.overall === "number"
-            ? data.signalQuality.overall
-            : 0,
-        signalQuality: data.signalQuality || {
-          overall: typeof data.reliability === "number" ? data.reliability : 0,
-          trendAlignment: 0,
-          volatility: 0,
-          structure: 0,
-          momentum: 0,
-          riskReward: 0,
-          cleanliness: 0
-        },
-        tradability: data.tradability || {
-          tradable: Boolean(data.tradable),
-          action: data.action || scenario.action || "wait",
-          direction: data.direction || scenario.type || "neutral",
-          reasons: data.tradable ? ["Segnale utilizzabile secondo i parametri attuali"] : ["Segnale non abbastanza pulito"]
-        }
-      };
     }
 
     function renderScenarioFromApi(rawData) {
       const data = normalizeApiData(rawData);
       const scenario = data.scenario;
       const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
-      const message = buildLiveMessage(data);
-      const action = data.action || scenario.action || "wait";
+      const action = data.action;
 
-      document.getElementById("scenario-message").innerText = message;
-      document.getElementById("last-update").innerText = formatTime(updateDate);
-      document.getElementById("current-price").innerText = formatPrice(data.price);
+      setText("scenario-message", buildLiveMessage(data));
+      setText("last-update", formatTime(updateDate));
+      setText("current-price", formatPrice(data.price));
 
       renderDecisionStrip(data);
       renderBias(data);
 
-      document.getElementById("main-prob").innerText = (scenario.main.probability ?? 0) + "%";
-      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action);
-      document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
-      document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
-      document.getElementById("main-value-1").innerText = cleanValue(scenario.main.value1);
-      document.getElementById("main-label-2").innerText = cleanLabel(scenario.main.label2);
-      document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
+      setText("main-prob", (scenario.main.probability ?? 0) + "%");
+      setText("main-title", getSimpleTitle(scenario.main.title, scenario.type, action));
+      setText("main-desc", getSimpleDescription(scenario.main.description));
+      setText("main-label-1", cleanLabel(scenario.main.label1));
+      setText("main-value-1", cleanValue(scenario.main.value1));
+      setText("main-label-2", cleanLabel(scenario.main.label2));
+      setText("main-value-2", cleanValue(scenario.main.value2));
 
-      document.getElementById("sec-prob").innerText = (scenario.secondary.probability ?? 0) + "%";
-      document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type, action);
-      document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
-      document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
-      document.getElementById("sec-value-1").innerText = cleanValue(scenario.secondary.value1);
-      document.getElementById("sec-label-2").innerText = cleanLabel(scenario.secondary.label2);
-      document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
+      setText("sec-prob", (scenario.secondary.probability ?? 0) + "%");
+      setText("sec-title", getSimpleTitle(scenario.secondary.title, scenario.type, action));
+      setText("sec-desc", getSimpleDescription(scenario.secondary.description));
+      setText("sec-label-1", cleanLabel(scenario.secondary.label1));
+      setText("sec-value-1", cleanValue(scenario.secondary.value1));
+      setText("sec-label-2", cleanLabel(scenario.secondary.label2));
+      setText("sec-value-2", cleanValue(scenario.secondary.value2));
 
-      document.getElementById("alt-prob").innerText = (scenario.alternative.probability ?? 0) + "%";
-      document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type, action);
-      document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
-      document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
-      document.getElementById("alt-value-1").innerText = cleanValue(scenario.alternative.value1);
-      document.getElementById("alt-label-2").innerText = cleanLabel(scenario.alternative.label2);
-      document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
+      setText("alt-prob", (scenario.alternative.probability ?? 0) + "%");
+      setText("alt-title", getSimpleTitle(scenario.alternative.title, scenario.type, action));
+      setText("alt-desc", getSimpleDescription(scenario.alternative.description));
+      setText("alt-label-1", cleanLabel(scenario.alternative.label1));
+      setText("alt-value-1", cleanValue(scenario.alternative.value1));
+      setText("alt-label-2", cleanLabel(scenario.alternative.label2));
+      setText("alt-value-2", cleanValue(scenario.alternative.value2));
 
       localStorage.setItem("auren_previous_type", scenario.type);
       localStorage.setItem("auren_previous_action", action);
@@ -2140,16 +2128,14 @@ Distanza: " + formatPrice(distance) +
 
         renderScenarioFromApi(data);
       } catch (error) {
+        console.error("Errore caricamento scenario:", error);
         const saved = localStorage.getItem("auren_last_api_scenario");
 
         if (saved) {
           renderScenarioFromApi(JSON.parse(saved));
-          document.getElementById("scenario-message").innerText =
-            "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.";
+          setText("scenario-message", "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.");
         } else {
-          document.getElementById("scenario-message").innerText =
-            "Dati live temporaneamente non disponibili. Controlla /api/scenario oppure la chiave Twelve Data.";
-          console.error("Errore caricamento scenario:", error);
+          setText("scenario-message", "Dati live temporaneamente non disponibili. Controlla /api/scenario oppure la chiave Twelve Data.");
         }
       }
     }
@@ -2163,10 +2149,11 @@ Distanza: " + formatPrice(distance) +
       const minutes = Math.floor((diff / 1000 / 60) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      document.getElementById("timer").innerText =
+      setText("timer",
         String(hours).padStart(2, "0") + ":" +
         String(minutes).padStart(2, "0") + ":" +
-        String(seconds).padStart(2, "0");
+        String(seconds).padStart(2, "0")
+      );
 
       if (diff <= 1000) {
         setTimeout(loadLiveScenario, 1200);
@@ -2183,25 +2170,28 @@ Distanza: " + formatPrice(distance) +
     const emailInput = document.getElementById("emailInput");
     const formMessage = document.getElementById("formMessage");
 
-    waitlistForm.addEventListener("submit", function(event) {
-      event.preventDefault();
+    if (waitlistForm && emailInput && formMessage) {
+      waitlistForm.addEventListener("submit", function(event) {
+        event.preventDefault();
 
-      const email = emailInput.value.trim();
+        const email = emailInput.value.trim();
 
-      if (!email) {
-        return;
-      }
+        if (!email) {
+          return;
+        }
 
-      const savedEmails = JSON.parse(localStorage.getItem("auren_waitlist") || "[]");
+        const savedEmails = JSON.parse(localStorage.getItem("auren_waitlist") || "[]");
 
-      if (!savedEmails.includes(email)) {
-        savedEmails.push(email);
-        localStorage.setItem("auren_waitlist", JSON.stringify(savedEmails));
-      }
+        if (!savedEmails.includes(email)) {
+          savedEmails.push(email);
+          localStorage.setItem("auren_waitlist", JSON.stringify(savedEmails));
+        }
 
-      emailInput.value = "";
-      formMessage.style.display = "block";
-    });
+        emailInput.value = "";
+        formMessage.style.display = "block";
+      });
+    }
   </script>
 </body>
 </html>
+
