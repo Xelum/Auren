@@ -17,11 +17,17 @@
       --blue: #78B7FF;
       --border-gold: rgba(198, 168, 90, 0.42);
       --border-gold-soft: rgba(198, 168, 90, 0.28);
-      --panel: rgba(0,0,0,0.22);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       min-height: 100vh;
@@ -31,7 +37,10 @@
       overflow-x: hidden;
     }
 
-    a { color: inherit; text-decoration: none; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
     .background {
       position: fixed;
@@ -55,15 +64,21 @@
       mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 92%);
     }
 
-    .gold-rain, .meteor-rain {
+    .gold-rain,
+    .meteor-rain {
       position: fixed;
       inset: 0;
       pointer-events: none;
       overflow: hidden;
     }
 
-    .gold-rain { z-index: -3; }
-    .meteor-rain { z-index: -2; }
+    .gold-rain {
+      z-index: -3;
+    }
+
+    .meteor-rain {
+      z-index: -2;
+    }
 
     .gold-streak {
       position: absolute;
@@ -76,10 +91,23 @@
     }
 
     @keyframes fall {
-      0% { transform: translateY(-220px) translateX(0) rotate(10deg); opacity: 0; }
-      10% { opacity: 0.65; }
-      85% { opacity: 0.35; }
-      100% { transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg); opacity: 0; }
+      0% {
+        transform: translateY(-220px) translateX(0) rotate(10deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.65;
+      }
+
+      85% {
+        opacity: 0.35;
+      }
+
+      100% {
+        transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg);
+        opacity: 0;
+      }
     }
 
     .meteor {
@@ -89,7 +117,10 @@
       height: 5px;
       border-radius: 50%;
       background: var(--gold-light);
-      box-shadow: 0 0 10px rgba(255,217,120,0.9), 0 0 24px rgba(255,217,120,0.55), 0 0 42px rgba(198,168,90,0.28);
+      box-shadow:
+        0 0 10px rgba(255,217,120,0.9),
+        0 0 24px rgba(255,217,120,0.55),
+        0 0 42px rgba(198,168,90,0.28);
       opacity: 0;
       animation: meteorFall linear infinite;
     }
@@ -107,10 +138,23 @@
     }
 
     @keyframes meteorFall {
-      0% { transform: translateY(-80px) translateX(0) scale(0.6); opacity: 0; }
-      12% { opacity: 0.75; }
-      80% { opacity: 0.45; }
-      100% { transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1); opacity: 0; }
+      0% {
+        transform: translateY(-80px) translateX(0) scale(0.6);
+        opacity: 0;
+      }
+
+      12% {
+        opacity: 0.75;
+      }
+
+      80% {
+        opacity: 0.45;
+      }
+
+      100% {
+        transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1);
+        opacity: 0;
+      }
     }
 
     .cursor-glow {
@@ -141,8 +185,15 @@
     }
 
     @keyframes trailFade {
-      from { transform: translate(-50%, -50%) scale(1); opacity: 0.75; }
-      to { transform: translate(-50%, -50%) scale(1.9); opacity: 0; }
+      from {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.75;
+      }
+
+      to {
+        transform: translate(-50%, -50%) scale(1.9);
+        opacity: 0;
+      }
     }
 
     header {
@@ -166,7 +217,11 @@
       justify-content: space-between;
     }
 
-    .brand { display: flex; align-items: center; min-width: 190px; }
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 190px;
+    }
 
     .logo-img-big {
       height: 58px;
@@ -174,14 +229,27 @@
       max-width: 185px;
       object-fit: contain;
       display: block;
-      filter: drop-shadow(0 0 10px rgba(255,217,120,0.75)) drop-shadow(0 0 28px rgba(198,168,90,0.45));
+      filter:
+        drop-shadow(0 0 10px rgba(255,217,120,0.75))
+        drop-shadow(0 0 28px rgba(198,168,90,0.45));
       transition: all 0.3s ease;
     }
 
-    .brand:hover .logo-img-big { transform: scale(1.04); }
+    .brand:hover .logo-img-big {
+      transform: scale(1.04);
+    }
 
-    .nav-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 14px; }
-    .nav-links a:hover { color: var(--gold-light); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
 
     .btn {
       display: inline-flex;
@@ -198,8 +266,18 @@
       cursor: pointer;
     }
 
-    .btn:hover { transform: translateY(-2px); background: rgba(198,168,90,0.15); box-shadow: 0 0 28px rgba(198,168,90,0.24); }
-    .btn-primary { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #111; border: none; box-shadow: 0 0 40px rgba(198,168,90,0.25); }
+    .btn:hover {
+      transform: translateY(-2px);
+      background: rgba(198,168,90,0.15);
+      box-shadow: 0 0 28px rgba(198,168,90,0.24);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #111;
+      border: none;
+      box-shadow: 0 0 40px rgba(198,168,90,0.25);
+    }
 
     .hero {
       max-width: 1120px;
@@ -235,11 +313,24 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.35); }
+      0%, 100% {
+        opacity: 0.45;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.35);
+      }
     }
 
-    h1 { font-size: clamp(50px, 6vw, 78px); line-height: 0.98; letter-spacing: -0.07em; margin-bottom: 22px; max-width: 620px; }
+    h1 {
+      font-size: clamp(50px, 6vw, 78px);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+      margin-bottom: 22px;
+      max-width: 620px;
+    }
 
     .gold-text {
       background: linear-gradient(135deg, #fff3bf, var(--gold), #8b6d2f);
@@ -248,9 +339,27 @@
       color: transparent;
     }
 
-    .hero p { color: var(--muted); font-size: 18px; line-height: 1.65; max-width: 610px; margin-bottom: 28px; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
-    .small-note { margin-top: 20px; color: #777; font-size: 13px; line-height: 1.5; max-width: 560px; }
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+      max-width: 610px;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .small-note {
+      margin-top: 20px;
+      color: #777;
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 560px;
+    }
 
     .terminal-card {
       position: relative;
@@ -264,35 +373,128 @@
       width: 100%;
     }
 
-    .terminal-inner { border-radius: 29px; background: rgba(15,15,15,0.92); backdrop-filter: blur(20px); padding: 24px; position: relative; z-index: 1; border: 1px solid rgba(198,168,90,0.18); }
-    .terminal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
-    .window-dots { display: flex; gap: 7px; }
-    .window-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.20); }
+    .terminal-inner {
+      border-radius: 29px;
+      background: rgba(15,15,15,0.92);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(198,168,90,0.18);
+    }
 
-    .status-badge { font-size: 12px; color: var(--gold-light); border: 1px solid var(--border-gold); padding: 7px 10px; border-radius: 999px; background: rgba(198,168,90,0.10); }
-    .market-title { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
 
-    .live-price-widget { position: relative; width: 100%; height: 170px; border-radius: 22px; overflow: hidden; background: rgba(255,255,255,0.035); border: 1px solid var(--border-gold-soft); padding: 12px; pointer-events: none; }
-    .live-price-widget::after { content: ""; position: absolute; inset: 0; z-index: 30; cursor: default; }
-    .tradingview-widget-container, .tradingview-widget-container__widget { width: 100%; min-height: 145px; pointer-events: none; }
+    .window-dots {
+      display: flex;
+      gap: 7px;
+    }
 
-    section { max-width: 1120px; margin: 0 auto; padding: 44px 24px; }
-    .chart-section { padding-top: 28px; padding-bottom: 42px; }
+    .window-dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.20);
+    }
 
-    .chart-board, .scenario-board, .premium {
+    .status-badge {
+      font-size: 12px;
+      color: var(--gold-light);
+      border: 1px solid var(--border-gold);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(198,168,90,0.10);
+    }
+
+    .market-title {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .live-price-widget {
+      position: relative;
+      width: 100%;
+      height: 170px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--border-gold-soft);
+      padding: 12px;
+      pointer-events: none;
+    }
+
+    .live-price-widget::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      cursor: default;
+    }
+
+    .tradingview-widget-container,
+    .tradingview-widget-container__widget {
+      width: 100%;
+      min-height: 145px;
+      pointer-events: none;
+    }
+
+    section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 44px 24px;
+    }
+
+    .chart-section {
+      padding-top: 28px;
+      padding-bottom: 42px;
+    }
+
+    .chart-board,
+    .scenario-board,
+    .premium {
       border-radius: 34px;
-      background: linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)), rgba(255,255,255,0.025);
+      background:
+        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
+        rgba(255,255,255,0.025);
       border: 1px solid var(--border-gold);
       box-shadow: 0 24px 80px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,217,120,0.05);
       overflow: hidden;
     }
 
-    .chart-board { padding: 28px; }
-    .chart-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 22px; }
-    .chart-top h2 { font-size: clamp(32px, 4vw, 50px); line-height: 1.05; letter-spacing: -0.05em; margin-bottom: 10px; }
-    .chart-top p { color: var(--muted); line-height: 1.65; max-width: 690px; }
+    .chart-board {
+      padding: 28px;
+    }
 
-    .chart-pill, .market-pill, .timer-pill {
+    .chart-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    .chart-top h2 {
+      font-size: clamp(32px, 4vw, 50px);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      margin-bottom: 10px;
+    }
+
+    .chart-top p {
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 690px;
+    }
+
+    .chart-pill,
+    .market-pill,
+    .timer-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -306,130 +508,683 @@
       white-space: nowrap;
     }
 
-    .market-pill-live { gap: 9px; }
-    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 16px rgba(255,217,120,0.9); animation: pulse 1.8s ease-in-out infinite; }
+    .market-pill-live {
+      gap: 9px;
+    }
 
-    .advanced-chart-wrap { width: 100%; height: 520px; border-radius: 24px; overflow: hidden; border: 1px solid var(--border-gold-soft); background: rgba(0,0,0,0.28); pointer-events: auto; }
-    .advanced-chart-wrap .tradingview-widget-container, .advanced-chart-wrap .tradingview-widget-container__widget { width: 100%; height: 100%; min-height: 520px; pointer-events: auto; }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 16px rgba(255,217,120,0.9);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
 
-    #cosa-legge { padding-top: 34px; }
-    .section-heading { text-align: center; max-width: 780px; margin: 0 auto 34px; }
-    .section-heading h2 { font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.05em; margin-bottom: 14px; }
-    .section-heading p { color: var(--muted); font-size: 17px; line-height: 1.65; }
-    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .advanced-chart-wrap {
+      width: 100%;
+      height: 520px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.28);
+      pointer-events: auto;
+    }
 
-    .feature-card, .scenario-card { padding: 28px; border-radius: 28px; background: rgba(255,255,255,0.045); border: 1px solid var(--border-gold-soft); box-shadow: inset 0 0 0 1px rgba(255,217,120,0.04), 0 14px 40px rgba(0,0,0,0.22); transition: 0.25s ease; }
-    .feature-card:hover, .scenario-card:hover { transform: translateY(-6px) scale(1.01); border-color: rgba(255,217,120,0.55); background: rgba(198,168,90,0.075); box-shadow: 0 18px 54px rgba(0,0,0,0.32), 0 0 34px rgba(198,168,90,0.10); }
-    .icon { width: 46px; height: 46px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(198,168,90,0.14); border: 1px solid rgba(198,168,90,0.24); color: var(--gold-light); margin-bottom: 22px; font-size: 20px; font-weight: 800; }
-    .feature-card h3, .scenario-card h3 { font-size: 22px; margin-bottom: 12px; }
-    .feature-card p, .scenario-card p { color: var(--muted); line-height: 1.6; font-size: 15px; }
+    .advanced-chart-wrap .tradingview-widget-container,
+    .advanced-chart-wrap .tradingview-widget-container__widget {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      pointer-events: auto;
+    }
 
-    .scenario-section { padding-top: 46px; }
-    .scenario-board { padding: 30px; }
-    .scenario-board-top { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; margin-bottom: 22px; }
-    .scenario-board h2 { font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.05em; margin-bottom: 12px; }
-    .scenario-board p { color: var(--muted); line-height: 1.65; max-width: 690px; }
+    #cosa-legge {
+      padding-top: 34px;
+    }
 
-    .scenario-status { margin-bottom: 18px; padding: 18px 20px; border-radius: 22px; border: 1px solid var(--border-gold-soft); background: rgba(0,0,0,0.20); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
-    .scenario-status-left { display: grid; gap: 5px; }
-    .scenario-message { color: var(--gold-light); font-weight: 800; font-size: 15px; }
-    .scenario-update-text { color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .timer-pill span { margin-left: 8px; color: var(--soft-white); font-variant-numeric: tabular-nums; }
+    .section-heading {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 34px;
+    }
 
-    .decision-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
-    .decision-box { border: 1px solid var(--border-gold-soft); background: rgba(0,0,0,0.20); border-radius: 20px; padding: 16px; }
-    .decision-label { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
-    .decision-value { color: var(--soft-white); font-size: 18px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; }
-    .decision-value.gold { color: var(--gold-light); }
-    .decision-value.green { color: var(--green); }
-    .decision-value.red { color: var(--danger); }
-    .decision-value.blue { color: var(--blue); }
+    .section-heading h2 {
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: -0.05em;
+      margin-bottom: 14px;
+    }
 
-    .reliability-bar { width: 100%; height: 9px; margin-top: 10px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); }
-    .reliability-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 0.4s ease; }
+    .section-heading p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
 
-    .history-action-wrap { margin: -6px 0 22px; display: flex; justify-content: flex-start; }
-    .history-btn { min-height: 38px; padding: 0 16px; font-size: 13px; color: var(--gold-light); background: rgba(0,0,0,0.22); }
-    .history-btn:hover { background: rgba(198,168,90,0.14); }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
 
-    .bias-board { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; margin-bottom: 16px; align-items: start; }
-    .bias-card { padding: 24px; border-radius: 28px; background: rgba(0,0,0,0.22); border: 1px solid var(--border-gold-soft); align-self: start; }
-    .bias-label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
-    .bias-value { font-size: clamp(30px, 4vw, 46px); font-weight: 950; letter-spacing: -0.06em; color: var(--gold-light); margin-bottom: 10px; }
-    .bias-description { color: var(--muted); line-height: 1.6; font-size: 15px; }
+    .feature-card,
+    .scenario-card {
+      padding: 28px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--border-gold-soft);
+      box-shadow: inset 0 0 0 1px rgba(255,217,120,0.04), 0 14px 40px rgba(0,0,0,0.22);
+      transition: 0.25s ease;
+    }
 
-    .plain-signal { margin-top: 16px; padding: 15px 18px; border-radius: 20px; background: rgba(198,168,90,0.10); border: 1px solid rgba(255,217,120,0.24); color: var(--soft-white); line-height: 1.6; font-size: 15px; font-weight: 650; }
-    .plain-signal.wait { background: rgba(120,183,255,0.08); border-color: rgba(120,183,255,0.22); }
-    .plain-signal.buy { background: rgba(121,217,139,0.08); border-color: rgba(121,217,139,0.22); }
-    .plain-signal.sell { background: rgba(230,107,107,0.08); border-color: rgba(230,107,107,0.22); }
+    .feature-card:hover,
+    .scenario-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(255,217,120,0.55);
+      background: rgba(198,168,90,0.075);
+      box-shadow: 0 18px 54px rgba(0,0,0,0.32), 0 0 34px rgba(198,168,90,0.10);
+    }
 
-    .technical-title { color: var(--gold-light); font-size: 14px; font-weight: 800; margin-bottom: 16px; }
-    .quality-list { display: grid; gap: 12px; }
-    .quality-row { display: flex; justify-content: space-between; gap: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 14px; white-space: pre-line; }
-    .quality-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .quality-row strong { color: var(--soft-white); text-align: right; white-space: pre-line; max-width: 52%; }
+    .icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(198,168,90,0.14);
+      border: 1px solid rgba(198,168,90,0.24);
+      color: var(--gold-light);
+      margin-bottom: 22px;
+      font-size: 20px;
+      font-weight: 800;
+    }
 
-    .info { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-left: 6px; border-radius: 50%; font-size: 11px; font-weight: 800; cursor: pointer; background: rgba(198,168,90,0.15); color: var(--gold-light); border: 1px solid var(--border-gold); position: relative; vertical-align: middle; }
-    .tooltip { position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); width: 245px; padding: 10px 12px; border-radius: 12px; background: rgba(15,15,15,0.97); border: 1px solid var(--border-gold-soft); color: var(--muted); font-size: 12px; line-height: 1.5; opacity: 0; pointer-events: none; transition: 0.2s ease; z-index: 9999; box-shadow: 0 12px 34px rgba(0,0,0,0.45); text-align: left; font-weight: 500; }
-    .info:hover .tooltip { opacity: 1; }
+    .feature-card h3,
+    .scenario-card h3 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
 
-    .quality-help { margin-top: 14px; padding: 14px 15px; border-radius: 18px; background: rgba(255,255,255,0.035); border: 1px solid rgba(198,168,90,0.18); color: var(--muted); font-size: 12px; line-height: 1.55; }
-    .quality-help strong { color: var(--gold-light); }
+    .feature-card p,
+    .scenario-card p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
 
-    .quality-bars { margin-top: 16px; display: grid; gap: 12px; }
-    .quality-bar-row { display: grid; grid-template-columns: 120px 1fr 44px; gap: 10px; align-items: center; color: var(--muted); font-size: 12px; }
-    .mini-bar { height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
-    .mini-fill { height: 100%; width: 0%; background: linear-gradient(90deg, rgba(198,168,90,0.7), var(--gold-light)); border-radius: 999px; transition: width 0.4s ease; }
+    .scenario-section {
+      padding-top: 46px;
+    }
 
-    .scenario-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 16px; }
-    .scenario-card.main { background: rgba(198,168,90,0.10); border-color: rgba(255,217,120,0.42); }
-    .prob { font-size: 42px; font-weight: 900; color: var(--gold-light); margin-bottom: 16px; letter-spacing: -0.04em; }
-    .scenario-meta { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.10); display: grid; gap: 10px; }
-    .scenario-meta div { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 14px; }
-    .scenario-meta strong { color: var(--soft-white); text-align: right; }
+    .scenario-board {
+      padding: 30px;
+    }
 
-    .premium { padding: 46px; display: block; }
-    .premium-content { max-width: 820px; }
-    .premium h2 { font-size: clamp(32px, 4vw, 52px); line-height: 1.08; letter-spacing: -0.05em; margin-bottom: 18px; max-width: 900px; }
-    .premium p { color: var(--muted); line-height: 1.7; max-width: 780px; font-size: 16px; }
-    .waitlist-form { margin-top: 26px; display: flex; gap: 12px; max-width: 620px; }
-    .waitlist-form input { width: 100%; min-height: 50px; border-radius: 999px; border: 1px solid var(--border-gold-soft); background: rgba(255,255,255,0.05); color: var(--soft-white); padding: 0 18px; outline: none; font-size: 14px; }
-    .waitlist-form input:focus { border-color: rgba(255,217,120,0.55); box-shadow: 0 0 24px rgba(198,168,90,0.14); }
-    .form-message { margin-top: 14px; color: var(--gold-light); font-size: 13px; display: none; }
-    footer { border-top: 1px solid rgba(198,168,90,0.20); padding: 30px 24px; color: #777; text-align: center; font-size: 13px; }
+    .scenario-board-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .scenario-board h2 {
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: -0.05em;
+      margin-bottom: 12px;
+    }
+
+    .scenario-board p {
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 690px;
+    }
+
+    .scenario-status {
+      margin-bottom: 18px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .scenario-status-left {
+      display: grid;
+      gap: 5px;
+    }
+
+    .scenario-message {
+      color: var(--gold-light);
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .scenario-update-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .timer-pill span {
+      margin-left: 8px;
+      color: var(--soft-white);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .decision-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .decision-box {
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .decision-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .decision-value {
+      color: var(--soft-white);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .decision-value.gold {
+      color: var(--gold-light);
+    }
+
+    .decision-value.green {
+      color: var(--green);
+    }
+
+    .decision-value.red {
+      color: var(--danger);
+    }
+
+    .decision-value.blue {
+      color: var(--blue);
+    }
+
+    .reliability-bar {
+      width: 100%;
+      height: 9px;
+      margin-top: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .reliability-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transition: width 0.4s ease;
+    }
+
+    .history-action-wrap {
+      margin: -6px 0 22px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .history-btn {
+      min-height: 38px;
+      padding: 0 16px;
+      font-size: 13px;
+      color: var(--gold-light);
+      background: rgba(0,0,0,0.22);
+    }
+
+    .history-btn:hover {
+      background: rgba(198,168,90,0.14);
+    }
+
+    .bias-board {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: start;
+    }
+
+    .bias-card {
+      padding: 24px;
+      border-radius: 28px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--border-gold-soft);
+      align-self: start;
+    }
+
+    .bias-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .bias-value {
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 950;
+      letter-spacing: -0.06em;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+    }
+
+    .bias-description {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .plain-signal {
+      margin-top: 16px;
+      padding: 15px 18px;
+      border-radius: 20px;
+      background: rgba(198,168,90,0.10);
+      border: 1px solid rgba(255,217,120,0.24);
+      color: var(--soft-white);
+      line-height: 1.6;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .plain-signal.wait {
+      background: rgba(120,183,255,0.08);
+      border-color: rgba(120,183,255,0.22);
+    }
+
+    .plain-signal.buy {
+      background: rgba(121,217,139,0.08);
+      border-color: rgba(121,217,139,0.22);
+    }
+
+    .plain-signal.sell {
+      background: rgba(230,107,107,0.08);
+      border-color: rgba(230,107,107,0.22);
+    }
+
+    .technical-title {
+      color: var(--gold-light);
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .quality-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .quality-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    .quality-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .quality-row strong {
+      color: var(--soft-white);
+      text-align: right;
+      white-space: pre-line;
+      max-width: 52%;
+    }
+
+    .info {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      margin-left: 6px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      background: rgba(198,168,90,0.15);
+      color: var(--gold-light);
+      border: 1px solid var(--border-gold);
+      position: relative;
+      vertical-align: middle;
+    }
+
+    .tooltip {
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 250px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15,15,15,0.97);
+      border: 1px solid var(--border-gold-soft);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s ease;
+      z-index: 9999;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.45);
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .info:hover .tooltip {
+      opacity: 1;
+    }
+
+    .quality-help {
+      margin-top: 14px;
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(198,168,90,0.18);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .quality-help strong {
+      color: var(--gold-light);
+    }
+
+    .quality-bars {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .quality-bar-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 44px;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .mini-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(198,168,90,0.7), var(--gold-light));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .scenario-card.main {
+      background: rgba(198,168,90,0.10);
+      border-color: rgba(255,217,120,0.42);
+    }
+
+    .prob {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--gold-light);
+      margin-bottom: 16px;
+      letter-spacing: -0.04em;
+    }
+
+    .scenario-meta {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      display: grid;
+      gap: 10px;
+    }
+
+    .scenario-meta div {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .scenario-meta strong {
+      color: var(--soft-white);
+      text-align: right;
+    }
+
+    .premium {
+      padding: 46px;
+      display: block;
+    }
+
+    .premium-content {
+      max-width: 820px;
+    }
+
+    .premium h2 {
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.05em;
+      margin-bottom: 18px;
+      max-width: 900px;
+    }
+
+    .premium p {
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 780px;
+      font-size: 16px;
+    }
+
+    .waitlist-form {
+      margin-top: 26px;
+      display: flex;
+      gap: 12px;
+      max-width: 620px;
+    }
+
+    .waitlist-form input {
+      width: 100%;
+      min-height: 50px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(255,255,255,0.05);
+      color: var(--soft-white);
+      padding: 0 18px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .waitlist-form input:focus {
+      border-color: rgba(255,217,120,0.55);
+      box-shadow: 0 0 24px rgba(198,168,90,0.14);
+    }
+
+    .form-message {
+      margin-top: 14px;
+      color: var(--gold-light);
+      font-size: 13px;
+      display: none;
+    }
+
+    footer {
+      border-top: 1px solid rgba(198,168,90,0.20);
+      padding: 30px 24px;
+      color: #777;
+      text-align: center;
+      font-size: 13px;
+    }
 
     @media (max-width: 900px) {
-      .cursor-glow, .mouse-trail { display: none; }
-      .nav { min-height: 72px; }
-      .logo-img-big { height: 54px; max-width: 170px; }
-      .nav-links { display: none; }
-      .brand { min-width: auto; }
-      .hero { grid-template-columns: 1fr; padding-top: 110px; padding-bottom: 28px; min-height: auto; gap: 36px; }
-      .terminal-card { justify-self: start; max-width: 100%; }
-      .features, .scenario-grid, .scenario-board-top, .bias-board, .decision-strip { grid-template-columns: 1fr; }
-      .chart-top { flex-direction: column; }
-      .advanced-chart-wrap { height: 460px; }
-      .advanced-chart-wrap .tradingview-widget-container, .advanced-chart-wrap .tradingview-widget-container__widget { min-height: 460px; }
-      .market-pill, .chart-pill { justify-self: start; }
-      section { padding: 42px 24px; }
-      #cosa-legge { padding-top: 24px; }
-      .premium { padding: 34px; }
+      .cursor-glow,
+      .mouse-trail {
+        display: none;
+      }
+
+      .nav {
+        min-height: 72px;
+      }
+
+      .logo-img-big {
+        height: 54px;
+        max-width: 170px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .brand {
+        min-width: auto;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 110px;
+        padding-bottom: 28px;
+        min-height: auto;
+        gap: 36px;
+      }
+
+      .terminal-card {
+        justify-self: start;
+        max-width: 100%;
+      }
+
+      .features,
+      .scenario-grid,
+      .scenario-board-top,
+      .bias-board,
+      .decision-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-top {
+        flex-direction: column;
+      }
+
+      .advanced-chart-wrap {
+        height: 460px;
+      }
+
+      .advanced-chart-wrap .tradingview-widget-container,
+      .advanced-chart-wrap .tradingview-widget-container__widget {
+        min-height: 460px;
+      }
+
+      .market-pill,
+      .chart-pill {
+        justify-self: start;
+      }
+
+      section {
+        padding: 42px 24px;
+      }
+
+      #cosa-legge {
+        padding-top: 24px;
+      }
+
+      .premium {
+        padding: 34px;
+      }
     }
 
     @media (max-width: 520px) {
-      .logo-img-big { height: 50px; max-width: 150px; }
-      .nav { min-height: 70px; padding: 8px 18px; }
-      .nav .btn { min-height: 40px; padding: 0 14px; font-size: 13px; }
-      h1 { font-size: 46px; }
-      .hero { padding: 104px 20px 26px; gap: 30px; }
-      .hero-actions .btn, .waitlist-form .btn { width: 100%; }
-      .waitlist-form { flex-direction: column; }
-      .scenario-board, .premium, .chart-board { padding: 24px; }
-      .premium h2 { font-size: 34px; }
-      .advanced-chart-wrap { height: 390px; }
-      .advanced-chart-wrap .tradingview-widget-container, .advanced-chart-wrap .tradingview-widget-container__widget { min-height: 390px; }
-      .tooltip { left: auto; right: -20px; transform: none; width: 210px; }
-      .quality-bar-row { grid-template-columns: 92px 1fr 38px; }
+      .logo-img-big {
+        height: 50px;
+        max-width: 150px;
+      }
+
+      .nav {
+        min-height: 70px;
+        padding: 8px 18px;
+      }
+
+      .nav .btn {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 13px;
+      }
+
+      h1 {
+        font-size: 46px;
+      }
+
+      .hero {
+        padding: 104px 20px 26px;
+        gap: 30px;
+      }
+
+      .hero-actions .btn,
+      .waitlist-form .btn {
+        width: 100%;
+      }
+
+      .waitlist-form {
+        flex-direction: column;
+      }
+
+      .scenario-board,
+      .premium,
+      .chart-board {
+        padding: 24px;
+      }
+
+      .premium h2 {
+        font-size: 34px;
+      }
+
+      .advanced-chart-wrap {
+        height: 390px;
+      }
+
+      .advanced-chart-wrap .tradingview-widget-container,
+      .advanced-chart-wrap .tradingview-widget-container__widget {
+        min-height: 390px;
+      }
+
+      .tooltip {
+        left: auto;
+        right: -20px;
+        transform: none;
+        width: 210px;
+      }
+
+      .quality-bar-row {
+        grid-template-columns: 92px 1fr 38px;
+      }
     }
   </style>
 </head>
@@ -461,17 +1216,24 @@
   <main>
     <section class="hero" id="analisi">
       <div>
-        <div class="eyebrow"><span class="pulse"></span>Lettura semplice e operativa del mercato XAU/USD</div>
+        <div class="eyebrow">
+          <span class="pulse"></span>
+          Lettura semplice e operativa del mercato XAU/USD
+        </div>
+
         <h1><span class="gold-text">XAU</span>, spiegato in modo semplice.</h1>
+
         <p>
           Auren trasforma i dati dell'oro in una lettura semplice: direzione, qualità del segnale,
           regime di mercato e indicazione operativa. Non sempre bisogna comprare o vendere:
           quando il mercato è sporco, Auren ti dice di attendere.
         </p>
+
         <div class="hero-actions">
           <a href="#scenario" class="btn btn-primary">Vedi scenario attuale</a>
           <a href="#grafico" class="btn">Apri grafico live</a>
         </div>
+
         <div class="small-note">
           Le analisi sono fornite solo a scopo informativo ed educativo.
           Non costituiscono consulenza finanziaria, raccomandazione o invito all'investimento.
@@ -481,10 +1243,14 @@
       <div class="terminal-card">
         <div class="terminal-inner">
           <div class="terminal-top">
-            <div class="window-dots"><span></span><span></span><span></span></div>
+            <div class="window-dots">
+              <span></span><span></span><span></span>
+            </div>
             <div class="status-badge">STATO LIVE</div>
           </div>
+
           <div class="market-title">Prezzo live XAU/USD</div>
+
           <div class="live-price-widget">
             <div class="tradingview-widget-container">
               <div class="tradingview-widget-container__widget"></div>
@@ -514,6 +1280,7 @@
               in una lettura semplice e immediata.
             </p>
           </div>
+
           <div class="chart-pill">TradingView Live</div>
         </div>
 
@@ -548,24 +1315,38 @@
     <section id="cosa-legge">
       <div class="section-heading">
         <h2>Cosa ti mostra davvero Auren.</h2>
-        <p>Non devi interpretare grafici complicati.<br>Auren semplifica tutto e ti mostra solo quello che conta davvero.</p>
+        <p>
+          Non devi interpretare grafici complicati.<br>
+          Auren semplifica tutto e ti mostra solo quello che conta davvero.
+        </p>
       </div>
 
       <div class="features">
         <div class="feature-card">
           <div class="icon">01</div>
           <h3>Direzione</h3>
-          <p>Ti dice se il mercato sta salendo, scendendo o se non ha ancora una direzione chiara.</p>
+          <p>
+            Ti dice se il mercato sta salendo, scendendo
+            o se non ha ancora una direzione chiara.
+          </p>
         </div>
+
         <div class="feature-card">
           <div class="icon">02</div>
           <h3>Operabilità</h3>
-          <p>Non basta avere una direzione. Auren valuta anche se il segnale è realmente utilizzabile o se è meglio attendere.</p>
+          <p>
+            Non basta avere una direzione. Auren valuta anche se il segnale
+            è realmente utilizzabile o se è meglio attendere.
+          </p>
         </div>
+
         <div class="feature-card">
           <div class="icon">03</div>
           <h3>Qualità segnale</h3>
-          <p>Legge trend, volatilità, struttura, momentum, rischio e pulizia del mercato per evitare segnali deboli.</p>
+          <p>
+            Legge trend, volatilità, struttura, momentum, rischio
+            e pulizia del mercato per evitare segnali deboli.
+          </p>
         </div>
       </div>
     </section>
@@ -575,8 +1356,12 @@
         <div class="scenario-board-top">
           <div>
             <h2>Scenario attuale sull'oro.</h2>
-            <p>Una lettura semplice per capire cosa sta facendo XAU/USD e se il segnale è operativo oppure no.</p>
+            <p>
+              Una lettura semplice per capire cosa sta facendo XAU/USD
+              e se il segnale è operativo oppure no.
+            </p>
           </div>
+
           <div class="market-pill market-pill-live"><span class="live-dot"></span>XAU/USD</div>
         </div>
 
@@ -589,7 +1374,11 @@
               <strong>Scenario aggiornato automaticamente ogni 30 minuti</strong>
             </div>
           </div>
-          <div class="timer-pill">Prossima analisi tra <span id="timer">--:--:--</span></div>
+
+          <div class="timer-pill">
+            Prossima analisi tra
+            <span id="timer">--:--:--</span>
+          </div>
         </div>
 
         <div class="decision-strip">
@@ -597,18 +1386,23 @@
             <div class="decision-label">Indicazione Auren</div>
             <div class="decision-value gold" id="action-value">Attendere</div>
           </div>
+
           <div class="decision-box">
             <div class="decision-label">Utilizzabilità</div>
             <div class="decision-value" id="tradable-value">In attesa</div>
           </div>
+
           <div class="decision-box">
             <div class="decision-label">Regime mercato</div>
             <div class="decision-value blue" id="regime-value">--</div>
           </div>
+
           <div class="decision-box">
             <div class="decision-label">Affidabilità</div>
             <div class="decision-value gold" id="reliability-value">--%</div>
-            <div class="reliability-bar"><div class="reliability-fill" id="reliability-fill"></div></div>
+            <div class="reliability-bar">
+              <div class="reliability-fill" id="reliability-fill"></div>
+            </div>
           </div>
         </div>
 
@@ -620,48 +1414,121 @@
           <div class="bias-card">
             <div class="bias-label">Lettura sintetica</div>
             <div class="bias-value" id="bias-value">--</div>
-            <div class="bias-description" id="bias-description">In attesa dei dati live.</div>
-            <div class="plain-signal" id="plain-signal">Sto leggendo i dati del mercato.</div>
+            <div class="bias-description" id="bias-description">
+              In attesa dei dati live.
+            </div>
+            <div class="plain-signal" id="plain-signal">
+              Sto leggendo i dati del mercato.
+            </div>
           </div>
 
           <div class="bias-card">
             <div class="technical-title">Dettagli tecnici</div>
             <div class="quality-list">
               <div class="quality-row">
-                <span>Chiarezza del segnale <span class="info">i<span class="tooltip">Indica quanto la lettura del mercato è chiara. Alta significa che più elementi stanno andando nella stessa direzione.</span></span></span>
+                <span>
+                  Chiarezza del segnale
+                  <span class="info">i
+                    <span class="tooltip">
+                      Indica quanto la lettura del mercato è chiara. Alta significa che più elementi stanno andando nella stessa direzione.
+                    </span>
+                  </span>
+                </span>
                 <strong id="signal-quality">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Zona di rimbalzo <span class="info">i<span class="tooltip">È il livello dove il prezzo potrebbe rallentare, reagire o provare un recupero.</span></span></span>
+                <span>
+                  Zona di rimbalzo
+                  <span class="info">i
+                    <span class="tooltip">
+                      È il livello dove il prezzo potrebbe rallentare, reagire o provare un recupero.
+                    </span>
+                  </span>
+                </span>
                 <strong id="support-distance">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Zona di blocco <span class="info">i<span class="tooltip">È il livello dove il prezzo potrebbe fermarsi, perdere forza o invertire direzione.</span></span></span>
+                <span>
+                  Zona di blocco
+                  <span class="info">i
+                    <span class="tooltip">
+                      È il livello dove il prezzo potrebbe fermarsi, perdere forza o invertire direzione.
+                    </span>
+                  </span>
+                </span>
                 <strong id="resistance-distance">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Movimento medio M30 <span class="info">i<span class="tooltip">Misura il movimento medio del prezzo sul timeframe M30. Più è alto, più il mercato è veloce e instabile.</span></span></span>
+                <span>
+                  Movimento medio M30
+                  <span class="info">i
+                    <span class="tooltip">
+                      Misura il movimento medio del prezzo sul timeframe M30. Più è alto, più il mercato è veloce e instabile.
+                    </span>
+                  </span>
+                </span>
                 <strong id="atr-value">--</strong>
               </div>
+
               <div class="quality-row">
-                <span>Motivo operativo <span class="info">i<span class="tooltip">Spiega perché Auren conferma il segnale oppure consiglia di attendere.</span></span></span>
+                <span>
+                  Motivo operativo
+                  <span class="info">i
+                    <span class="tooltip">
+                      Spiega perché Auren conferma il segnale oppure consiglia di attendere.
+                    </span>
+                  </span>
+                </span>
                 <strong id="trade-reason">--</strong>
               </div>
             </div>
 
             <div class="quality-help">
               <strong>Come leggere i valori:</strong><br>
-              Trend = direzione generale. Volatilità = velocità del mercato. Struttura = ordine di massimi/minimi.
-              Momentum = forza della spinta. Rischio = distanza dalle zone critiche. Pulizia = quanto il segnale è ordinato.
+              Trend = direzione generale. Volatilità = velocità del mercato.
+              Struttura = ordine di massimi/minimi. Momentum = forza della spinta.
+              Rischio = distanza dalle zone critiche. Pulizia = quanto il segnale è ordinato.
             </div>
 
             <div class="quality-bars">
-              <div class="quality-bar-row"><span>Trend</span><div class="mini-bar"><div class="mini-fill" id="bar-trend"></div></div><strong id="val-trend">--</strong></div>
-              <div class="quality-bar-row"><span>Volatilità</span><div class="mini-bar"><div class="mini-fill" id="bar-volatility"></div></div><strong id="val-volatility">--</strong></div>
-              <div class="quality-bar-row"><span>Struttura</span><div class="mini-bar"><div class="mini-fill" id="bar-structure"></div></div><strong id="val-structure">--</strong></div>
-              <div class="quality-bar-row"><span>Momentum</span><div class="mini-bar"><div class="mini-fill" id="bar-momentum"></div></div><strong id="val-momentum">--</strong></div>
-              <div class="quality-bar-row"><span>Rischio</span><div class="mini-bar"><div class="mini-fill" id="bar-riskReward"></div></div><strong id="val-riskReward">--</strong></div>
-              <div class="quality-bar-row"><span>Pulizia</span><div class="mini-bar"><div class="mini-fill" id="bar-cleanliness"></div></div><strong id="val-cleanliness">--</strong></div>
+              <div class="quality-bar-row">
+                <span>Trend</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-trend"></div></div>
+                <strong id="val-trend">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Volatilità</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-volatility"></div></div>
+                <strong id="val-volatility">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Struttura</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-structure"></div></div>
+                <strong id="val-structure">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Momentum</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-momentum"></div></div>
+                <strong id="val-momentum">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Rischio</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-riskReward"></div></div>
+                <strong id="val-riskReward">--</strong>
+              </div>
+
+              <div class="quality-bar-row">
+                <span>Pulizia</span>
+                <div class="mini-bar"><div class="mini-fill" id="bar-cleanliness"></div></div>
+                <strong id="val-cleanliness">--</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -671,9 +1538,16 @@
             <div class="prob" id="main-prob">--%</div>
             <h3 id="main-title">Caricamento...</h3>
             <p id="main-desc">Lettura dello scenario in corso.</p>
+
             <div class="scenario-meta">
-              <div><span id="main-label-1">Zona importante</span><strong id="main-value-1">--</strong></div>
-              <div><span id="main-label-2">Scenario cambia se</span><strong id="main-value-2">--</strong></div>
+              <div>
+                <span id="main-label-1">Zona importante</span>
+                <strong id="main-value-1">--</strong>
+              </div>
+              <div>
+                <span id="main-label-2">Scenario cambia se</span>
+                <strong id="main-value-2">--</strong>
+              </div>
             </div>
           </div>
 
@@ -681,9 +1555,16 @@
             <div class="prob" id="sec-prob">--%</div>
             <h3 id="sec-title">Caricamento...</h3>
             <p id="sec-desc">Lettura dello scenario secondario in corso.</p>
+
             <div class="scenario-meta">
-              <div><span id="sec-label-1">Zona da osservare</span><strong id="sec-value-1">--</strong></div>
-              <div><span id="sec-label-2">Chiarezza</span><strong id="sec-value-2">--</strong></div>
+              <div>
+                <span id="sec-label-1">Zona da osservare</span>
+                <strong id="sec-value-1">--</strong>
+              </div>
+              <div>
+                <span id="sec-label-2">Chiarezza</span>
+                <strong id="sec-value-2">--</strong>
+              </div>
             </div>
           </div>
 
@@ -691,9 +1572,16 @@
             <div class="prob" id="alt-prob">--%</div>
             <h3 id="alt-title">Caricamento...</h3>
             <p id="alt-desc">Lettura dello scenario alternativo in corso.</p>
+
             <div class="scenario-meta">
-              <div><span id="alt-label-1">Area complessiva</span><strong id="alt-value-1">--</strong></div>
-              <div><span id="alt-label-2">Dato utile</span><strong id="alt-value-2">--</strong></div>
+              <div>
+                <span id="alt-label-1">Area complessiva</span>
+                <strong id="alt-value-1">--</strong>
+              </div>
+              <div>
+                <span id="alt-label-2">Dato utile</span>
+                <strong id="alt-value-2">--</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -705,20 +1593,27 @@
         <div class="premium-content">
           <h2>Costruito per una lettura più semplice dell'oro.</h2>
           <p>
-            La versione Premium includerà analisi più frequenti, avvisi live, spiegazioni più dettagliate,
-            dashboard del rischio, storico delle previsioni e statistiche di affidabilità reali.
+            La versione Premium includerà analisi più frequenti, avvisi live,
+            spiegazioni più dettagliate, dashboard del rischio, storico delle previsioni
+            e statistiche di affidabilità reali.
           </p>
+
           <form class="waitlist-form" id="waitlistForm">
             <input type="email" id="emailInput" placeholder="Inserisci la tua email" required />
             <button type="submit" class="btn btn-primary">Richiedi accesso</button>
           </form>
-          <div class="form-message" id="formMessage">Richiesta registrata. Verrai contattato appena la beta sarà disponibile.</div>
+
+          <div class="form-message" id="formMessage">
+            Richiesta registrata. Verrai contattato appena la beta sarà disponibile.
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>© 2026 Auren. Analisi informativa di mercato. Non costituisce consulenza finanziaria.</footer>
+  <footer>
+    © 2026 Auren. Analisi informativa di mercato. Non costituisce consulenza finanziaria.
+  </footer>
 
   <script>
     const goldRain = document.getElementById("goldRain");
@@ -785,37 +1680,59 @@
     animateGlow();
 
     function formatTime(date) {
-      return String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
+      return String(date.getHours()).padStart(2, "0") + ":" +
+        String(date.getMinutes()).padStart(2, "0");
     }
 
     function getNextFreeUpdate() {
       const now = new Date();
       const next = new Date(now);
-      if (now.getMinutes() < 30) next.setMinutes(30, 0, 0);
-      else next.setHours(now.getHours() + 1, 0, 0, 0);
+
+      if (now.getMinutes() < 30) {
+        next.setMinutes(30, 0, 0);
+      } else {
+        next.setHours(now.getHours() + 1, 0, 0, 0);
+      }
+
       return next;
     }
 
     function formatPrice(value) {
-      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
-      return Number(value).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (value === null || value === undefined || Number.isNaN(Number(value))) {
+        return "--";
+      }
+
+      return Number(value).toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
     function formatPercent(value) {
-      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--%";
+      if (value === null || value === undefined || Number.isNaN(Number(value))) {
+        return "--%";
+      }
+
       return Math.round(Number(value)) + "%";
     }
 
     function formatDistance(price, level) {
       if (!price || !level) return "--";
+
       const distance = Math.abs(price - level);
       const percentage = distance / price * 100;
-      return "Livello: " + formatPrice(level) + "
-Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
+
+      return (
+        "Livello: " + formatPrice(level) +
+        "
+Distanza: " + formatPrice(distance) +
+        " punti (" + percentage.toFixed(2) + "%)"
+      );
     }
 
     function cleanLabel(label) {
       if (!label) return "";
+
       return label
         .replace("Target / supporto utile", "Prima zona da osservare")
         .replace("Target / resistenza utile", "Prima zona da osservare")
@@ -836,6 +1753,7 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
 
     function cleanValue(value) {
       if (value === null || value === undefined) return "";
+
       return String(value)
         .replace("sopra ", "prezzo sopra ")
         .replace("sotto ", "prezzo sotto ")
@@ -851,18 +1769,25 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
     }
 
     function getSignalQuality(data) {
-      if (data.signalQuality && typeof data.signalQuality.overall === "number") return data.signalQuality.overall + "/100";
+      if (data.signalQuality && typeof data.signalQuality.overall === "number") {
+        return data.signalQuality.overall + "/100";
+      }
+
       if (data.confidence) return data.confidence;
+
       const score = Math.abs(Number(data.score || 0));
+
       if (score >= 9) return "Molto Alta";
       if (score >= 7) return "Alta";
       if (score >= 4.5) return "Media";
       if (score >= 2.8) return "Debole";
+
       return "Bassa";
     }
 
     function getSimpleTitle(title, type, action) {
       const t = title || "";
+
       if (action === "wait" && t.includes("Nessun ingresso")) return "Attendere conferma";
       if (t.includes("Pressione ribassista")) return "Possibile discesa";
       if (t.includes("Pressione rialzista")) return "Possibile salita";
@@ -873,13 +1798,16 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
       if (t.includes("Perdita")) return "Possibile indebolimento";
       if (t.includes("uscita")) return "Possibile uscita dal range";
       if (t.includes("falso")) return "Possibile falso segnale";
+
       if (type === "bearish") return "Possibile discesa";
       if (type === "bullish") return "Possibile salita";
+
       return t;
     }
 
     function getSimpleDescription(description) {
       if (!description) return "";
+
       return description
         .replaceAll("pressione principale", "direzione principale")
         .replaceAll("orientata al ribasso", "rivolta verso il basso")
@@ -910,6 +1838,7 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
       if (data.tradability && data.tradability.reasons && data.tradability.reasons.length) {
         return data.tradability.reasons[0];
       }
+
       if (data.tradable) return "Segnale utilizzabile secondo i parametri attuali";
       return "Segnale non abbastanza pulito";
     }
@@ -923,18 +1852,24 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
       const reason = getMainReason(data);
 
       if (action === "wait") {
-        return "Auren suggerisce di attendere. La direzione non è abbastanza pulita per dare un'indicazione forte: " + reason + ". Le zone principali da osservare sono " + support + " e " + resistance + ".";
+        return "Auren suggerisce di attendere. La direzione non è abbastanza pulita per dare un'indicazione forte: " +
+          reason + ". Le zone principali da osservare sono " + support + " e " + resistance + ".";
       }
 
       if (type === "bearish") {
-        return "Auren legge una possibile discesa dell'oro. Finché il prezzo resta sotto " + resistance + ", la lettura principale rimane debole. La prima zona da osservare è " + support + ". Se il prezzo torna sopra la zona di blocco, lo scenario potrebbe cambiare.";
+        return "Auren legge una possibile discesa dell'oro. Finché il prezzo resta sotto " + resistance +
+          ", la lettura principale rimane debole. La prima zona da osservare è " + support +
+          ". Se il prezzo torna sopra la zona di blocco, lo scenario potrebbe cambiare.";
       }
 
       if (type === "bullish") {
-        return "Auren legge una possibile salita dell'oro. Finché il prezzo resta sopra " + support + ", la lettura principale rimane positiva. La prima zona da osservare è " + resistance + ". Se il prezzo perde la zona di rimbalzo, lo scenario potrebbe indebolirsi.";
+        return "Auren legge una possibile salita dell'oro. Finché il prezzo resta sopra " + support +
+          ", la lettura principale rimane positiva. La prima zona da osservare è " + resistance +
+          ". Se il prezzo perde la zona di rimbalzo, lo scenario potrebbe indebolirsi.";
       }
 
-      return "Il mercato non mostra ancora una direzione chiara. Il prezzo si trova tra " + support + " e " + resistance + ". In questa fase è meglio attendere una conferma prima di dare peso alla direzione.";
+      return "Il mercato non mostra ancora una direzione chiara. Il prezzo si trova tra " + support +
+        " e " + resistance + ". In questa fase è meglio attendere una conferma prima di dare peso alla direzione.";
     }
 
     function buildLiveMessage(data) {
@@ -945,7 +1880,9 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
       const previousAction = localStorage.getItem("auren_previous_action");
 
       if (action === "wait") {
-        if (previousAction && previousAction !== "wait") return "Aggiornamento M30: Auren non conferma una direzione abbastanza pulita e suggerisce attesa.";
+        if (previousAction && previousAction !== "wait") {
+          return "Aggiornamento M30: Auren non conferma una direzione abbastanza pulita e suggerisce attesa.";
+        }
         return "Analisi M30 aggiornata: segnale non abbastanza pulito, meglio attendere conferma.";
       }
 
@@ -961,8 +1898,14 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
         return "La fase resta laterale: servono conferme sulle zone principali.";
       }
 
-      if (previousType === "bearish" && currentType === "bullish") return "Cambio scenario M30: il mercato passa da debole a più costruttivo.";
-      if (previousType === "bullish" && currentType === "bearish") return "Cambio scenario M30: il mercato passa da positivo a più debole.";
+      if (previousType === "bearish" && currentType === "bullish") {
+        return "Cambio scenario M30: il mercato passa da debole a più costruttivo.";
+      }
+
+      if (previousType === "bullish" && currentType === "bearish") {
+        return "Cambio scenario M30: il mercato passa da positivo a più debole.";
+      }
+
       return "Lo scenario M30 si aggiorna con una nuova lettura rispetto alla precedente analisi.";
     }
 
@@ -984,8 +1927,10 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
 
       actionEl.innerText = translateAction(action);
       actionEl.className = "decision-value gold";
+
       if (action === "buy") actionEl.className = "decision-value green";
       if (action === "sell") actionEl.className = "decision-value red";
+      if (action === "wait") actionEl.className = "decision-value gold";
 
       tradableEl.innerText = tradable ? "Utilizzabile" : "Non pulito";
       tradableEl.className = tradable ? "decision-value green" : "decision-value gold";
@@ -998,7 +1943,9 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
     function setMiniBar(key, value) {
       const fill = document.getElementById("bar-" + key);
       const label = document.getElementById("val-" + key);
+
       if (!fill || !label) return;
+
       const safeValue = Math.max(0, Math.min(100, Number(value || 0)));
       fill.style.width = safeValue + "%";
       label.innerText = Math.round(safeValue);
@@ -1006,6 +1953,7 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
 
     function renderQualityBars(signalQuality) {
       const q = signalQuality || {};
+
       setMiniBar("trend", q.trendAlignment);
       setMiniBar("volatility", q.volatility);
       setMiniBar("structure", q.structure);
@@ -1036,6 +1984,7 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
       }
 
       const plainSignal = document.getElementById("plain-signal");
+
       document.getElementById("bias-value").innerText = biasText;
       document.getElementById("bias-description").innerText = description;
       plainSignal.innerText = buildPlainSignal(data);
@@ -1101,18 +2050,31 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
 
     async function loadLiveScenario() {
       try {
-        const response = await fetch("/api/scenario", { cache: "no-store" });
-        if (!response.ok) throw new Error("Risposta API non valida");
+        const response = await fetch("/api/scenario", {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("Risposta API non valida");
+        }
+
         const data = await response.json();
-        if (!data || !data.scenario) throw new Error("Scenario mancante");
+
+        if (!data || !data.scenario) {
+          throw new Error("Scenario mancante");
+        }
+
         renderScenarioFromApi(data);
       } catch (error) {
         const saved = localStorage.getItem("auren_last_api_scenario");
+
         if (saved) {
           renderScenarioFromApi(JSON.parse(saved));
-          document.getElementById("scenario-message").innerText = "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.";
+          document.getElementById("scenario-message").innerText =
+            "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.";
         } else {
-          document.getElementById("scenario-message").innerText = "Dati live temporaneamente non disponibili. Riprova tra poco.";
+          document.getElementById("scenario-message").innerText =
+            "Dati live temporaneamente non disponibili. Riprova tra poco.";
         }
       }
     }
@@ -1121,6 +2083,7 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
       const now = new Date();
       const next = getNextFreeUpdate();
       const diff = Math.max(0, next - now);
+
       const hours = Math.floor(diff / 1000 / 60 / 60);
       const minutes = Math.floor((diff / 1000 / 60) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
@@ -1130,11 +2093,14 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
         String(minutes).padStart(2, "0") + ":" +
         String(seconds).padStart(2, "0");
 
-      if (diff <= 1000) setTimeout(loadLiveScenario, 1200);
+      if (diff <= 1000) {
+        setTimeout(loadLiveScenario, 1200);
+      }
     }
 
     loadLiveScenario();
     updateTimer();
+
     setInterval(updateTimer, 1000);
     setInterval(loadLiveScenario, 1800000);
 
@@ -1144,16 +2110,24 @@ Distanza: " + formatPrice(distance) + " punti (" + percentage.toFixed(2) + "%)";
 
     waitlistForm.addEventListener("submit", function(event) {
       event.preventDefault();
+
       const email = emailInput.value.trim();
-      if (!email) return;
+
+      if (!email) {
+        return;
+      }
+
       const savedEmails = JSON.parse(localStorage.getItem("auren_waitlist") || "[]");
+
       if (!savedEmails.includes(email)) {
         savedEmails.push(email);
         localStorage.setItem("auren_waitlist", JSON.stringify(savedEmails));
       }
+
       emailInput.value = "";
       formMessage.style.display = "block";
     });
   </script>
 </body>
 </html>
+
