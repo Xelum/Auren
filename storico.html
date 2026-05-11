@@ -917,11 +917,33 @@
     }
 
     function updateSummary(items) {
-      document.getElementById("totalCount").innerText = items.length;
-      document.getElementById("correctCount").innerText = items.filter(item => item.result === "correct").length;
-      document.getElementById("wrongCount").innerText = items.filter(item => item.result === "wrong").length;
-      document.getElementById("pendingCount").innerText = items.filter(item => item.result !== "correct" && item.result !== "wrong").length;
-    }
+  const operativeItems = items.filter(item => item.action !== "wait");
+  const correctItems = operativeItems.filter(item => item.result === "correct");
+  const wrongItems = operativeItems.filter(item => item.result === "wrong");
+  const pendingItems = operativeItems.filter(item => item.result === "pending");
+  const waitItems = items.filter(item => item.action === "wait" || item.result === "neutral");
+
+  document.getElementById("totalCount").innerText = items.length;
+  document.getElementById("correctCount").innerText = correctItems.length;
+  document.getElementById("wrongCount").innerText = wrongItems.length;
+  document.getElementById("pendingCount").innerText = pendingItems.length;
+
+  const winrateEl = document.getElementById("winrateValue");
+  const waitEl = document.getElementById("waitCount");
+
+  if (winrateEl) {
+    const closedOperative = correctItems.length + wrongItems.length;
+    const winrate = closedOperative > 0
+      ? Math.round((correctItems.length / closedOperative) * 100)
+      : 0;
+
+    winrateEl.innerText = winrate + "%";
+  }
+
+  if (waitEl) {
+    waitEl.innerText = waitItems.length;
+  }
+}
 
     function groupByDate(items) {
       return items.reduce((groups, item) => {
