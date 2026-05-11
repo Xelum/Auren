@@ -661,12 +661,7 @@
       </div>
 
       <div id="historyContainer"></div>
-
-      <div class="technical-note">
-        Nota tecnica: questa pagina prova a leggere lo storico da <strong>/api/history</strong>.
-        Se l'endpoint non è ancora disponibile, usa i dati salvati in <strong>localStorage</strong> con la chiave
-        <strong>auren_history</strong>. Per uno storico reale consultabile anche nei giorni successivi e da più dispositivi,
-        serve salvare gli scenari lato server o database.
+        
       </div>
     </section>
   </main>
@@ -992,7 +987,9 @@
                     <th>Orario</th>
                     <th>Azione</th>
                     <th>Esito</th>
-                    <th>Prezzo</th>
+                    <th>Prezzo iniziale</th>
+                    <th>Prezzo finale</th>
+                     <th>Variazione</th>
                     <th>Affidabilità</th>
                     <th>Lettura</th>
                   </tr>
@@ -1005,7 +1002,18 @@
                       <td>${item.timeLabel}</td>
                       <td><span class="action-pill ${item.action}">${actionLabel(item.action)}</span></td>
                       <td><span class="result-pill ${item.result === "correct" ? "correct" : item.result === "wrong" ? "wrong" : "pending"}">${resultLabel(item.result)}</span></td>
-                      <td>${formatPrice(item.price)}</td>
+                      <td>${formatPrice(item.entryPrice)}</td>
+                      <td>${item.closePrice ? formatPrice(item.closePrice) : "--"}</td>
+                      <td>
+                      ${item.priceDifference !== null && item.priceDifference !== undefined
+                      ? formatPrice(item.priceDifference) + " punti"
+                      : "--"}
+                      <div class="muted">
+                      ${item.percentageChange !== null && item.percentageChange !== undefined
+                      ? item.percentageChange + "%"
+                      : ""}
+                      </div>
+                      </td>
                       <td>${item.reliability ? Math.round(Number(item.reliability)) + "%" : "--"}</td>
                       <td>
                         <div>${item.description || "--"}</div>
