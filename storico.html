@@ -197,7 +197,9 @@
       transition: all 0.3s ease;
     }
 
-    .brand:hover .logo-img-big { transform: scale(1.04); }
+    .brand:hover .logo-img-big {
+      transform: scale(1.04);
+    }
 
     .nav-links {
       display: flex;
@@ -207,7 +209,9 @@
       font-size: 14px;
     }
 
-    .nav-links a:hover { color: var(--gold-light); }
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
 
     .btn {
       display: inline-flex;
@@ -855,14 +859,6 @@
       }) + "%";
     }
 
-    function getVariationClass(value) {
-      const number = Number(value || 0);
-
-      if (number > 0) return "variation-positive";
-      if (number < 0) return "variation-negative";
-      return "variation-neutral";
-    }
-
     function normalizeAction(action) {
       if (action === "buy" || action === "BUY" || action === "acquisto" || action === "Acquisto") return "buy";
       if (action === "sell" || action === "SELL" || action === "vendita" || action === "Vendita") return "sell";
@@ -882,6 +878,7 @@
       if (result === "correct") return "correct";
       if (result === "wrong") return "wrong";
       if (result === "neutral") return "neutral";
+      if (result === "wait") return "neutral";
       return "pending";
     }
 
@@ -893,6 +890,78 @@
       if (normalized === "neutral") return "Attesa";
 
       return "In verifica";
+    }
+
+    function evaluateDisplayResult(action, entryPrice, closePrice) {
+      const normalizedAction = normalizeAction(action);
+      const entry = Number(entryPrice);
+      const close = Number(closePrice);
+
+      if (normalizedAction === "wait") {
+        return {
+          result: "neutral",
+          resultText: "Attesa",
+          priceDifference: null,
+          percentageChange: null
+        };
+      }
+
+      if (
+        closePrice === null ||
+        closePrice === undefined ||
+        Number.isNaN(entry) ||
+        Number.isNaN(close)
+      ) {
+        return {
+          result: "pending",
+          resultText: "In verifica",
+          priceDifference: null,
+          percentageChange: null
+        };
+      }
+
+      if (normalizedAction === "buy") {
+        const difference = close - entry;
+        const percentageChange = entry ? (difference / entry) * 100 : 0;
+
+        return {
+          result: difference > 0 ? "correct" : "wrong",
+          resultText: difference > 0 ? "Realizzato" : "Non realizzato",
+          priceDifference: difference,
+          percentageChange
+        };
+      }
+
+      if (normalizedAction === "sell") {
+        const difference = entry - close;
+        const percentageChange = entry ? (difference / entry) * 100 : 0;
+
+        return {
+          result: difference > 0 ? "correct" : "wrong",
+          resultText: difference > 0 ? "Realizzato" : "Non realizzato",
+          priceDifference: difference,
+          percentageChange
+        };
+      }
+
+      return {
+        result: "neutral",
+        resultText: "Non operativo",
+        priceDifference: null,
+        percentageChange: null
+      };
+    }
+
+    function getVariationClass(value, result) {
+      if (result === "correct") return "variation-positive";
+      if (result === "wrong") return "variation-negative";
+
+      const number = Number(value || 0);
+
+      if (number > 0) return "variation-positive";
+      if (number < 0) return "variation-negative";
+
+      return "variation-neutral";
     }
 
     function buildId(item, index) {
@@ -907,7 +976,11 @@
     function normalizeHistoryItem(item, index) {
       const createdAt = item.createdAt || item.updatedAt || item.timestamp || new Date().toISOString();
       const action = normalizeAction(item.action || (item.scenario && item.scenario.action));
-      const result = normalizeResult(item.result || item.outcome || item.verification || "pending");
+
+      const entryPrice = item.entryPrice ?? item.price;
+      const closePrice = item.closePrice;
+
+      const evaluation = evaluateDisplayResult(action, entryPrice, closePrice);
 
       return {
         id: buildId(item, index),
@@ -916,11 +989,23 @@
         dateLabel: formatDateIt(createdAt),
         timeLabel: formatTime(createdAt),
         action,
-        result,
-        entryPrice: item.entryPrice ?? item.price,
-        closePrice: item.closePrice,
-        priceDifference: item.priceDifference,
-        percentageChange: item.percentageChange,
+
+        result: evaluation.result,
+        resultText: evaluation.resultText,
+
+        entryPrice,
+        closePrice,
+
+        priceDifference:
+          evaluation.priceDifference !== null && evaluation.priceDifference !== undefined
+            ? evaluation.priceDifference
+            : item.priceDifference,
+
+        percentageChange:
+          evaluation.percentageChange !== null && evaluation.percentageChange !== undefined
+            ? evaluation.percentageChange
+            : item.percentageChange,
+
         support: item.support,
         resistance: item.resistance,
         reliability: item.reliability,
@@ -1103,7 +1188,7 @@
                           ? "neutral"
                           : "pending";
 
-                    const variationClass = getVariationClass(item.priceDifference);
+                    const variationClass = getVariationClass(item.priceDifference, item.result);
 
                     return `
                       <tr>
