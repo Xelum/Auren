@@ -356,8 +356,14 @@ async function updateScenarioHistory(payload, currentPrice, analysisTime) {
       resultText: resultData.resultText,
       closedAt: analysisTime.toISOString(),
       closePrice: round(currentPrice),
-      priceDifference: round(currentPrice - item.entryPrice),
-      percentageChange: resultData.percentageChange
+      priceDifference:
+        resultData.priceDifference !== null && resultData.priceDifference !== undefined
+          ? round(resultData.priceDifference)
+          : null,
+      percentageChange:
+        resultData.percentageChange !== null && resultData.percentageChange !== undefined
+          ? round(resultData.percentageChange, 3)
+          : null
     };
   });
 
@@ -394,6 +400,7 @@ function buildHistoryItem(payload, analysisTime) {
     entryPrice: round(payload.price),
     closePrice: null,
     priceDifference: null,
+    percentageChange: null,
 
     support: round(payload.support),
     resistance: round(payload.resistance),
@@ -406,52 +413,68 @@ function buildHistoryItem(payload, analysisTime) {
     expectedMove: round(payload.expectedMove || evaluation.expectedMove || 0),
 
     title: scenario.main?.title || "Scenario salvato",
-    description: scenario.main?.description || scenario.interpretation || "Scenario salvato nello storico.",
-    evaluationRule: evaluation.rule || "Verifica automatica alla chiusura dei 30 minuti."
+    description:
+      scenario.main?.description ||
+      scenario.interpretation ||
+      "Scenario salvato nello storico.",
+    evaluationRule:
+      evaluation.rule ||
+      "Verifica automatica alla chiusura dei 30 minuti."
   };
 }
 
 function evaluateScenarioResult(item, currentPrice) {
   const action = item.action;
   const entryPrice = Number(item.entryPrice);
-  const threshold = Math.max(Number(item.threshold || 0), 0);
-  const difference = currentPrice - entryPrice;
-  const percentageChange = entryPrice
-    ? (difference / entryPrice) * 100
-    : 0;
+  const closePrice = Number(currentPrice);
+
+  if (!entryPrice || Number.isNaN(entryPrice) || Number.isNaN(closePrice)) {
+    return {
+      result: "pending",
+      resultText: "In verifica",
+      priceDifference: null,
+      percentageChange: null
+    };
+  }
 
   if (action === "wait") {
     return {
       result: "neutral",
       resultText: "Attesa",
-      percentageChange: round(percentageChange, 3)
+      priceDifference: null,
+      percentageChange: null
     };
   }
 
   if (action === "buy") {
-    const isCorrect = difference >= threshold;
+    const difference = closePrice - entryPrice;
+    const percentageChange = entryPrice ? (difference / entryPrice) * 100 : 0;
 
     return {
-      result: isCorrect ? "correct" : "wrong",
-      resultText: isCorrect ? "Realizzato" : "Non realizzato",
-      percentageChange: round(percentageChange, 3)
+      result: difference > 0 ? "correct" : "wrong",
+      resultText: difference > 0 ? "Realizzato" : "Non realizzato",
+      priceDifference: difference,
+      percentageChange
     };
   }
 
   if (action === "sell") {
-    const isCorrect = difference <= -threshold;
+    const difference = entryPrice - closePrice;
+    const percentageChange = entryPrice ? (difference / entryPrice) * 100 : 0;
 
     return {
-      result: isCorrect ? "correct" : "wrong",
-      resultText: isCorrect ? "Realizzato" : "Non realizzato",
-      percentageChange: round(percentageChange, 3)
+      result: difference > 0 ? "correct" : "wrong",
+      resultText: difference > 0 ? "Realizzato" : "Non realizzato",
+      priceDifference: difference,
+      percentageChange
     };
   }
 
   return {
     result: "neutral",
     resultText: "Non operativo",
-    percentageChange: round(percentageChange, 3)
+    priceDifference: null,
+    percentageChange: null
   };
 }
 
