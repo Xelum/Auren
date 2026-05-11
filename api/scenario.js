@@ -1,3 +1,12 @@
+// File consigliato: /api/scenario.js
+// Richiede una variabile ambiente già presente: TWELVE_DATA_API_KEY
+// Per salvare davvero lo storico su Vercel serve anche un database/KV.
+// Questo codice usa Redis compatibile Upstash/Vercel KV tramite REST API:
+// - KV_REST_API_URL
+// - KV_REST_API_TOKEN
+//
+// Devi creare anche /api/history.js usando il codice che trovi dopo questo file.
+
 export default async function handler(req, res) {
   const API_KEY = process.env.TWELVE_DATA_API_KEY;
 
@@ -226,7 +235,7 @@ export default async function handler(req, res) {
       tradability
     });
 
-    return res.status(200).json({
+    const payload = {
       market: "XAU/USD",
       horizon: "30m",
 
@@ -291,7 +300,11 @@ export default async function handler(req, res) {
       cacheSeconds: secondsUntilNextUpdate,
 
       scenario
-    });
+    };
+
+    await updateScenarioHistory(payload, price, analysisTime);
+
+    return res.status(200).json(payload);
   } catch (error) {
     return res.status(500).json({
       error: "Errore durante il calcolo dello scenario",
@@ -299,6 +312,215 @@ export default async function handler(req, res) {
     });
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* STORICO                                                                    */
+/* -------------------------------------------------------------------------- */
+
+const HISTORY_KEY = "auren:history";
+const MAX_HISTORY_ITEMS = 3000;
+
+async function updateScenarioHistory(payload, currentPrice, analysisTime) {
+  const history = await getHistoryItems();
+
+  const updatedHistory = history.map(item => {
+    if (item.result !== "pending") return item;
+
+    const createdAt = new Date(item.createdAt);
+    const minutesElapsed = (analysisTime - createdAt) / 1000 / 60;
+
+    if (minutesElapsed < 30) return item;
+
+    const resultData = evaluateScenarioResult(item, currentPrice);
+
+    return {
+      ...item,
+      result: resultData.result,
+      resultText: resultData.resultText,
+      closedAt: analysisTime.toISOString(),
+      closePrice: round(currentPrice),
+      priceDifference: round(currentPrice - item.entryPrice)
+    };
+  });
+
+  const currentId = buildHistoryId(analysisTime);
+  const alreadyExists = updatedHistory.some(item => item.id === currentId);
+
+  if (!alreadyExists) {
+    updatedHistory.push(buildHistoryItem(payload, analysisTime));
+  }
+
+  updatedHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  await setHistoryItems(updatedHistory.slice(0, MAX_HISTORY_ITEMS));
+}
+
+function buildHistoryItem(payload, analysisTime) {
+  const action = payload.action || "wait";
+  const scenario = payload.scenario || {};
+  const evaluation = scenario.evaluation || {};
+
+  return {
+    id: buildHistoryId(analysisTime),
+    market: payload.market || "XAU/USD",
+    horizon: payload.horizon || "30m",
+    createdAt: analysisTime.toISOString(),
+    date: formatDateKey(analysisTime),
+    time: formatTimeKey(analysisTime),
+
+    action,
+    actionText: actionToItalian(action),
+    result: "pending",
+    resultText: "In verifica",
+
+    entryPrice: round(payload.price),
+    closePrice: null,
+    priceDifference: null,
+
+    support: round(payload.support),
+    resistance: round(payload.resistance),
+    reliability: payload.reliability,
+    marketRegime: payload.marketRegime,
+    direction: payload.direction,
+    tradable: payload.tradable,
+
+    threshold: round(payload.threshold || evaluation.threshold || 0),
+    expectedMove: round(payload.expectedMove || evaluation.expectedMove || 0),
+
+    title: scenario.main?.title || "Scenario salvato",
+    description: scenario.main?.description || scenario.interpretation || "Scenario salvato nello storico.",
+    evaluationRule: evaluation.rule || "Verifica automatica alla chiusura dei 30 minuti."
+  };
+}
+
+function evaluateScenarioResult(item, currentPrice) {
+  const action = item.action;
+  const entryPrice = Number(item.entryPrice);
+  const threshold = Math.max(Number(item.threshold || 0), 0);
+  const difference = currentPrice - entryPrice;
+
+  if (action === "buy") {
+    const isCorrect = difference >= threshold;
+
+    return {
+      result: isCorrect ? "correct" : "wrong",
+      resultText: isCorrect ? "Realizzato" : "Non realizzato"
+    };
+  }
+
+  if (action === "sell") {
+    const isCorrect = difference <= -threshold;
+
+    return {
+      result: isCorrect ? "correct" : "wrong",
+      resultText: isCorrect ? "Realizzato" : "Non realizzato"
+    };
+  }
+
+  const isStillNeutral = Math.abs(difference) <= threshold;
+
+  return {
+    result: isStillNeutral ? "correct" : "wrong",
+    resultText: isStillNeutral ? "Realizzato" : "Non realizzato"
+  };
+}
+
+function buildHistoryId(date) {
+  const d = new Date(date);
+  return "AUR-" +
+    d.getFullYear() +
+    pad(d.getMonth() + 1) +
+    pad(d.getDate()) +
+    "-" +
+    pad(d.getHours()) +
+    pad(d.getMinutes());
+}
+
+function actionToItalian(action) {
+  if (action === "buy") return "Acquisto";
+  if (action === "sell") return "Vendita";
+  return "Attesa";
+}
+
+function formatDateKey(date) {
+  const d = new Date(date);
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+}
+
+function formatTimeKey(date) {
+  const d = new Date(date);
+  return pad(d.getHours()) + ":" + pad(d.getMinutes());
+}
+
+function pad(value) {
+  return String(value).padStart(2, "0");
+}
+
+async function getHistoryItems() {
+  const data = await kvGet(HISTORY_KEY);
+  return Array.isArray(data) ? data : [];
+}
+
+async function setHistoryItems(items) {
+  await kvSet(HISTORY_KEY, items);
+}
+
+async function kvGet(key) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+
+  if (!url || !token) {
+    return [];
+  }
+
+  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json();
+
+  if (!data || data.result === null || data.result === undefined) {
+    return [];
+  }
+
+  if (typeof data.result === "string") {
+    try {
+      return JSON.parse(data.result);
+    } catch {
+      return [];
+    }
+  }
+
+  return data.result;
+}
+
+async function kvSet(key, value) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+
+  if (!url || !token) {
+    return;
+  }
+
+  await fetch(`${url}/set/${encodeURIComponent(key)}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(value)
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* IL RESTO DEL TUO ALGORITMO RESTA UGUALE                                    */
+/* -------------------------------------------------------------------------- */
 
 function getCurrentAnalysisTime(now) {
   const analysisTime = new Date(now);
@@ -624,7 +846,6 @@ function calculateM30DirectionScore(data) {
     ema50_1d,
     rsi15m,
     rsi30m,
-    rsi1h,
     structure15m,
     structure30m,
     structure1h,
@@ -831,8 +1052,7 @@ function calculateSignalQuality(data) {
     momentum15m,
     momentum30m,
     slope15m,
-    slope30m,
-    slope1h
+    slope30m
   } = data;
 
   let trendAlignment = 50;
@@ -1391,3 +1611,62 @@ function round(value, decimals = 2) {
   if (typeof value !== "number" || Number.isNaN(value)) return 0;
   return Number(value.toFixed(decimals));
 }
+
+/* -------------------------------------------------------------------------- */
+/* File separato consigliato: /api/history.js                                 */
+/* -------------------------------------------------------------------------- */
+
+/*
+const HISTORY_KEY = "auren:history";
+
+export default async function handler(req, res) {
+  try {
+    const items = await kvGet(HISTORY_KEY);
+
+    return res.status(200).json({
+      items: Array.isArray(items) ? items : []
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Errore durante il caricamento dello storico",
+      details: error.message
+    });
+  }
+}
+
+async function kvGet(key) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+
+  if (!url || !token) {
+    return [];
+  }
+
+  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json();
+
+  if (!data || data.result === null || data.result === undefined) {
+    return [];
+  }
+
+  if (typeof data.result === "string") {
+    try {
+      return JSON.parse(data.result);
+    } catch {
+      return [];
+    }
+  }
+
+  return data.result;
+}
+*/
+
