@@ -813,20 +813,23 @@
       const result = item.result || item.outcome || item.verification || "pending";
 
       return {
-        id: buildId(item, index),
-        createdAt,
-        dateKey: formatDateKey(createdAt),
-        dateLabel: formatDateIt(createdAt),
-        timeLabel: formatTime(createdAt),
-        action,
-        result,
-        price: item.price,
-        support: item.support,
-        resistance: item.resistance,
-        reliability: item.reliability || (item.signalQuality && item.signalQuality.overall),
-        description: item.description || item.summary || item.note || buildDescription(item),
-        raw: item
-      };
+  id: buildId(item, index),
+  createdAt,
+  dateKey: formatDateKey(createdAt),
+  dateLabel: formatDateIt(createdAt),
+  timeLabel: formatTime(createdAt),
+  action,
+  result,
+  entryPrice: item.entryPrice || item.price,
+  closePrice: item.closePrice,
+  priceDifference: item.priceDifference,
+  percentageChange: item.percentageChange,
+  support: item.support,
+  resistance: item.resistance,
+  reliability: item.reliability,
+  description: item.description || item.summary || item.note || buildDescription(item),
+  raw: item
+};
     }
 
     function buildDescription(item) {
