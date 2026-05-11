@@ -351,14 +351,15 @@ async function updateScenarioHistory(payload, currentPrice, analysisTime) {
     const resultData = evaluateScenarioResult(item, currentPrice);
 
     return {
-  ...item,
-  result: resultData.result,
-  resultText: resultData.resultText,
-  closedAt: analysisTime.toISOString(),
-  closePrice: round(currentPrice),
-  priceDifference: round(currentPrice - item.entryPrice),
-  percentageChange: resultData.percentageChange
-};
+      ...item,
+      result: resultData.result,
+      resultText: resultData.resultText,
+      closedAt: analysisTime.toISOString(),
+      closePrice: round(currentPrice),
+      priceDifference: round(currentPrice - item.entryPrice),
+      percentageChange: resultData.percentageChange
+    };
+  });
 
   const currentId = buildHistoryId(analysisTime);
   const alreadyExists = updatedHistory.some(item => item.id === currentId);
