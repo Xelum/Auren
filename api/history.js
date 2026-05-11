@@ -1,4 +1,24 @@
+import { createClient } from "redis";
+
 const HISTORY_KEY = "auren:history";
+
+let redisClient;
+
+async function getRedisClient() {
+  if (!redisClient) {
+    redisClient = createClient({
+      url: process.env.REDIS_URL
+    });
+
+    redisClient.on("error", (error) => {
+      console.error("Redis error:", error);
+    });
+
+    await redisClient.connect();
+  }
+
+  return redisClient;
+}
 
 export default async function handler(req, res) {
   try {
@@ -16,36 +36,20 @@ export default async function handler(req, res) {
 }
 
 async function kvGet(key) {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-
-  if (!url || !token) {
+  if (!process.env.REDIS_URL) {
     return [];
   }
 
-  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const client = await getRedisClient();
+  const value = await client.get(key);
 
-  if (!response.ok) {
+  if (!value) {
     return [];
   }
 
-  const data = await response.json();
-
-  if (!data || data.result === null || data.result === undefined) {
+  try {
+    return JSON.parse(value);
+  } catch {
     return [];
   }
-
-  if (typeof data.result === "string") {
-    try {
-      return JSON.parse(data.result);
-    } catch {
-      return [];
-    }
-  }
-
-  return data.result;
 }
