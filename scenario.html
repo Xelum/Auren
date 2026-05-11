@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auren | Storico scenari</title>
+
+  <style>
+    :root {
+      --black: #0B0B0B;
+      --soft-white: #F5F5F5;
+      --muted: #A7A7A7;
+      --gold: #C6A85A;
+      --gold-light: #FFD978;
+      --danger: #E66B6B;
+      --green: #79D98B;
+      --blue: #78B7FF;
+      --border-gold: rgba(198, 168, 90, 0.42);
+      --border-gold-soft: rgba(198, 168, 90, 0.28);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--black);
+      color: var(--soft-white);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: -5;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(198,168,90,0.13), transparent 28%),
+        radial-gradient(circle at 80% 12%, rgba(198,168,90,0.08), transparent 26%),
+        linear-gradient(180deg, #111111 0%, #080808 100%);
+    }
+
+    .background::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 92%);
+    }
+
+    .gold-rain,
+    .meteor-rain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .gold-rain { z-index: -3; }
+    .meteor-rain { z-index: -2; }
+
+    .gold-streak {
+      position: absolute;
+      top: -180px;
+      width: 2px;
+      height: 140px;
+      background: linear-gradient(to bottom, transparent, rgba(255,217,120,0.9), transparent);
+      filter: drop-shadow(0 0 12px rgba(255,217,120,0.75));
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-220px) translateX(0) rotate(10deg); opacity: 0; }
+      10% { opacity: 0.65; }
+      85% { opacity: 0.35; }
+      100% { transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg); opacity: 0; }
+    }
+
+    .meteor {
+      position: absolute;
+      top: -40px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow:
+        0 0 10px rgba(255,217,120,0.9),
+        0 0 24px rgba(255,217,120,0.55),
+        0 0 42px rgba(198,168,90,0.28);
+      opacity: 0;
+      animation: meteorFall linear infinite;
+    }
+
+    .meteor::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 42px;
+      left: 50%;
+      bottom: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(to top, rgba(255,217,120,0.7), transparent);
+      filter: blur(1px);
+    }
+
+    @keyframes meteorFall {
+      0% { transform: translateY(-80px) translateX(0) scale(0.6); opacity: 0; }
+      12% { opacity: 0.75; }
+      80% { opacity: 0.45; }
+      100% { transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1); opacity: 0; }
+    }
+
+    .cursor-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 150px;
+      height: 150px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      background: radial-gradient(circle, rgba(255,217,120,0.16), rgba(198,168,90,0.07) 35%, transparent 70%);
+      filter: blur(8px);
+      opacity: 0.75;
+    }
+
+    .mouse-trail {
+      position: fixed;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9997;
+      background: radial-gradient(circle, rgba(255,217,120,0.34), rgba(198,168,90,0.12) 45%, transparent 72%);
+      box-shadow: 0 0 22px rgba(255,217,120,0.3);
+      animation: trailFade 0.7s ease-out forwards;
+    }
+
+    @keyframes trailFade {
+      from { transform: translate(-50%, -50%) scale(1); opacity: 0.75; }
+      to { transform: translate(-50%, -50%) scale(1.9); opacity: 0; }
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(11,11,11,0.82);
+      border-bottom: 1px solid rgba(198,168,90,0.20);
+    }
+
+    .nav {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 8px 24px;
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 190px;
+    }
+
+    .logo-img-big {
+      height: 58px;
+      width: auto;
+      max-width: 185px;
+      object-fit: contain;
+      display: block;
+      filter:
+        drop-shadow(0 0 10px rgba(255,217,120,0.75))
+        drop-shadow(0 0 28px rgba(198,168,90,0.45));
+      transition: all 0.3s ease;
+    }
+
+    .brand:hover .logo-img-big { transform: scale(1.04); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover { color: var(--gold-light); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold);
+      background: rgba(198,168,90,0.08);
+      color: var(--soft-white);
+      font-weight: 700;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: rgba(198,168,90,0.15);
+      box-shadow: 0 0 28px rgba(198,168,90,0.24);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #111;
+      border: none;
+      box-shadow: 0 0 40px rgba(198,168,90,0.25);
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 118px 24px 50px;
+    }
+
+    .page-hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold);
+      background: rgba(198,168,90,0.09);
+      color: var(--gold-light);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 20px rgba(255,217,120,0.9);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.35); }
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+      margin-bottom: 18px;
+      max-width: 760px;
+    }
+
+    .gold-text {
+      background: linear-gradient(135deg, #fff3bf, var(--gold), #8b6d2f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-text {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+      max-width: 760px;
+    }
+
+    .board {
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
+        rgba(255,255,255,0.025);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,217,120,0.05);
+      overflow: hidden;
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 0.9fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .control-field {
+      min-height: 46px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.22);
+      color: var(--soft-white);
+      padding: 0 16px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .control-field:focus {
+      border-color: rgba(255,217,120,0.55);
+      box-shadow: 0 0 24px rgba(198,168,90,0.14);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .summary-value {
+      color: var(--soft-white);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .summary-value.gold { color: var(--gold-light); }
+    .summary-value.green { color: var(--green); }
+    .summary-value.red { color: var(--danger); }
+    .summary-value.blue { color: var(--blue); }
+
+    .date-group {
+      margin-top: 22px;
+      border-radius: 28px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+
+    .date-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(198,168,90,0.075);
+    }
+
+    .date-title {
+      color: var(--gold-light);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .date-count {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 880px;
+    }
+
+    th,
+    td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--gold-light);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(0,0,0,0.12);
+      white-space: nowrap;
+    }
+
+    td {
+      color: var(--soft-white);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .id-pill,
+    .action-pill,
+    .result-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      white-space: nowrap;
+    }
+
+    .id-pill {
+      color: var(--gold-light);
+    }
+
+    .action-pill.buy {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+    }
+
+    .action-pill.sell {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
+    }
+
+    .action-pill.wait {
+      color: var(--gold-light);
+      border-color: rgba(255,217,120,0.35);
+      background: rgba(198,168,90,0.08);
+    }
+
+    .result-pill.correct {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+    }
+
+    .result-pill.wrong {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
+    }
+
+    .result-pill.pending {
+      color: var(--blue);
+      border-color: rgba(120,183,255,0.35);
+      background: rgba(120,183,255,0.08);
+    }
+
+    .empty-state {
+      padding: 34px;
+      border-radius: 28px;
+      border: 1px dashed var(--border-gold);
+      background: rgba(0,0,0,0.20);
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .empty-state strong {
+      color: var(--gold-light);
+    }
+
+    .technical-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    footer {
+      border-top: 1px solid rgba(198,168,90,0.20);
+      padding: 30px 24px;
+      color: #777;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .cursor-glow,
+      .mouse-trail { display: none; }
+
+      .nav { min-height: 72px; }
+      .logo-img-big { height: 54px; max-width: 170px; }
+      .nav-links { display: none; }
+      .brand { min-width: auto; }
+
+      main {
+        padding-top: 108px;
+      }
+
+      .page-hero,
+      .controls,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-hero {
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .logo-img-big { height: 50px; max-width: 150px; }
+
+      .nav {
+        min-height: 70px;
+        padding: 8px 18px;
+      }
+
+      .nav .btn {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 13px;
+      }
+
+      main {
+        padding: 104px 20px 42px;
+      }
+
+      h1 { font-size: 42px; }
+      .board { padding: 22px; }
+      .date-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background"></div>
+  <div class="gold-rain" id="goldRain"></div>
+  <div class="meteor-rain" id="meteorRain"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <header>
+    <nav class="nav">
+      <a href="/" class="brand">
+        <img src="logo0.png" alt="Logo Auren" class="logo-img-big" />
+      </a>
+
+      <div class="nav-links">
+        <a href="/index.html#analisi">Analisi</a>
+        <a href="/index.html#grafico">Grafico live</a>
+        <a href="/index.html#scenario">Scenario</a>
+        <a href="/index.html#premium">Premium</a>
+      </div>
+
+      <a href="/index.html#scenario" class="btn">Torna allo scenario</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div>
+        <div class="eyebrow">
+          <span class="pulse"></span>
+          Storico operativo XAU/USD
+        </div>
+
+        <h1>Storico <span class="gold-text">scenari</span>.</h1>
+
+        <p class="hero-text">
+          Qui vengono salvate le analisi generate ogni 30 minuti. Ogni giornata ha il suo storico,
+          con numero identificativo, data, orario, azione indicata e verifica finale dello scenario.
+        </p>
+      </div>
+
+      <a href="/index.html#scenario" class="btn btn-primary">Scenario attuale</a>
+    </section>
+
+    <section class="board">
+      <div class="controls">
+        <input class="control-field" type="search" id="searchInput" placeholder="Cerca per ID, azione, esito, data..." />
+
+        <select class="control-field" id="dateFilter">
+          <option value="all">Tutte le date</option>
+        </select>
+
+        <select class="control-field" id="actionFilter">
+          <option value="all">Tutte le azioni</option>
+          <option value="buy">Acquisto</option>
+          <option value="sell">Vendita</option>
+          <option value="wait">Attesa</option>
+        </select>
+
+        <button class="btn" type="button" id="refreshBtn">Aggiorna</button>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label">Scenari totali</div>
+          <div class="summary-value gold" id="totalCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Realizzati</div>
+          <div class="summary-value green" id="correctCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Non realizzati</div>
+          <div class="summary-value red" id="wrongCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">In verifica</div>
+          <div class="summary-value blue" id="pendingCount">0</div>
+        </div>
+      </div>
+
+      <div id="historyContainer"></div>
+
+      <div class="technical-note">
+        Nota tecnica: questa pagina prova a leggere lo storico da <strong>/api/history</strong>.
+        Se l'endpoint non è ancora disponibile, usa i dati salvati in <strong>localStorage</strong> con la chiave
+        <strong>auren_history</strong>. Per uno storico reale consultabile anche nei giorni successivi e da più dispositivi,
+        serve salvare gli scenari lato server o database.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Auren. Storico informativo di mercato. Non costituisce consulenza finanziaria.
+  </footer>
+
+  <script>
+    const goldRain = document.getElementById("goldRain");
+    const streakCount = 22;
+
+    for (let i = 0; i < streakCount; i++) {
+      const streak = document.createElement("span");
+      streak.className = "gold-streak";
+      streak.style.left = Math.random() * 100 + "vw";
+      streak.style.animationDuration = 4.5 + Math.random() * 6 + "s";
+      streak.style.animationDelay = Math.random() * 7 + "s";
+      streak.style.height = 60 + Math.random() * 130 + "px";
+      streak.style.opacity = 0.12 + Math.random() * 0.38;
+      goldRain.appendChild(streak);
+    }
+
+    const meteorRain = document.getElementById("meteorRain");
+    const meteorCount = 30;
+
+    for (let i = 0; i < meteorCount; i++) {
+      const meteor = document.createElement("span");
+      meteor.className = "meteor";
+      const size = 2 + Math.random() * 4;
+      meteor.style.width = size + "px";
+      meteor.style.height = size + "px";
+      meteor.style.left = Math.random() * 100 + "vw";
+      meteor.style.animationDuration = 5 + Math.random() * 9 + "s";
+      meteor.style.animationDelay = Math.random() * 11 + "s";
+      meteor.style.opacity = 0.16 + Math.random() * 0.52;
+      meteorRain.appendChild(meteor);
+    }
+
+    const cursorGlow = document.getElementById("cursorGlow");
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let glowX = mouseX;
+    let glowY = mouseY;
+    let lastTrail = 0;
+
+    document.addEventListener("mousemove", (event) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+
+      const now = Date.now();
+
+      if (now - lastTrail > 42) {
+        const trail = document.createElement("span");
+        trail.className = "mouse-trail";
+        trail.style.left = mouseX + "px";
+        trail.style.top = mouseY + "px";
+        document.body.appendChild(trail);
+        setTimeout(() => trail.remove(), 700);
+        lastTrail = now;
+      }
+    });
+
+    function animateGlow() {
+      glowX += (mouseX - glowX) * 0.18;
+      glowY += (mouseY - glowY) * 0.18;
+      cursorGlow.style.left = glowX + "px";
+      cursorGlow.style.top = glowY + "px";
+      requestAnimationFrame(animateGlow);
+    }
+
+    animateGlow();
+
+    const historyContainer = document.getElementById("historyContainer");
+    const searchInput = document.getElementById("searchInput");
+    const dateFilter = document.getElementById("dateFilter");
+    const actionFilter = document.getElementById("actionFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    let historyItems = [];
+
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function formatDateKey(date) {
+      const d = new Date(date);
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    }
+
+    function formatDateIt(date) {
+      const d = new Date(date);
+      return d.toLocaleDateString("it-IT", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function formatTime(date) {
+      const d = new Date(date);
+      return pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+
+    function formatPrice(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+      return Number(value).toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function normalizeAction(action) {
+      if (action === "buy" || action === "BUY" || action === "acquisto") return "buy";
+      if (action === "sell" || action === "SELL" || action === "vendita") return "sell";
+      return "wait";
+    }
+
+    function actionLabel(action) {
+      const normalized = normalizeAction(action);
+      if (normalized === "buy") return "Acquisto";
+      if (normalized === "sell") return "Vendita";
+      return "Attesa";
+    }
+
+    function resultLabel(result) {
+      if (result === "correct") return "Realizzato";
+      if (result === "wrong") return "Non realizzato";
+      return "In verifica";
+    }
+
+    function buildId(item, index) {
+      if (item.id) return item.id;
+
+      const date = formatDateKey(item.createdAt || item.updatedAt || new Date());
+      const progressive = String(index + 1).padStart(3, "0");
+      return "AUR-" + date.replaceAll("-", "") + "-" + progressive;
+    }
+
+    function normalizeHistoryItem(item, index) {
+      const createdAt = item.createdAt || item.updatedAt || item.timestamp || new Date().toISOString();
+      const action = normalizeAction(item.action || (item.scenario && item.scenario.action));
+      const result = item.result || item.outcome || item.verification || "pending";
+
+      return {
+        id: buildId(item, index),
+        createdAt,
+        dateKey: formatDateKey(createdAt),
+        dateLabel: formatDateIt(createdAt),
+        timeLabel: formatTime(createdAt),
+        action,
+        result,
+        price: item.price,
+        support: item.support,
+        resistance: item.resistance,
+        reliability: item.reliability || (item.signalQuality && item.signalQuality.overall),
+        description: item.description || item.summary || item.note || buildDescription(item),
+        raw: item
+      };
+    }
+
+    function buildDescription(item) {
+      const scenario = item.scenario || {};
+      const main = scenario.main || {};
+
+      if (main.title || main.description) {
+        return [main.title, main.description].filter(Boolean).join(" - ");
+      }
+
+      if (item.action === "buy") return "Scenario orientato all'acquisto.";
+      if (item.action === "sell") return "Scenario orientato alla vendita.";
+      return "Scenario in attesa di conferme operative.";
+    }
+
+    function saveLocalHistory(items) {
+      localStorage.setItem("auren_history", JSON.stringify(items));
+    }
+
+    function loadLocalHistory() {
+      return JSON.parse(localStorage.getItem("auren_history") || "[]");
+    }
+
+    async function loadHistory() {
+      try {
+        const response = await fetch("/api/history", { cache: "no-store" });
+
+        if (!response.ok) throw new Error("Endpoint storico non disponibile");
+
+        const data = await response.json();
+        const items = Array.isArray(data) ? data : data.items || [];
+
+        historyItems = items.map(normalizeHistoryItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } catch (error) {
+        const localItems = loadLocalHistory();
+        historyItems = localItems.map(normalizeHistoryItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
+      populateDateFilter();
+      renderHistory();
+    }
+
+    function populateDateFilter() {
+      const currentValue = dateFilter.value;
+      const dates = [...new Map(historyItems.map(item => [item.dateKey, item.dateLabel])).entries()];
+
+      dateFilter.innerHTML = '<option value="all">Tutte le date</option>';
+
+      dates.forEach(([dateKey, dateLabel]) => {
+        const option = document.createElement("option");
+        option.value = dateKey;
+        option.textContent = dateLabel;
+        dateFilter.appendChild(option);
+      });
+
+      if ([...dateFilter.options].some(option => option.value === currentValue)) {
+        dateFilter.value = currentValue;
+      }
+    }
+
+    function getFilteredItems() {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedDate = dateFilter.value;
+      const selectedAction = actionFilter.value;
+
+      return historyItems.filter(item => {
+        const searchable = [
+          item.id,
+          item.dateLabel,
+          item.timeLabel,
+          actionLabel(item.action),
+          resultLabel(item.result),
+          item.description,
+          item.price,
+          item.support,
+          item.resistance
+        ].join(" ").toLowerCase();
+
+        const matchesQuery = !query || searchable.includes(query);
+        const matchesDate = selectedDate === "all" || item.dateKey === selectedDate;
+        const matchesAction = selectedAction === "all" || item.action === selectedAction;
+
+        return matchesQuery && matchesDate && matchesAction;
+      });
+    }
+
+    function updateSummary(items) {
+      document.getElementById("totalCount").innerText = items.length;
+      document.getElementById("correctCount").innerText = items.filter(item => item.result === "correct").length;
+      document.getElementById("wrongCount").innerText = items.filter(item => item.result === "wrong").length;
+      document.getElementById("pendingCount").innerText = items.filter(item => item.result !== "correct" && item.result !== "wrong").length;
+    }
+
+    function groupByDate(items) {
+      return items.reduce((groups, item) => {
+        if (!groups[item.dateKey]) {
+          groups[item.dateKey] = {
+            label: item.dateLabel,
+            items: []
+          };
+        }
+
+        groups[item.dateKey].items.push(item);
+        return groups;
+      }, {});
+    }
+
+    function renderHistory() {
+      const filtered = getFilteredItems();
+      updateSummary(filtered);
+
+      if (!filtered.length) {
+        historyContainer.innerHTML = `
+          <div class="empty-state">
+            <strong>Nessuno scenario trovato.</strong><br>
+            Quando il tuo algoritmo salverà le analisi ogni 30 minuti, appariranno automaticamente in questa pagina.
+          </div>
+        `;
+        return;
+      }
+
+      const groups = groupByDate(filtered);
+
+      historyContainer.innerHTML = Object.entries(groups).map(([dateKey, group]) => {
+        return `
+          <div class="date-group">
+            <div class="date-header">
+              <div class="date-title">${group.label}</div>
+              <div class="date-count">${group.items.length} scenari salvati</div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Orario</th>
+                    <th>Azione</th>
+                    <th>Esito</th>
+                    <th>Prezzo</th>
+                    <th>Affidabilità</th>
+                    <th>Lettura</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${group.items.map(item => `
+                    <tr>
+                      <td><span class="id-pill">${item.id}</span></td>
+                      <td>${item.dateKey}</td>
+                      <td>${item.timeLabel}</td>
+                      <td><span class="action-pill ${item.action}">${actionLabel(item.action)}</span></td>
+                      <td><span class="result-pill ${item.result === "correct" ? "correct" : item.result === "wrong" ? "wrong" : "pending"}">${resultLabel(item.result)}</span></td>
+                      <td>${formatPrice(item.price)}</td>
+                      <td>${item.reliability ? Math.round(Number(item.reliability)) + "%" : "--"}</td>
+                      <td>
+                        <div>${item.description || "--"}</div>
+                        <div class="muted">
+                          Supporto: ${formatPrice(item.support)} · Resistenza: ${formatPrice(item.resistance)}
+                        </div>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    searchInput.addEventListener("input", renderHistory);
+    dateFilter.addEventListener("change", renderHistory);
+    actionFilter.addEventListener("change", renderHistory);
+    refreshBtn.addEventListener("click", loadHistory);
+
+    loadHistory();
+  </script>
+</body>
+</html>
