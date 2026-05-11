@@ -338,7 +338,7 @@
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 12px;
       margin-bottom: 22px;
     }
@@ -347,13 +347,15 @@
       border: 1px solid var(--border-gold-soft);
       background: rgba(0,0,0,0.20);
       border-radius: 20px;
-      padding: 16px;
+      padding: 14px 15px;
+      min-height: 92px;
     }
 
     .summary-label {
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 8px;
+      line-height: 1.35;
     }
 
     .summary-value {
@@ -381,7 +383,7 @@
       justify-content: space-between;
       gap: 18px;
       align-items: center;
-      padding: 18px 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       background: rgba(198,168,90,0.075);
     }
@@ -390,6 +392,7 @@
       color: var(--gold-light);
       font-size: 16px;
       font-weight: 900;
+      text-transform: capitalize;
     }
 
     .date-count {
@@ -405,21 +408,23 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 880px;
+      min-width: 1180px;
+      table-layout: fixed;
     }
 
     th,
     td {
-      padding: 16px 18px;
+      padding: 9px 12px;
       text-align: left;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      vertical-align: top;
-      font-size: 14px;
+      vertical-align: middle;
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     th {
       color: var(--gold-light);
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       background: rgba(0,0,0,0.12);
@@ -434,10 +439,22 @@
       border-bottom: none;
     }
 
+    th:nth-child(1), td:nth-child(1) { width: 170px; }
+    th:nth-child(2), td:nth-child(2) { width: 190px; }
+    th:nth-child(3), td:nth-child(3) { width: 75px; }
+    th:nth-child(4), td:nth-child(4) { width: 105px; }
+    th:nth-child(5), td:nth-child(5) { width: 120px; }
+    th:nth-child(6), td:nth-child(6) { width: 120px; }
+    th:nth-child(7), td:nth-child(7) { width: 115px; }
+    th:nth-child(8), td:nth-child(8) { width: 130px; }
+    th:nth-child(9), td:nth-child(9) { width: 95px; }
+    th:nth-child(10), td:nth-child(10) { width: auto; }
+
     .muted {
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 3px;
     }
 
     .id-pill,
@@ -446,8 +463,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 32px;
-      padding: 0 12px;
+      min-height: 30px;
+      padding: 0 11px;
       border-radius: 999px;
       font-weight: 900;
       font-size: 12px;
@@ -496,6 +513,40 @@
       background: rgba(120,183,255,0.08);
     }
 
+    .result-pill.neutral {
+      color: var(--gold-light);
+      border-color: rgba(255,217,120,0.35);
+      background: rgba(198,168,90,0.08);
+    }
+
+    .variation-positive {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .variation-negative {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .variation-neutral {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .reading-cell {
+      color: var(--soft-white);
+      line-height: 1.4;
+    }
+
+    .reading-main {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      max-width: 100%;
+    }
+
     .empty-state {
       padding: 34px;
       border-radius: 28px;
@@ -510,23 +561,18 @@
       color: var(--gold-light);
     }
 
-    .technical-note {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.65;
-      margin-top: 18px;
-      padding: 16px 18px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
     footer {
       border-top: 1px solid rgba(198,168,90,0.20);
       padding: 30px 24px;
       color: #777;
       text-align: center;
       font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     @media (max-width: 900px) {
@@ -658,11 +704,19 @@
           <div class="summary-label">In verifica</div>
           <div class="summary-value blue" id="pendingCount">0</div>
         </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Attese / non operative</div>
+          <div class="summary-value gold" id="waitCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Winrate operativo</div>
+          <div class="summary-value green" id="winrateValue">0%</div>
+        </div>
       </div>
 
       <div id="historyContainer"></div>
-        
-      </div>
     </section>
   </main>
 
@@ -754,6 +808,7 @@
 
     function formatDateIt(date) {
       const d = new Date(date);
+
       return d.toLocaleDateString("it-IT", {
         weekday: "long",
         day: "2-digit",
@@ -769,28 +824,74 @@
 
     function formatPrice(value) {
       if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+
       return Number(value).toLocaleString("it-IT", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
     }
 
+    function formatSignedPrice(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+
+      const number = Number(value);
+      const sign = number > 0 ? "+" : "";
+
+      return sign + number.toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatSignedPercent(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
+
+      const number = Number(value);
+      const sign = number > 0 ? "+" : "";
+
+      return sign + number.toLocaleString("it-IT", {
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3
+      }) + "%";
+    }
+
+    function getVariationClass(value) {
+      const number = Number(value || 0);
+
+      if (number > 0) return "variation-positive";
+      if (number < 0) return "variation-negative";
+      return "variation-neutral";
+    }
+
     function normalizeAction(action) {
-      if (action === "buy" || action === "BUY" || action === "acquisto") return "buy";
-      if (action === "sell" || action === "SELL" || action === "vendita") return "sell";
+      if (action === "buy" || action === "BUY" || action === "acquisto" || action === "Acquisto") return "buy";
+      if (action === "sell" || action === "SELL" || action === "vendita" || action === "Vendita") return "sell";
       return "wait";
     }
 
     function actionLabel(action) {
       const normalized = normalizeAction(action);
+
       if (normalized === "buy") return "Acquisto";
       if (normalized === "sell") return "Vendita";
+
       return "Attesa";
     }
 
+    function normalizeResult(result) {
+      if (result === "correct") return "correct";
+      if (result === "wrong") return "wrong";
+      if (result === "neutral") return "neutral";
+      return "pending";
+    }
+
     function resultLabel(result) {
-      if (result === "correct") return "Realizzato";
-      if (result === "wrong") return "Non realizzato";
+      const normalized = normalizeResult(result);
+
+      if (normalized === "correct") return "Realizzato";
+      if (normalized === "wrong") return "Non realizzato";
+      if (normalized === "neutral") return "Attesa";
+
       return "In verifica";
     }
 
@@ -799,32 +900,33 @@
 
       const date = formatDateKey(item.createdAt || item.updatedAt || new Date());
       const progressive = String(index + 1).padStart(3, "0");
+
       return "AUR-" + date.replaceAll("-", "") + "-" + progressive;
     }
 
     function normalizeHistoryItem(item, index) {
       const createdAt = item.createdAt || item.updatedAt || item.timestamp || new Date().toISOString();
       const action = normalizeAction(item.action || (item.scenario && item.scenario.action));
-      const result = item.result || item.outcome || item.verification || "pending";
+      const result = normalizeResult(item.result || item.outcome || item.verification || "pending");
 
       return {
-  id: buildId(item, index),
-  createdAt,
-  dateKey: formatDateKey(createdAt),
-  dateLabel: formatDateIt(createdAt),
-  timeLabel: formatTime(createdAt),
-  action,
-  result,
-  entryPrice: item.entryPrice || item.price,
-  closePrice: item.closePrice,
-  priceDifference: item.priceDifference,
-  percentageChange: item.percentageChange,
-  support: item.support,
-  resistance: item.resistance,
-  reliability: item.reliability,
-  description: item.description || item.summary || item.note || buildDescription(item),
-  raw: item
-};
+        id: buildId(item, index),
+        createdAt,
+        dateKey: formatDateKey(createdAt),
+        dateLabel: formatDateIt(createdAt),
+        timeLabel: formatTime(createdAt),
+        action,
+        result,
+        entryPrice: item.entryPrice ?? item.price,
+        closePrice: item.closePrice,
+        priceDifference: item.priceDifference,
+        percentageChange: item.percentageChange,
+        support: item.support,
+        resistance: item.resistance,
+        reliability: item.reliability,
+        description: item.description || item.summary || item.note || buildDescription(item),
+        raw: item
+      };
     }
 
     function buildDescription(item) {
@@ -837,11 +939,8 @@
 
       if (item.action === "buy") return "Scenario orientato all'acquisto.";
       if (item.action === "sell") return "Scenario orientato alla vendita.";
-      return "Scenario in attesa di conferme operative.";
-    }
 
-    function saveLocalHistory(items) {
-      localStorage.setItem("auren_history", JSON.stringify(items));
+      return "Scenario in attesa di conferme operative.";
     }
 
     function loadLocalHistory() {
@@ -857,10 +956,15 @@
         const data = await response.json();
         const items = Array.isArray(data) ? data : data.items || [];
 
-        historyItems = items.map(normalizeHistoryItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        historyItems = items
+          .map(normalizeHistoryItem)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       } catch (error) {
         const localItems = loadLocalHistory();
-        historyItems = localItems.map(normalizeHistoryItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        historyItems = localItems
+          .map(normalizeHistoryItem)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       }
 
       populateDateFilter();
@@ -898,7 +1002,10 @@
           actionLabel(item.action),
           resultLabel(item.result),
           item.description,
-          item.price,
+          item.entryPrice,
+          item.closePrice,
+          item.priceDifference,
+          item.percentageChange,
           item.support,
           item.resistance
         ].join(" ").toLowerCase();
@@ -912,33 +1019,25 @@
     }
 
     function updateSummary(items) {
-  const operativeItems = items.filter(item => item.action !== "wait");
-  const correctItems = operativeItems.filter(item => item.result === "correct");
-  const wrongItems = operativeItems.filter(item => item.result === "wrong");
-  const pendingItems = operativeItems.filter(item => item.result === "pending");
-  const waitItems = items.filter(item => item.action === "wait" || item.result === "neutral");
+      const operativeItems = items.filter(item => item.action !== "wait");
+      const correctItems = operativeItems.filter(item => item.result === "correct");
+      const wrongItems = operativeItems.filter(item => item.result === "wrong");
+      const pendingItems = operativeItems.filter(item => item.result === "pending");
+      const waitItems = items.filter(item => item.action === "wait" || item.result === "neutral");
 
-  document.getElementById("totalCount").innerText = items.length;
-  document.getElementById("correctCount").innerText = correctItems.length;
-  document.getElementById("wrongCount").innerText = wrongItems.length;
-  document.getElementById("pendingCount").innerText = pendingItems.length;
+      document.getElementById("totalCount").innerText = items.length;
+      document.getElementById("correctCount").innerText = correctItems.length;
+      document.getElementById("wrongCount").innerText = wrongItems.length;
+      document.getElementById("pendingCount").innerText = pendingItems.length;
+      document.getElementById("waitCount").innerText = waitItems.length;
 
-  const winrateEl = document.getElementById("winrateValue");
-  const waitEl = document.getElementById("waitCount");
+      const closedOperative = correctItems.length + wrongItems.length;
+      const winrate = closedOperative > 0
+        ? Math.round((correctItems.length / closedOperative) * 100)
+        : 0;
 
-  if (winrateEl) {
-    const closedOperative = correctItems.length + wrongItems.length;
-    const winrate = closedOperative > 0
-      ? Math.round((correctItems.length / closedOperative) * 100)
-      : 0;
-
-    winrateEl.innerText = winrate + "%";
-  }
-
-  if (waitEl) {
-    waitEl.innerText = waitItems.length;
-  }
-}
+      document.getElementById("winrateValue").innerText = winrate + "%";
+    }
 
     function groupByDate(items) {
       return items.reduce((groups, item) => {
@@ -989,40 +1088,54 @@
                     <th>Esito</th>
                     <th>Prezzo iniziale</th>
                     <th>Prezzo finale</th>
-                     <th>Variazione</th>
+                    <th>Variazione</th>
                     <th>Affidabilità</th>
                     <th>Lettura</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${group.items.map(item => `
-                    <tr>
-                      <td><span class="id-pill">${item.id}</span></td>
-                      <td>${item.dateKey}</td>
-                      <td>${item.timeLabel}</td>
-                      <td><span class="action-pill ${item.action}">${actionLabel(item.action)}</span></td>
-                      <td><span class="result-pill ${item.result === "correct" ? "correct" : item.result === "wrong" ? "wrong" : "pending"}">${resultLabel(item.result)}</span></td>
-                      <td>${formatPrice(item.entryPrice)}</td>
-                      <td>${item.closePrice ? formatPrice(item.closePrice) : "--"}</td>
-                      <td>
-                      ${item.priceDifference !== null && item.priceDifference !== undefined
-                      ? formatPrice(item.priceDifference) + " punti"
-                      : "--"}
-                      <div class="muted">
-                      ${item.percentageChange !== null && item.percentageChange !== undefined
-                      ? item.percentageChange + "%"
-                      : ""}
-                      </div>
-                      </td>
-                      <td>${item.reliability ? Math.round(Number(item.reliability)) + "%" : "--"}</td>
-                      <td>
-                        <div>${item.description || "--"}</div>
-                        <div class="muted">
-                          Supporto: ${formatPrice(item.support)} · Resistenza: ${formatPrice(item.resistance)}
-                        </div>
-                      </td>
-                    </tr>
-                  `).join("")}
+                  ${group.items.map(item => {
+                    const resultClass = item.result === "correct"
+                      ? "correct"
+                      : item.result === "wrong"
+                        ? "wrong"
+                        : item.result === "neutral"
+                          ? "neutral"
+                          : "pending";
+
+                    const variationClass = getVariationClass(item.priceDifference);
+
+                    return `
+                      <tr>
+                        <td><span class="id-pill">${item.id}</span></td>
+                        <td>${item.dateLabel}</td>
+                        <td>${item.timeLabel}</td>
+                        <td><span class="action-pill ${item.action}">${actionLabel(item.action)}</span></td>
+                        <td><span class="result-pill ${resultClass}">${resultLabel(item.result)}</span></td>
+                        <td>${formatPrice(item.entryPrice)}</td>
+                        <td>${item.closePrice !== null && item.closePrice !== undefined ? formatPrice(item.closePrice) : "--"}</td>
+                        <td>
+                          <div class="${variationClass}">
+                            ${item.priceDifference !== null && item.priceDifference !== undefined
+                              ? formatSignedPrice(item.priceDifference) + " punti"
+                              : "--"}
+                          </div>
+                          <div class="muted">
+                            ${item.percentageChange !== null && item.percentageChange !== undefined
+                              ? formatSignedPercent(item.percentageChange)
+                              : ""}
+                          </div>
+                        </td>
+                        <td>${item.reliability ? Math.round(Number(item.reliability)) + "%" : "--"}</td>
+                        <td class="reading-cell">
+                          <div class="reading-main">${item.description || "--"}</div>
+                          <div class="muted">
+                            Supporto: ${formatPrice(item.support)} · Resistenza: ${formatPrice(item.resistance)}
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join("")}
                 </tbody>
               </table>
             </div>
