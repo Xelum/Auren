@@ -351,14 +351,14 @@ async function updateScenarioHistory(payload, currentPrice, analysisTime) {
     const resultData = evaluateScenarioResult(item, currentPrice);
 
     return {
-      ...item,
-      result: resultData.result,
-      resultText: resultData.resultText,
-      closedAt: analysisTime.toISOString(),
-      closePrice: round(currentPrice),
-      priceDifference: round(currentPrice - item.entryPrice)
-    };
-  });
+  ...item,
+  result: resultData.result,
+  resultText: resultData.resultText,
+  closedAt: analysisTime.toISOString(),
+  closePrice: round(currentPrice),
+  priceDifference: round(currentPrice - item.entryPrice),
+  percentageChange: resultData.percentageChange
+};
 
   const currentId = buildHistoryId(analysisTime);
   const alreadyExists = updatedHistory.some(item => item.id === currentId);
@@ -415,13 +415,25 @@ function evaluateScenarioResult(item, currentPrice) {
   const entryPrice = Number(item.entryPrice);
   const threshold = Math.max(Number(item.threshold || 0), 0);
   const difference = currentPrice - entryPrice;
+  const percentageChange = entryPrice
+    ? (difference / entryPrice) * 100
+    : 0;
+
+  if (action === "wait") {
+    return {
+      result: "neutral",
+      resultText: "Attesa",
+      percentageChange: round(percentageChange, 3)
+    };
+  }
 
   if (action === "buy") {
     const isCorrect = difference >= threshold;
 
     return {
       result: isCorrect ? "correct" : "wrong",
-      resultText: isCorrect ? "Realizzato" : "Non realizzato"
+      resultText: isCorrect ? "Realizzato" : "Non realizzato",
+      percentageChange: round(percentageChange, 3)
     };
   }
 
@@ -430,15 +442,15 @@ function evaluateScenarioResult(item, currentPrice) {
 
     return {
       result: isCorrect ? "correct" : "wrong",
-      resultText: isCorrect ? "Realizzato" : "Non realizzato"
+      resultText: isCorrect ? "Realizzato" : "Non realizzato",
+      percentageChange: round(percentageChange, 3)
     };
   }
 
-  const isStillNeutral = Math.abs(difference) <= threshold;
-
   return {
-    result: isStillNeutral ? "correct" : "wrong",
-    resultText: isStillNeutral ? "Realizzato" : "Non realizzato"
+    result: "neutral",
+    resultText: "Non operativo",
+    percentageChange: round(percentageChange, 3)
   };
 }
 
