@@ -1,12 +1,3 @@
-// File consigliato: /api/scenario.js
-// Richiede una variabile ambiente già presente: TWELVE_DATA_API_KEY
-// Per salvare davvero lo storico su Vercel serve anche un database/KV.
-// Questo codice usa Redis compatibile Upstash/Vercel KV tramite REST API:
-// - KV_REST_API_URL
-// - KV_REST_API_TOKEN
-//
-// Devi creare anche /api/history.js usando il codice che trovi dopo questo file.
-
 import { createClient } from "redis";
 
 let redisClient;
@@ -20,12 +11,15 @@ async function getRedisClient() {
     redisClient.on("error", (error) => {
       console.error("Redis error:", error);
     });
+  }
 
+  if (!redisClient.isOpen) {
     await redisClient.connect();
   }
 
   return redisClient;
 }
+
 export default async function handler(req, res) {
   const API_KEY = process.env.TWELVE_DATA_API_KEY;
 
@@ -321,7 +315,11 @@ export default async function handler(req, res) {
       scenario
     };
 
-    await updateScenarioHistory(payload, price, analysisTime);
+    try {
+      await updateScenarioHistory(payload, price, analysisTime);
+    } catch (historyError) {
+      console.error("Errore salvataggio storico:", historyError);
+    }
 
     return res.status(200).json(payload);
   } catch (error) {
@@ -446,6 +444,7 @@ function evaluateScenarioResult(item, currentPrice) {
 
 function buildHistoryId(date) {
   const d = new Date(date);
+
   return "AUR-" +
     d.getFullYear() +
     pad(d.getMonth() + 1) +
@@ -503,33 +502,6 @@ async function kvGet(key) {
   }
 }
 
-  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  if (!response.ok) {
-    return [];
-  }
-
-  const data = await response.json();
-
-  if (!data || data.result === null || data.result === undefined) {
-    return [];
-  }
-
-  if (typeof data.result === "string") {
-    try {
-      return JSON.parse(data.result);
-    } catch {
-      return [];
-    }
-  }
-
-  return data.result;
-}
-
 async function kvSet(key, value) {
   if (!process.env.REDIS_URL) {
     return;
@@ -539,18 +511,8 @@ async function kvSet(key, value) {
   await client.set(key, JSON.stringify(value));
 }
 
-  await fetch(`${url}/set/${encodeURIComponent(key)}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(value)
-  });
-}
-
 /* -------------------------------------------------------------------------- */
-/* IL RESTO DEL TUO ALGORITMO RESTA UGUALE                                    */
+/* ALGORITMO                                                                  */
 /* -------------------------------------------------------------------------- */
 
 function getCurrentAnalysisTime(now) {
@@ -1642,62 +1604,3 @@ function round(value, decimals = 2) {
   if (typeof value !== "number" || Number.isNaN(value)) return 0;
   return Number(value.toFixed(decimals));
 }
-
-/* -------------------------------------------------------------------------- */
-/* File separato consigliato: /api/history.js                                 */
-/* -------------------------------------------------------------------------- */
-
-/*
-const HISTORY_KEY = "auren:history";
-
-export default async function handler(req, res) {
-  try {
-    const items = await kvGet(HISTORY_KEY);
-
-    return res.status(200).json({
-      items: Array.isArray(items) ? items : []
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Errore durante il caricamento dello storico",
-      details: error.message
-    });
-  }
-}
-
-async function kvGet(key) {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-
-  if (!url || !token) {
-    return [];
-  }
-
-  const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  if (!response.ok) {
-    return [];
-  }
-
-  const data = await response.json();
-
-  if (!data || data.result === null || data.result === undefined) {
-    return [];
-  }
-
-  if (typeof data.result === "string") {
-    try {
-      return JSON.parse(data.result);
-    } catch {
-      return [];
-    }
-  }
-
-  return data.result;
-}
-*/
-
