@@ -7,6 +7,25 @@
 //
 // Devi creare anche /api/history.js usando il codice che trovi dopo questo file.
 
+import { createClient } from "redis";
+
+let redisClient;
+
+async function getRedisClient() {
+  if (!redisClient) {
+    redisClient = createClient({
+      url: process.env.REDIS_URL
+    });
+
+    redisClient.on("error", (error) => {
+      console.error("Redis error:", error);
+    });
+
+    await redisClient.connect();
+  }
+
+  return redisClient;
+}
 export default async function handler(req, res) {
   const API_KEY = process.env.TWELVE_DATA_API_KEY;
 
@@ -466,12 +485,23 @@ async function setHistoryItems(items) {
 }
 
 async function kvGet(key) {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-
-  if (!url || !token) {
+  if (!process.env.REDIS_URL) {
     return [];
   }
+
+  const client = await getRedisClient();
+  const value = await client.get(key);
+
+  if (!value) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return [];
+  }
+}
 
   const response = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
     headers: {
@@ -501,12 +531,13 @@ async function kvGet(key) {
 }
 
 async function kvSet(key, value) {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-
-  if (!url || !token) {
+  if (!process.env.REDIS_URL) {
     return;
   }
+
+  const client = await getRedisClient();
+  await client.set(key, JSON.stringify(value));
+}
 
   await fetch(`${url}/set/${encodeURIComponent(key)}`, {
     method: "POST",
