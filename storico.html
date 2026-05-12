@@ -412,13 +412,13 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1180px;
+      min-width: 1050px;
       table-layout: fixed;
     }
 
     th,
     td {
-      padding: 9px 12px;
+      padding: 10px 12px;
       text-align: left;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       vertical-align: middle;
@@ -443,16 +443,15 @@
       border-bottom: none;
     }
 
-    th:nth-child(1), td:nth-child(1) { width: 170px; }
-    th:nth-child(2), td:nth-child(2) { width: 190px; }
-    th:nth-child(3), td:nth-child(3) { width: 75px; }
-    th:nth-child(4), td:nth-child(4) { width: 105px; }
+    th:nth-child(1), td:nth-child(1) { width: 130px; }
+    th:nth-child(2), td:nth-child(2) { width: 75px; }
+    th:nth-child(3), td:nth-child(3) { width: 105px; }
+    th:nth-child(4), td:nth-child(4) { width: 120px; }
     th:nth-child(5), td:nth-child(5) { width: 120px; }
-    th:nth-child(6), td:nth-child(6) { width: 120px; }
-    th:nth-child(7), td:nth-child(7) { width: 115px; }
-    th:nth-child(8), td:nth-child(8) { width: 130px; }
-    th:nth-child(9), td:nth-child(9) { width: 95px; }
-    th:nth-child(10), td:nth-child(10) { width: auto; }
+    th:nth-child(6), td:nth-child(6) { width: 115px; }
+    th:nth-child(7), td:nth-child(7) { width: 130px; }
+    th:nth-child(8), td:nth-child(8) { width: 95px; }
+    th:nth-child(9), td:nth-child(9) { width: 260px; }
 
     .muted {
       color: var(--muted);
@@ -540,15 +539,46 @@
 
     .reading-cell {
       color: var(--soft-white);
-      line-height: 1.4;
+      line-height: 1.45;
+      vertical-align: top;
     }
 
     .reading-main {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      display: block;
       max-width: 100%;
+      white-space: normal;
+      overflow: visible;
+      line-height: 1.45;
+    }
+
+    .daily-points {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.18);
+      white-space: nowrap;
+    }
+
+    .daily-points.positive {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+    }
+
+    .daily-points.negative {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
+    }
+
+    .daily-points.neutral {
+      color: var(--muted);
     }
 
     .empty-state {
@@ -663,7 +693,7 @@
 
         <p class="hero-text">
           Qui vengono salvate le analisi generate ogni 30 minuti. Ogni giornata ha il suo storico,
-          con numero identificativo, data, orario, azione indicata e verifica finale dello scenario.
+          con numero identificativo, orario, lettura dello scenario e verifica finale.
         </p>
       </div>
 
@@ -672,17 +702,15 @@
 
     <section class="board">
       <div class="controls">
-        <input class="control-field" type="search" id="searchInput" placeholder="Cerca per ID, azione, esito, data..." />
+        <input class="control-field" type="search" id="searchInput" placeholder="Cerca per ID, scenario, esito..." />
 
-        <select class="control-field" id="dateFilter">
-          <option value="all">Tutte le date</option>
-        </select>
+        <select class="control-field" id="dateFilter"></select>
 
         <select class="control-field" id="actionFilter">
-          <option value="all">Tutte le azioni</option>
-          <option value="buy">Acquisto</option>
-          <option value="sell">Vendita</option>
-          <option value="wait">Attesa</option>
+          <option value="all">Tutti gli scenari</option>
+          <option value="buy">Rialzista</option>
+          <option value="sell">Ribassista</option>
+          <option value="wait">Neutrale</option>
         </select>
 
         <button class="btn" type="button" id="refreshBtn">Aggiorna</button>
@@ -695,12 +723,12 @@
         </div>
 
         <div class="summary-card">
-          <div class="summary-label">Realizzati</div>
+          <div class="summary-label">Confermati</div>
           <div class="summary-value green" id="correctCount">0</div>
         </div>
 
         <div class="summary-card">
-          <div class="summary-label">Non realizzati</div>
+          <div class="summary-label">Non confermati</div>
           <div class="summary-value red" id="wrongCount">0</div>
         </div>
 
@@ -710,12 +738,12 @@
         </div>
 
         <div class="summary-card">
-          <div class="summary-label">Attese / non operative</div>
+          <div class="summary-label">Neutrali / non operative</div>
           <div class="summary-value gold" id="waitCount">0</div>
         </div>
 
         <div class="summary-card">
-          <div class="summary-label">Winrate operativo</div>
+          <div class="summary-label">Accuratezza storica</div>
           <div class="summary-value green" id="winrateValue">0%</div>
         </div>
       </div>
@@ -868,10 +896,10 @@
     function actionLabel(action) {
       const normalized = normalizeAction(action);
 
-      if (normalized === "buy") return "Acquisto";
-      if (normalized === "sell") return "Vendita";
+      if (normalized === "buy") return "Rialzista";
+      if (normalized === "sell") return "Ribassista";
 
-      return "Attesa";
+      return "Neutrale";
     }
 
     function normalizeResult(result) {
@@ -885,9 +913,9 @@
     function resultLabel(result) {
       const normalized = normalizeResult(result);
 
-      if (normalized === "correct") return "Realizzato";
-      if (normalized === "wrong") return "Non realizzato";
-      if (normalized === "neutral") return "Attesa";
+      if (normalized === "correct") return "Confermato";
+      if (normalized === "wrong") return "Non confermato";
+      if (normalized === "neutral") return "Neutrale";
 
       return "In verifica";
     }
@@ -900,7 +928,7 @@
       if (normalizedAction === "wait") {
         return {
           result: "neutral",
-          resultText: "Attesa",
+          resultText: "Neutrale",
           priceDifference: null,
           percentageChange: null
         };
@@ -926,7 +954,7 @@
 
         return {
           result: difference > 0 ? "correct" : "wrong",
-          resultText: difference > 0 ? "Realizzato" : "Non realizzato",
+          resultText: difference > 0 ? "Confermato" : "Non confermato",
           priceDifference: difference,
           percentageChange
         };
@@ -938,7 +966,7 @@
 
         return {
           result: difference > 0 ? "correct" : "wrong",
-          resultText: difference > 0 ? "Realizzato" : "Non realizzato",
+          resultText: difference > 0 ? "Confermato" : "Non confermato",
           priceDifference: difference,
           percentageChange
         };
@@ -964,13 +992,21 @@
       return "variation-neutral";
     }
 
+    function cleanDescription(text) {
+      if (!text) return "--";
+
+      return String(text)
+        .replaceAll("acquisto", "scenario rialzista")
+        .replaceAll("vendita", "scenario ribassista")
+        .replaceAll("compra", "lettura rialzista")
+        .replaceAll("vendi", "lettura ribassista")
+        .replaceAll("ingresso", "scenario")
+        .replaceAll("segnale operativo", "lettura del mercato");
+    }
+
     function buildId(item, index) {
-      if (item.id) return item.id;
-
-      const date = formatDateKey(item.createdAt || item.updatedAt || new Date());
-      const progressive = String(index + 1).padStart(3, "0");
-
-      return "AUR-" + date.replaceAll("-", "") + "-" + progressive;
+      const progressive = String(index + 1).padStart(6, "0");
+      return "AUR-" + progressive;
     }
 
     function normalizeHistoryItem(item, index) {
@@ -983,7 +1019,8 @@
       const evaluation = evaluateDisplayResult(action, entryPrice, closePrice);
 
       return {
-        id: buildId(item, index),
+        id: item.id || "",
+        displayId: buildId(item, index),
         createdAt,
         dateKey: formatDateKey(createdAt),
         dateLabel: formatDateIt(createdAt),
@@ -1009,7 +1046,7 @@
         support: item.support,
         resistance: item.resistance,
         reliability: item.reliability,
-        description: item.description || item.summary || item.note || buildDescription(item),
+        description: cleanDescription(item.description || item.summary || item.note || buildDescription(item)),
         raw: item
       };
     }
@@ -1022,10 +1059,10 @@
         return [main.title, main.description].filter(Boolean).join(" - ");
       }
 
-      if (item.action === "buy") return "Scenario orientato all'acquisto.";
-      if (item.action === "sell") return "Scenario orientato alla vendita.";
+      if (item.action === "buy") return "Scenario orientato al rialzo.";
+      if (item.action === "sell") return "Scenario orientato al ribasso.";
 
-      return "Scenario in attesa di conferme operative.";
+      return "Scenario neutrale o in attesa di conferme.";
     }
 
     function loadLocalHistory() {
@@ -1060,7 +1097,7 @@
       const currentValue = dateFilter.value;
       const dates = [...new Map(historyItems.map(item => [item.dateKey, item.dateLabel])).entries()];
 
-      dateFilter.innerHTML = '<option value="all">Tutte le date</option>';
+      dateFilter.innerHTML = "";
 
       dates.forEach(([dateKey, dateLabel]) => {
         const option = document.createElement("option");
@@ -1071,16 +1108,24 @@
 
       if ([...dateFilter.options].some(option => option.value === currentValue)) {
         dateFilter.value = currentValue;
+      } else if (dates.length > 0) {
+        dateFilter.value = dates[0][0];
       }
     }
 
     function getFilteredItems() {
       const query = searchInput.value.trim().toLowerCase();
-      const selectedDate = dateFilter.value;
       const selectedAction = actionFilter.value;
+
+      let selectedDate = dateFilter.value;
+
+      if (!selectedDate && historyItems.length > 0) {
+        selectedDate = historyItems[0].dateKey;
+      }
 
       return historyItems.filter(item => {
         const searchable = [
+          item.displayId,
           item.id,
           item.dateLabel,
           item.timeLabel,
@@ -1096,7 +1141,7 @@
         ].join(" ").toLowerCase();
 
         const matchesQuery = !query || searchable.includes(query);
-        const matchesDate = selectedDate === "all" || item.dateKey === selectedDate;
+        const matchesDate = item.dateKey === selectedDate;
         const matchesAction = selectedAction === "all" || item.action === selectedAction;
 
         return matchesQuery && matchesDate && matchesAction;
@@ -1138,6 +1183,19 @@
       }, {});
     }
 
+    function calculateDailyPoints(items) {
+      return items
+        .filter(item => item.action !== "wait")
+        .filter(item => item.result === "correct" || item.result === "wrong")
+        .reduce((total, item) => total + Number(item.priceDifference || 0), 0);
+    }
+
+    function getDailyPointsClass(points) {
+      if (points > 0) return "positive";
+      if (points < 0) return "negative";
+      return "neutral";
+    }
+
     function renderHistory() {
       const filtered = getFilteredItems();
       updateSummary(filtered);
@@ -1155,11 +1213,19 @@
       const groups = groupByDate(filtered);
 
       historyContainer.innerHTML = Object.entries(groups).map(([dateKey, group]) => {
+        const dailyPoints = calculateDailyPoints(group.items);
+        const dailyPointsClass = getDailyPointsClass(dailyPoints);
+
         return `
           <div class="date-group">
             <div class="date-header">
               <div class="date-title">${group.label}</div>
-              <div class="date-count">${group.items.length} scenari salvati</div>
+              <div class="date-count">
+                <span class="daily-points ${dailyPointsClass}">
+                  Punti giornata: ${formatSignedPrice(dailyPoints)}
+                </span>
+                &nbsp;&nbsp;${group.items.length} scenari salvati
+              </div>
             </div>
 
             <div class="table-wrap">
@@ -1167,9 +1233,8 @@
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Data</th>
                     <th>Orario</th>
-                    <th>Azione</th>
+                    <th>Scenario</th>
                     <th>Esito</th>
                     <th>Prezzo iniziale</th>
                     <th>Prezzo finale</th>
@@ -1192,8 +1257,7 @@
 
                     return `
                       <tr>
-                        <td><span class="id-pill">${item.id}</span></td>
-                        <td>${item.dateLabel}</td>
+                        <td><span class="id-pill">${item.displayId}</span></td>
                         <td>${item.timeLabel}</td>
                         <td><span class="action-pill ${item.action}">${actionLabel(item.action)}</span></td>
                         <td><span class="result-pill ${resultClass}">${resultLabel(item.result)}</span></td>
@@ -1232,9 +1296,10 @@
     searchInput.addEventListener("input", renderHistory);
     dateFilter.addEventListener("change", renderHistory);
     actionFilter.addEventListener("change", renderHistory);
+
     refreshBtn.addEventListener("click", () => {
-  window.location.reload();
-});
+      window.location.reload();
+    });
 
     loadHistory();
   </script>
