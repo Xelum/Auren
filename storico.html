@@ -1299,9 +1299,24 @@
     dateFilter.addEventListener("change", renderHistory);
     actionFilter.addEventListener("change", renderHistory);
 
-    refreshBtn.addEventListener("click", () => {
-      window.location.reload();
+   refreshBtn.addEventListener("click", async () => {
+  refreshBtn.disabled = true;
+  refreshBtn.innerText = "Aggiorno...";
+
+  try {
+    await fetch("/api/scenario", {
+      cache: "no-store"
     });
+
+    await loadHistory();
+  } catch (error) {
+    console.error("Errore aggiornamento storico:", error);
+    await loadHistory();
+  } finally {
+    refreshBtn.disabled = false;
+    refreshBtn.innerText = "Aggiorna";
+  }
+});
 
     loadHistory();
   </script>
