@@ -1232,7 +1232,9 @@
     searchInput.addEventListener("input", renderHistory);
     dateFilter.addEventListener("change", renderHistory);
     actionFilter.addEventListener("change", renderHistory);
-    refreshBtn.addEventListener("click", loadHistory);
+    refreshBtn.addEventListener("click", () => {
+  window.location.reload();
+});
 
     loadHistory();
   </script>
