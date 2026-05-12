@@ -1707,25 +1707,38 @@
       return "Bassa";
     }
 
-    function getSimpleTitle(title, type, action) {
-      const t = title || "";
+    function getSimpleTitle(title, type, action, cardType = "main") {
+  const t = title || "";
 
-      if (action === "wait" && t.includes("Nessun ingresso")) return "Meglio attendere";
-      if (t.includes("Pressione ribassista")) return "Mercato in discesa";
-      if (t.includes("Pressione rialzista")) return "Mercato in salita";
-      if (t.includes("Mercato laterale")) return "Mercato laterale";
-      if (t.includes("Rimbalzo")) return "Possibile rimbalzo";
-      if (t.includes("pausa")) return "Possibile pausa";
-      if (t.includes("Cambio")) return "Possibile cambio direzione";
-      if (t.includes("Perdita")) return "Possibile indebolimento";
-      if (t.includes("uscita")) return "Possibile uscita dal range";
-      if (t.includes("falso")) return "Possibile falso segnale";
+  if (action === "wait" && t.includes("Nessun ingresso")) return "Meglio attendere";
 
-      if (type === "bearish") return "Mercato in discesa";
-      if (type === "bullish") return "Mercato in salita";
+  if (cardType === "secondary") {
+    if (type === "bearish") return "Possibile rimbalzo";
+    if (type === "bullish") return "Possibile pausa";
+    return "Attendere conferma";
+  }
 
-      return t;
-    }
+  if (cardType === "alternative") {
+    if (type === "bearish") return "Possibile cambio direzione";
+    if (type === "bullish") return "Possibile perdita di forza";
+    return "Possibile falso segnale";
+  }
+
+  if (t.includes("Pressione ribassista")) return "Mercato in discesa";
+  if (t.includes("Pressione rialzista")) return "Mercato in salita";
+  if (t.includes("Mercato laterale")) return "Mercato laterale";
+  if (t.includes("Rimbalzo")) return "Possibile rimbalzo";
+  if (t.includes("pausa")) return "Possibile pausa";
+  if (t.includes("Cambio")) return "Possibile cambio direzione";
+  if (t.includes("Perdita")) return "Possibile indebolimento";
+  if (t.includes("uscita")) return "Possibile uscita dal range";
+  if (t.includes("falso")) return "Possibile falso segnale";
+
+  if (type === "bearish") return "Mercato in discesa";
+  if (type === "bullish") return "Mercato in salita";
+
+  return t || "Scenario in osservazione";
+}
 
     function getSimpleDescription(description) {
       if (!description) return "";
@@ -1990,9 +2003,9 @@
       const message = buildLiveMessage(data);
       const action = data.action || scenario.action || "wait";
 
-      document.getElementById("scenario-message").innerText = message;
-      document.getElementById("last-update").innerText = formatTime(updateDate);
-      document.getElementById("current-price").innerText = formatPrice(data.price);
+      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action, "main");
+document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type, action, "secondary");
+document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type, action, "alternative");
 
       renderDecisionStrip(data);
       renderBias(data);
