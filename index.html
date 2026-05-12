@@ -1763,7 +1763,35 @@ function getMainReason(data) {
 
   return "Lettura non abbastanza pulita";
 }
+function buildCardProbabilities(data) {
+  const reliabilityRaw = typeof data.reliability === "number"
+    ? data.reliability
+    : data.signalQuality && typeof data.signalQuality.overall === "number"
+      ? data.signalQuality.overall
+      : 60;
 
+  const main = Math.max(45, Math.min(85, Math.round(reliabilityRaw)));
+  const remaining = 100 - main;
+
+  const secondary = Math.max(10, Math.round(remaining * 0.65));
+  const alternative = Math.max(5, 100 - main - secondary);
+
+  const total = main + secondary + alternative;
+
+  if (total !== 100) {
+    return {
+      main,
+      secondary,
+      alternative: alternative + (100 - total)
+    };
+  }
+
+  return {
+    main,
+    secondary,
+    alternative
+  };
+}
 function buildScenarioCards(data) {
   const scenario = data.scenario || {};
   const action = data.action || scenario.action || "wait";
@@ -1771,22 +1799,17 @@ function buildScenarioCards(data) {
 
   const support = formatPrice(data.support);
   const resistance = formatPrice(data.resistance);
-  const reliability = Number(data.reliability || 0);
 
-  const secondaryProbability = Math.max(
-    10,
-    Math.round((100 - reliability) * 0.55)
-  );
+  const probabilities = buildCardProbabilities(data);
 
-  const alternativeProbability = Math.max(
-    5,
-    100 - (reliability || 60) - secondaryProbability
-  );
+  const reliability = probabilities.main;
+  const secondaryProbability = probabilities.secondary;
+  const alternativeProbability = probabilities.alternative;
 
   if (action === "wait") {
     return {
       main: {
-        probability: reliability || 60,
+        probability: reliability,
         title: "Meglio attendere",
         description:
           "Il mercato non offre una condizione abbastanza pulita per una lettura affidabile. Meglio osservare le zone principali prima di dare peso alla direzione.",
@@ -1830,7 +1853,7 @@ function buildScenarioCards(data) {
   if (type === "bullish") {
     return {
       main: {
-        probability: reliability || 65,
+        probability: reliability,
         title: "Pressione rialzista",
         description:
           "Il mercato mostra una direzione recente più costruttiva. La lettura resta positiva finché il prezzo mantiene la zona di rimbalzo.",
@@ -1865,7 +1888,7 @@ function buildScenarioCards(data) {
   if (type === "bearish") {
     return {
       main: {
-        probability: reliability || 65,
+        probability: reliability,
         title: "Pressione ribassista",
         description:
           "Il mercato mostra una direzione recente più debole. La lettura resta negativa finché il prezzo rimane sotto la zona di blocco.",
@@ -1899,7 +1922,7 @@ function buildScenarioCards(data) {
 
   return {
     main: {
-      probability: reliability || 50,
+      probability: reliability,
       title: "Mercato laterale",
       description:
         "Il mercato non mostra una direzione abbastanza chiara. Meglio osservare le zone principali.",
@@ -1909,7 +1932,7 @@ function buildScenarioCards(data) {
       value2: "Laterale"
     },
     secondary: {
-      probability: 30,
+      probability: secondaryProbability,
       title: "Rottura da monitorare",
       description:
         "Una rottura chiara della zona alta o bassa può rendere la lettura più definita.",
@@ -1919,7 +1942,7 @@ function buildScenarioCards(data) {
       value2: support
     },
     alternative: {
-      probability: 20,
+      probability: alternativeProbability,
       title: "Rischio falso movimento",
       description:
         "In fase laterale possono verificarsi movimenti rapidi ma poco affidabili.",
