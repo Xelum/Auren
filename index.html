@@ -440,8 +440,7 @@
 
     .chart-pill,
     .market-pill,
-    .timer-pill,
-    .action-pill {
+    .timer-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -729,17 +728,20 @@
       font-weight: 650;
     }
 
-    .plain-signal.wait {
+    .plain-signal.wait,
+    .plain-signal.neutral {
       background: rgba(120,183,255,0.08);
       border-color: rgba(120,183,255,0.22);
     }
 
-    .plain-signal.buy {
+    .plain-signal.buy,
+    .plain-signal.bullish {
       background: rgba(121,217,139,0.08);
       border-color: rgba(121,217,139,0.22);
     }
 
-    .plain-signal.sell {
+    .plain-signal.sell,
+    .plain-signal.bearish {
       background: rgba(230,107,107,0.08);
       border-color: rgba(230,107,107,0.22);
     }
@@ -789,9 +791,7 @@
       line-height: 1.55;
     }
 
-    .reading-note strong {
-      color: var(--gold-light);
-    }
+    .reading-note strong { color: var(--gold-light); }
 
     .technical-title {
       color: var(--gold-light);
@@ -800,10 +800,7 @@
       margin-bottom: 16px;
     }
 
-    .quality-list {
-      display: grid;
-      gap: 12px;
-    }
+    .quality-list { display: grid; gap: 12px; }
 
     .quality-row {
       display: flex;
@@ -1031,7 +1028,6 @@
       }
 
       .chart-top { flex-direction: column; }
-
       .advanced-chart-wrap { height: 460px; }
 
       .advanced-chart-wrap .tradingview-widget-container,
@@ -1041,7 +1037,6 @@
 
       .market-pill,
       .chart-pill { justify-self: start; }
-
       section { padding: 42px 24px; }
       #cosa-legge { padding-top: 24px; }
       .premium { padding: 34px; }
@@ -1078,7 +1073,6 @@
       .chart-board { padding: 24px; }
 
       .premium h2 { font-size: 34px; }
-
       .advanced-chart-wrap { height: 390px; }
 
       .advanced-chart-wrap .tradingview-widget-container,
@@ -1086,9 +1080,7 @@
         min-height: 390px;
       }
 
-      .reading-metrics {
-        grid-template-columns: 1fr;
-      }
+      .reading-metrics { grid-template-columns: 1fr; }
 
       .tooltip {
         left: auto;
@@ -1133,15 +1125,15 @@
       <div>
         <div class="eyebrow">
           <span class="pulse"></span>
-          Lettura operativa semplice del mercato XAU/USD
+          Lettura semplice del mercato XAU/USD
         </div>
 
         <h1><span class="gold-text">XAU</span>, spiegato in modo semplice.</h1>
 
         <p>
-          Auren trasforma i dati dell'oro in una lettura semplice: direzione, qualità del segnale,
-          regime di mercato e indicazione operativa. Non sempre bisogna comprare o vendere:
-          quando il mercato e' sporco, Auren ti dice di attendere.
+          Auren trasforma i dati dell'oro in una lettura semplice: direzione probabile,
+          chiarezza del segnale, fase di mercato e affidabilità. Non dà ordini di acquisto o vendita:
+          mostra il contesto in modo comprensibile.
         </p>
 
         <div class="hero-actions">
@@ -1241,23 +1233,23 @@
           <div class="icon">01</div>
           <h3>Direzione</h3>
           <p>
-            Ti dice se il mercato sta salendo, scendendo o se non ha ancora una direzione chiara.
+            Ti mostra se il mercato appare più orientato al rialzo, al ribasso o se non ha ancora una direzione chiara.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">02</div>
-          <h3>Operabilità</h3>
+          <h3>Chiarezza del segnale</h3>
           <p>
-            Non basta avere una direzione. Auren valuta anche se il segnale e' realmente utilizzabile o se e' meglio attendere.
+            Non basta avere una direzione. Auren valuta anche quanto la lettura sia pulita, forte e coerente.
           </p>
         </div>
 
         <div class="feature-card">
           <div class="icon">03</div>
-          <h3>Qualita segnale</h3>
+          <h3>Qualità del contesto</h3>
           <p>
-            Legge trend, volatilita, struttura, momentum, rischio e pulizia del mercato per evitare segnali deboli.
+            Legge trend, volatilità, struttura, momentum, rischio e pulizia del mercato per evitare letture deboli.
           </p>
         </div>
       </div>
@@ -1269,7 +1261,7 @@
           <div>
             <h2>Scenario attuale sull'oro.</h2>
             <p>
-              Una lettura semplice per capire cosa sta facendo XAU/USD e se il segnale e' operativo oppure no.
+              Una lettura semplice per capire cosa sta facendo XAU/USD, senza trasformare il dato in un invito operativo.
             </p>
           </div>
 
@@ -1294,17 +1286,17 @@
 
         <div class="decision-strip">
           <div class="decision-box">
-            <div class="decision-label">Azione</div>
-            <div class="decision-value gold" id="action-value">WAIT</div>
+            <div class="decision-label">Direzione M30</div>
+            <div class="decision-value gold" id="action-value">Neutrale</div>
           </div>
 
           <div class="decision-box">
-            <div class="decision-label">Operabilità</div>
-            <div class="decision-value" id="tradable-value">In attesa</div>
+            <div class="decision-label">Chiarezza segnale</div>
+            <div class="decision-value gold" id="tradable-value">--</div>
           </div>
 
           <div class="decision-box">
-            <div class="decision-label">Regime mercato</div>
+            <div class="decision-label">Fase di mercato</div>
             <div class="decision-value blue" id="regime-value">--</div>
           </div>
 
@@ -1349,7 +1341,7 @@
               </div>
 
               <div class="reading-metric gold">
-                <span>Movimento atteso</span>
+                <span>Movimento medio atteso</span>
                 <strong id="metric-expected">--</strong>
               </div>
             </div>
@@ -1367,7 +1359,7 @@
                   Chiarezza del segnale
                   <span class="info">i
                     <span class="tooltip">
-                      Indica quanto la lettura del mercato e' chiara. Alta significa che piu elementi stanno andando nella stessa direzione.
+                      Indica quanto la lettura del mercato è chiara. Alta significa che più elementi stanno andando nella stessa direzione.
                     </span>
                   </span>
                 </span>
@@ -1379,7 +1371,7 @@
                   Zona di rimbalzo
                   <span class="info">i
                     <span class="tooltip">
-                      Indica quanto il prezzo e' lontano da una zona dove potrebbe rallentare o provare a rimbalzare.
+                      Indica quanto il prezzo è lontano da una zona dove potrebbe rallentare o provare a reagire.
                     </span>
                   </span>
                 </span>
@@ -1391,7 +1383,7 @@
                   Zona di blocco
                   <span class="info">i
                     <span class="tooltip">
-                      Indica quanto il prezzo e' lontano da una zona dove potrebbe fermarsi, rallentare o invertire.
+                      Indica quanto il prezzo è lontano da una zona dove potrebbe fermarsi, rallentare o invertire.
                     </span>
                   </span>
                 </span>
@@ -1403,7 +1395,7 @@
                   Movimento medio M30
                   <span class="info">i
                     <span class="tooltip">
-                      Indica di quanto si muove mediamente il prezzo sul timeframe M30. Piu e' alto, piu il mercato e' veloce e instabile.
+                      Indica di quanto si muove mediamente il prezzo sul timeframe M30. Più è alto, più il mercato è veloce e instabile.
                     </span>
                   </span>
                 </span>
@@ -1412,10 +1404,10 @@
 
               <div class="quality-row">
                 <span>
-                  Motivo operativo
+                  Nota di lettura
                   <span class="info">i
                     <span class="tooltip">
-                      Se Auren dice di attendere, qui trovi il motivo principale del blocco operativo.
+                      Se il segnale non è chiaro, qui trovi il motivo principale per cui Auren invita a osservare e non forzare la lettura.
                     </span>
                   </span>
                 </span>
@@ -1521,7 +1513,7 @@
     <section id="premium">
       <div class="premium">
         <div class="premium-content">
-          <h2>Costruito per una lettura piu semplice dell'oro.</h2>
+          <h2>Costruito per una lettura più semplice dell'oro.</h2>
           <p>
             La versione Premium includerà analisi più frequenti, avvisi live, spiegazioni più dettagliate,
             dashboard del rischio, storico delle previsioni e statistiche di affidabilità reali.
@@ -1533,7 +1525,7 @@
           </form>
 
           <div class="form-message" id="formMessage">
-            Richiesta registrata. Verrai contattato appena la beta sara disponibile.
+            Richiesta registrata. Verrai contattato appena la beta sarà disponibile.
           </div>
         </div>
       </div>
@@ -1689,13 +1681,13 @@
         .replace("bullish", "in salita")
         .replace("bearish", "in discesa")
         .replace("neutral", "laterale")
-        .replace("trend", "trend")
-        .replace("choppy", "sporco/laterale")
-        .replace("conflict", "in conflitto")
-        .replace("low_volatility", "bassa volatilita")
+        .replace("trend", "trend chiaro")
+        .replace("choppy", "laterale / sporco")
+        .replace("conflict", "segnali contrastanti")
+        .replace("low_volatility", "poca volatilità")
         .replace("compression", "compressione")
-        .replace("impulse", "impulso")
-        .replace("balanced", "bilanciato");
+        .replace("impulse", "movimento forte")
+        .replace("balanced", "equilibrata");
     }
 
     function getSignalQuality(data) {
@@ -1707,7 +1699,7 @@
 
       const score = Math.abs(Number(data.score || 0));
 
-      if (score >= 9) return "Molto Alta";
+      if (score >= 9) return "Molto alta";
       if (score >= 7) return "Alta";
       if (score >= 4.5) return "Media";
       if (score >= 2.8) return "Debole";
@@ -1754,19 +1746,50 @@
         .replaceAll("Regime di mercato", "Condizione di mercato");
     }
 
-    function translateAction(action) {
-      if (action === "buy") return "BUY";
-      if (action === "sell") return "SELL";
-      return "WAIT";
+    function translateMarketSentiment(data) {
+      const scenario = data.scenario || {};
+      const type = scenario.type || data.direction || "neutral";
+
+      if (type === "bullish") return "Rialzista";
+      if (type === "bearish") return "Ribassista";
+      return "Neutrale";
     }
 
     function translateRegime(regime) {
+      if (regime === "trend") return "Trend chiaro";
+      if (regime === "impulse") return "Movimento forte";
+      if (regime === "balanced") return "Equilibrata";
+      if (regime === "compression") return "Compressione";
+      if (regime === "choppy") return "Laterale / sporca";
+      if (regime === "conflict") return "Segnali contrastanti";
+      if (regime === "low_volatility") return "Poca volatilità";
       return cleanValue(regime || "--");
+    }
+
+    function getSignalClarity(data) {
+      const reliability = typeof data.reliability === "number"
+        ? data.reliability
+        : data.signalQuality && typeof data.signalQuality.overall === "number"
+          ? data.signalQuality.overall
+          : 0;
+
+      const action = data.action || (data.scenario && data.scenario.action) || "wait";
+      const tradable = Boolean(data.tradable);
+
+      if (!tradable || action === "wait") {
+        if (reliability >= 70) return "Buona, ma senza conferma";
+        if (reliability >= 55) return "Media";
+        return "Bassa";
+      }
+
+      if (reliability >= 75) return "Alta";
+      if (reliability >= 60) return "Media";
+      return "Bassa";
     }
 
     function buildPlainSignal(data) {
       const scenario = data.scenario || {};
-      const type = scenario.type;
+      const type = scenario.type || data.direction || "neutral";
       const action = data.action || scenario.action || "wait";
       const support = formatPrice(data.support);
       const resistance = formatPrice(data.resistance);
@@ -1775,24 +1798,24 @@
         : "Segnale non sufficientemente pulito";
 
       if (action === "wait") {
-        return "Auren suggerisce di attendere. Il mercato non offre una condizione abbastanza pulita: " +
-          reason + ". Le zone principali da osservare sono " + support + " e " + resistance + ".";
+        return "Auren suggerisce di osservare senza forzare la lettura. Il mercato non offre una condizione abbastanza pulita: " +
+          reason + ". Le zone principali da monitorare sono " + support + " e " + resistance + ".";
       }
 
       if (type === "bearish") {
-        return "Il mercato mostra pressione in discesa. Finche' il prezzo resta sotto " + resistance +
-          ", la lettura principale rimane debole. La prima zona da osservare e' " + support +
-          ". Se il prezzo torna sopra la zona di blocco, lo scenario potrebbe cambiare.";
+        return "La lettura M30 mostra pressione in discesa. Finché il prezzo resta sotto " + resistance +
+          ", il contesto rimane debole. La prima zona da monitorare è " + support +
+          ". Un recupero sopra la zona di blocco potrebbe cambiare lo scenario.";
       }
 
       if (type === "bullish") {
-        return "Il mercato mostra pressione in salita. Finche' il prezzo resta sopra " + support +
-          ", la lettura principale rimane positiva. La prima zona da osservare e' " + resistance +
-          ". Se il prezzo perde la zona di rimbalzo, lo scenario potrebbe indebolirsi.";
+        return "La lettura M30 mostra pressione in salita. Finché il prezzo resta sopra " + support +
+          ", il contesto rimane costruttivo. La prima zona da monitorare è " + resistance +
+          ". Una perdita della zona di rimbalzo potrebbe indebolire lo scenario.";
       }
 
       return "Il mercato non mostra ancora una direzione chiara. Il prezzo si trova tra " + support +
-        " e " + resistance + ". In questa fase e' meglio attendere una conferma prima di dare peso alla direzione.";
+        " e " + resistance + ". In questa fase è meglio attendere una conferma prima di dare peso alla direzione.";
     }
 
     function buildLiveMessage(data) {
@@ -1804,9 +1827,9 @@
 
       if (action === "wait") {
         if (previousAction && previousAction !== "wait") {
-          return "Aggiornamento M30: Auren blocca il segnale operativo e suggerisce attesa.";
+          return "Aggiornamento M30: Auren riduce la forza della lettura e suggerisce osservazione.";
         }
-        return "Analisi M30 aggiornata: nessun ingresso consigliato, meglio attendere conferma.";
+        return "Analisi M30 aggiornata: nessuna lettura abbastanza pulita, meglio attendere conferma.";
       }
 
       if (!previousType) {
@@ -1822,20 +1845,21 @@
       }
 
       if (previousType === "bearish" && currentType === "bullish") {
-        return "Cambio scenario M30: il mercato passa da debole a piu costruttivo.";
+        return "Cambio scenario M30: il mercato passa da debole a più costruttivo.";
       }
 
       if (previousType === "bullish" && currentType === "bearish") {
-        return "Cambio scenario M30: il mercato passa da positivo a piu debole.";
+        return "Cambio scenario M30: il mercato passa da positivo a più debole.";
       }
 
       return "Lo scenario M30 si aggiorna con una nuova lettura rispetto alla precedente analisi.";
     }
 
     function renderDecisionStrip(data) {
-      const action = data.action || (data.scenario && data.scenario.action) || "wait";
-      const tradable = Boolean(data.tradable);
+      const scenario = data.scenario || {};
+      const type = scenario.type || data.direction || "neutral";
       const regime = data.marketRegime || "--";
+
       const reliability = typeof data.reliability === "number"
         ? data.reliability
         : data.signalQuality && typeof data.signalQuality.overall === "number"
@@ -1843,20 +1867,23 @@
           : 0;
 
       const actionEl = document.getElementById("action-value");
-      const tradableEl = document.getElementById("tradable-value");
+      const clarityEl = document.getElementById("tradable-value");
       const regimeEl = document.getElementById("regime-value");
       const reliabilityEl = document.getElementById("reliability-value");
       const reliabilityFill = document.getElementById("reliability-fill");
 
-      actionEl.innerText = translateAction(action);
+      actionEl.innerText = translateMarketSentiment(data);
       actionEl.className = "decision-value gold";
 
-      if (action === "buy") actionEl.className = "decision-value green";
-      if (action === "sell") actionEl.className = "decision-value red";
-      if (action === "wait") actionEl.className = "decision-value gold";
+      if (type === "bullish") actionEl.className = "decision-value green";
+      if (type === "bearish") actionEl.className = "decision-value red";
 
-      tradableEl.innerText = tradable ? "Operativo" : "Attendere";
-      tradableEl.className = tradable ? "decision-value green" : "decision-value gold";
+      const clarity = getSignalClarity(data);
+      clarityEl.innerText = clarity;
+      clarityEl.className = "decision-value gold";
+
+      if (clarity.includes("Alta")) clarityEl.className = "decision-value green";
+      if (clarity.includes("Bassa")) clarityEl.className = "decision-value red";
 
       regimeEl.innerText = translateRegime(regime);
       reliabilityEl.innerText = formatPercent(reliability);
@@ -1894,18 +1921,20 @@
         : "--";
 
       const readingNote = document.getElementById("reading-note");
+      const scenario = data.scenario || {};
+      const type = scenario.type || data.direction || "neutral";
 
-      if (action === "buy") {
+      if (type === "bullish" && action !== "wait") {
         readingNote.innerHTML =
-          "La lettura resta positiva finche' il prezzo rimane sopra la <strong>zona di rimbalzo</strong>. " +
-          "Una perdita chiara di questa zona puo indebolire lo scenario.";
-      } else if (action === "sell") {
+          "La lettura resta positiva finché il prezzo rimane sopra la <strong>zona di rimbalzo</strong>. " +
+          "Una perdita chiara di questa zona può indebolire lo scenario.";
+      } else if (type === "bearish" && action !== "wait") {
         readingNote.innerHTML =
-          "La lettura resta negativa finche' il prezzo rimane sotto la <strong>zona di blocco</strong>. " +
-          "Un recupero chiaro sopra questa zona puo cambiare lo scenario.";
+          "La lettura resta negativa finché il prezzo rimane sotto la <strong>zona di blocco</strong>. " +
+          "Un recupero chiaro sopra questa zona può cambiare lo scenario.";
       } else {
         readingNote.innerHTML =
-          "Il mercato non offre ancora una direzione pulita. Meglio attendere una conferma sopra la zona alta o sotto la zona bassa.";
+          "Il mercato non offre ancora una direzione pulita. Meglio osservare una conferma sopra la zona alta o sotto la zona bassa.";
       }
     }
 
@@ -1915,19 +1944,20 @@
       const support = Number(data.support);
       const resistance = Number(data.resistance);
       const action = data.action || scenario.action || "wait";
+      const type = scenario.type || data.direction || "neutral";
 
       let biasText = "Mercato laterale";
       let description = "Nei prossimi 30 minuti il mercato non mostra ancora una direzione abbastanza chiara. Meglio osservare le zone principali prima di trarre conclusioni.";
 
       if (action === "wait") {
-        biasText = "Meglio attendere";
-        description = "Auren non rileva una condizione operativa sufficientemente pulita. La scelta piu prudente e' aspettare una conferma sulle zone principali.";
-      } else if (scenario.type === "bullish") {
-        biasText = "Mercato in salita";
-        description = "Nei prossimi 30 minuti l'oro mostra piu forza verso l'alto. La lettura resta positiva finche' il prezzo mantiene la zona di rimbalzo indicata.";
-      } else if (scenario.type === "bearish") {
-        biasText = "Mercato in discesa";
-        description = "Nei prossimi 30 minuti l'oro mostra piu debolezza. La lettura resta negativa finche' il prezzo non recupera la zona di blocco indicata.";
+        biasText = "Meglio osservare";
+        description = "Auren non rileva una condizione sufficientemente pulita. La scelta più prudente è attendere una conferma sulle zone principali.";
+      } else if (type === "bullish") {
+        biasText = "Pressione rialzista";
+        description = "Nei prossimi 30 minuti l'oro mostra più forza verso l'alto. La lettura resta positiva finché il prezzo mantiene la zona di rimbalzo indicata.";
+      } else if (type === "bearish") {
+        biasText = "Pressione ribassista";
+        description = "Nei prossimi 30 minuti l'oro mostra più debolezza. La lettura resta negativa finché il prezzo non recupera la zona di blocco indicata.";
       }
 
       const plainSignal = document.getElementById("plain-signal");
@@ -1935,7 +1965,7 @@
       document.getElementById("bias-value").innerText = biasText;
       document.getElementById("bias-description").innerText = description;
       plainSignal.innerText = buildPlainSignal(data);
-      plainSignal.className = "plain-signal " + action;
+      plainSignal.className = "plain-signal " + (action === "wait" ? "neutral" : type);
 
       document.getElementById("signal-quality").innerText = getSignalQuality(data);
       document.getElementById("support-distance").innerText = formatDistance(price, support);
@@ -1945,7 +1975,7 @@
       const reason = data.tradability && data.tradability.reasons && data.tradability.reasons.length
         ? data.tradability.reasons.join("\n")
         : data.tradable
-          ? "Segnale operativo confermato"
+          ? "Lettura sufficientemente chiara"
           : "Nessun blocco specifico";
 
       document.getElementById("trade-reason").innerText = reason;
@@ -1955,7 +1985,7 @@
     }
 
     function renderScenarioFromApi(data) {
-      const scenario = data.scenario;
+      const scenario = data.scenario || {};
       const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
       const message = buildLiveMessage(data);
       const action = data.action || scenario.action || "wait";
@@ -1966,6 +1996,10 @@
 
       renderDecisionStrip(data);
       renderBias(data);
+
+      if (!scenario.main || !scenario.secondary || !scenario.alternative) {
+        return;
+      }
 
       document.getElementById("main-prob").innerText = scenario.main.probability + "%";
       document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action);
@@ -1991,7 +2025,7 @@
       document.getElementById("alt-label-2").innerText = cleanLabel(scenario.alternative.label2);
       document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
 
-      localStorage.setItem("auren_previous_type", scenario.type);
+      localStorage.setItem("auren_previous_type", scenario.type || data.direction || "neutral");
       localStorage.setItem("auren_previous_action", action);
       localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
     }
