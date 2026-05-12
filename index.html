@@ -1717,36 +1717,220 @@
     function getSimpleTitle(title, type, action, cardType = "main") {
   const t = title || "";
 
-  if (action === "wait" && t.includes("Nessun ingresso")) return "Meglio attendere";
+  if (cardType === "main") {
+    if (action === "wait") return "Meglio osservare";
+    if (type === "bullish") return "Pressione rialzista";
+    if (type === "bearish") return "Pressione ribassista";
+    return "Mercato laterale";
+  }
 
   if (cardType === "secondary") {
-    if (type === "bearish") return "Possibile rimbalzo";
+    if (action === "wait") return "Zone da monitorare";
     if (type === "bullish") return "Possibile pausa";
+    if (type === "bearish") return "Possibile rimbalzo";
     return "Attendere conferma";
   }
 
   if (cardType === "alternative") {
+    if (action === "wait") return "Rischio falso segnale";
+    if (type === "bullish") return "Rischio perdita di forza";
     if (type === "bearish") return "Possibile cambio direzione";
-    if (type === "bullish") return "Possibile perdita di forza";
     return "Possibile falso segnale";
   }
 
-  if (t.includes("Pressione ribassista")) return "Mercato in discesa";
-  if (t.includes("Pressione rialzista")) return "Mercato in salita";
+  if (t.includes("Pressione ribassista")) return "Pressione ribassista";
+  if (t.includes("Pressione rialzista")) return "Pressione rialzista";
   if (t.includes("Mercato laterale")) return "Mercato laterale";
   if (t.includes("Rimbalzo")) return "Possibile rimbalzo";
   if (t.includes("pausa")) return "Possibile pausa";
   if (t.includes("Cambio")) return "Possibile cambio direzione";
-  if (t.includes("Perdita")) return "Possibile indebolimento";
-  if (t.includes("uscita")) return "Possibile uscita dal range";
+  if (t.includes("Perdita")) return "Rischio perdita di forza";
   if (t.includes("falso")) return "Possibile falso segnale";
-
-  if (type === "bearish") return "Mercato in discesa";
-  if (type === "bullish") return "Mercato in salita";
 
   return t || "Scenario in osservazione";
 }
 
+function getMainReason(data) {
+  if (
+    data.tradability &&
+    data.tradability.reasons &&
+    data.tradability.reasons.length
+  ) {
+    return data.tradability.reasons[0];
+  }
+
+  if (data.confidence) return data.confidence;
+
+  return "Lettura non abbastanza pulita";
+}
+
+function buildScenarioCards(data) {
+  const scenario = data.scenario || {};
+  const action = data.action || scenario.action || "wait";
+  const type = scenario.type || data.direction || "neutral";
+
+  const support = formatPrice(data.support);
+  const resistance = formatPrice(data.resistance);
+  const reliability = Number(data.reliability || 0);
+
+  const secondaryProbability = Math.max(
+    10,
+    Math.round((100 - reliability) * 0.55)
+  );
+
+  const alternativeProbability = Math.max(
+    5,
+    100 - (reliability || 60) - secondaryProbability
+  );
+
+  if (action === "wait") {
+    return {
+      main: {
+        probability: reliability || 60,
+        title: "Meglio attendere",
+        description:
+          "Il mercato non offre una condizione abbastanza pulita per una lettura affidabile. Meglio osservare le zone principali prima di dare peso alla direzione.",
+        label1: "Motivo principale",
+        value1: getMainReason(data),
+        label2: "Fase di mercato",
+        value2: translateRegime(data.marketRegime)
+      },
+      secondary: {
+        probability: secondaryProbability,
+        title:
+          type === "bearish"
+            ? "Conferma sotto " + support
+            : type === "bullish"
+              ? "Conferma sopra " + resistance
+              : "Rottura da monitorare",
+        description:
+          type === "bearish"
+            ? "La lettura diventerebbe più debole solo con una perdita chiara della zona bassa, accompagnata da maggiore forza del movimento."
+            : type === "bullish"
+              ? "La lettura diventerebbe più costruttiva solo con una rottura chiara della zona alta, accompagnata da maggiore forza del movimento."
+              : "Serve una rottura chiara della zona alta o bassa per rendere il mercato più leggibile.",
+        label1: type === "bearish" ? "Sotto" : "Sopra",
+        value1: type === "bearish" ? support : resistance,
+        label2: "Serve",
+        value2: "Conferma pulita"
+      },
+      alternative: {
+        probability: alternativeProbability,
+        title: "Rischio falso movimento",
+        description:
+          "In condizioni poco pulite il mercato può generare movimenti rapidi ma difficili da leggere. La direzione può sembrare forte senza essere realmente affidabile.",
+        label1: "Area osservata",
+        value1: support + " - " + resistance,
+        label2: "Rischio",
+        value2: "Movimento sporco"
+      }
+    };
+  }
+
+  if (type === "bullish") {
+    return {
+      main: {
+        probability: reliability || 65,
+        title: "Pressione rialzista",
+        description:
+          "Il mercato mostra una direzione recente più costruttiva. La lettura resta positiva finché il prezzo mantiene la zona di rimbalzo.",
+        label1: "Prima zona alta",
+        value1: resistance,
+        label2: "Scenario cambia se",
+        value2: "sotto " + support
+      },
+      secondary: {
+        probability: secondaryProbability,
+        title: "Possibile pausa",
+        description:
+          "Un ritorno verso la zona bassa può avvenire, ma viene letto come pausa finché il prezzo mantiene la struttura principale.",
+        label1: "Zona di pausa",
+        value1: support,
+        label2: "Serve",
+        value2: "Tenuta della zona"
+      },
+      alternative: {
+        probability: alternativeProbability,
+        title: "Rischio perdita di forza",
+        description:
+          "La lettura rialzista perde qualità se il prezzo perde la zona di rimbalzo con conferma sui timeframe veloci.",
+        label1: "Area osservata",
+        value1: support + " - " + resistance,
+        label2: "Rischio",
+        value2: "Indebolimento"
+      }
+    };
+  }
+
+  if (type === "bearish") {
+    return {
+      main: {
+        probability: reliability || 65,
+        title: "Pressione ribassista",
+        description:
+          "Il mercato mostra una direzione recente più debole. La lettura resta negativa finché il prezzo rimane sotto la zona di blocco.",
+        label1: "Prima zona bassa",
+        value1: support,
+        label2: "Scenario cambia se",
+        value2: "sopra " + resistance
+      },
+      secondary: {
+        probability: secondaryProbability,
+        title: "Possibile rimbalzo",
+        description:
+          "Un recupero tecnico può avvenire, ma viene letto come reazione temporanea finché il prezzo non supera la zona alta.",
+        label1: "Zona di rimbalzo",
+        value1: resistance,
+        label2: "Serve",
+        value2: "Recupero pulito"
+      },
+      alternative: {
+        probability: alternativeProbability,
+        title: "Rischio cambio direzione",
+        description:
+          "La lettura ribassista perde qualità se il prezzo recupera sopra la zona di blocco con conferma sui timeframe veloci.",
+        label1: "Area osservata",
+        value1: support + " - " + resistance,
+        label2: "Rischio",
+        value2: "Cambio scenario"
+      }
+    };
+  }
+
+  return {
+    main: {
+      probability: reliability || 50,
+      title: "Mercato laterale",
+      description:
+        "Il mercato non mostra una direzione abbastanza chiara. Meglio osservare le zone principali.",
+      label1: "Area osservata",
+      value1: support + " - " + resistance,
+      label2: "Fase",
+      value2: "Laterale"
+    },
+    secondary: {
+      probability: 30,
+      title: "Rottura da monitorare",
+      description:
+        "Una rottura chiara della zona alta o bassa può rendere la lettura più definita.",
+      label1: "Sopra",
+      value1: resistance,
+      label2: "Sotto",
+      value2: support
+    },
+    alternative: {
+      probability: 20,
+      title: "Rischio falso movimento",
+      description:
+        "In fase laterale possono verificarsi movimenti rapidi ma poco affidabili.",
+      label1: "Area osservata",
+      value1: support + " - " + resistance,
+      label2: "Rischio",
+      value2: "Falso segnale"
+    }
+  };
+}
+    
     function getSimpleDescription(description) {
       if (!description) return "";
 
@@ -2017,53 +2201,36 @@
   renderDecisionStrip(data);
   renderBias(data);
 
-  if (!scenario.main || !scenario.secondary || !scenario.alternative) {
-    return;
-  }
+  const displayCards = buildScenarioCards(data);
 
-  document.getElementById("main-prob").innerText = scenario.main.probability + "%";
-  document.getElementById("main-title").innerText = getSimpleTitle(
-    scenario.main.title,
-    scenario.type,
-    action,
-    "main"
-  );
-  document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
-  document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
-  document.getElementById("main-value-1").innerText = cleanValue(scenario.main.value1);
-  document.getElementById("main-label-2").innerText = cleanLabel(scenario.main.label2);
-  document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
+  document.getElementById("main-prob").innerText = displayCards.main.probability + "%";
+  document.getElementById("main-title").innerText = displayCards.main.title;
+  document.getElementById("main-desc").innerText = displayCards.main.description;
+  document.getElementById("main-label-1").innerText = displayCards.main.label1;
+  document.getElementById("main-value-1").innerText = displayCards.main.value1;
+  document.getElementById("main-label-2").innerText = displayCards.main.label2;
+  document.getElementById("main-value-2").innerText = displayCards.main.value2;
 
-  document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
-  document.getElementById("sec-title").innerText = getSimpleTitle(
-    scenario.secondary.title,
-    scenario.type,
-    action,
-    "secondary"
-  );
-  document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
-  document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
-  document.getElementById("sec-value-1").innerText = cleanValue(scenario.secondary.value1);
-  document.getElementById("sec-label-2").innerText = cleanLabel(scenario.secondary.label2);
-  document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
+  document.getElementById("sec-prob").innerText = displayCards.secondary.probability + "%";
+  document.getElementById("sec-title").innerText = displayCards.secondary.title;
+  document.getElementById("sec-desc").innerText = displayCards.secondary.description;
+  document.getElementById("sec-label-1").innerText = displayCards.secondary.label1;
+  document.getElementById("sec-value-1").innerText = displayCards.secondary.value1;
+  document.getElementById("sec-label-2").innerText = displayCards.secondary.label2;
+  document.getElementById("sec-value-2").innerText = displayCards.secondary.value2;
 
-  document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
-  document.getElementById("alt-title").innerText = getSimpleTitle(
-    scenario.alternative.title,
-    scenario.type,
-    action,
-    "alternative"
-  );
-  document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
-  document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
-  document.getElementById("alt-value-1").innerText = cleanValue(scenario.alternative.value1);
-  document.getElementById("alt-label-2").innerText = cleanLabel(scenario.alternative.label2);
-  document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
+  document.getElementById("alt-prob").innerText = displayCards.alternative.probability + "%";
+  document.getElementById("alt-title").innerText = displayCards.alternative.title;
+  document.getElementById("alt-desc").innerText = displayCards.alternative.description;
+  document.getElementById("alt-label-1").innerText = displayCards.alternative.label1;
+  document.getElementById("alt-value-1").innerText = displayCards.alternative.value1;
+  document.getElementById("alt-label-2").innerText = displayCards.alternative.label2;
+  document.getElementById("alt-value-2").innerText = displayCards.alternative.value2;
 
   localStorage.setItem("auren_previous_type", scenario.type || data.direction || "neutral");
   localStorage.setItem("auren_previous_action", action);
   localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
-    }
+}
 
     async function loadLiveScenario() {
       try {
