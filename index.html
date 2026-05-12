@@ -1998,49 +1998,64 @@
     }
 
     function renderScenarioFromApi(data) {
-      const scenario = data.scenario || {};
-      const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
-      const message = buildLiveMessage(data);
-      const action = data.action || scenario.action || "wait";
+  const scenario = data.scenario || {};
+  const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
+  const message = buildLiveMessage(data);
+  const action = data.action || scenario.action || "wait";
 
-      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action, "main");
-document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type, action, "secondary");
-document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type, action, "alternative");
+  document.getElementById("scenario-message").innerText = message;
+  document.getElementById("last-update").innerText = formatTime(updateDate);
+  document.getElementById("current-price").innerText = formatPrice(data.price);
 
-      renderDecisionStrip(data);
-      renderBias(data);
+  renderDecisionStrip(data);
+  renderBias(data);
 
-      if (!scenario.main || !scenario.secondary || !scenario.alternative) {
-        return;
-      }
+  if (!scenario.main || !scenario.secondary || !scenario.alternative) {
+    return;
+  }
 
-      document.getElementById("main-prob").innerText = scenario.main.probability + "%";
-      document.getElementById("main-title").innerText = getSimpleTitle(scenario.main.title, scenario.type, action);
-      document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
-      document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
-      document.getElementById("main-value-1").innerText = cleanValue(scenario.main.value1);
-      document.getElementById("main-label-2").innerText = cleanLabel(scenario.main.label2);
-      document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
+  document.getElementById("main-prob").innerText = scenario.main.probability + "%";
+  document.getElementById("main-title").innerText = getSimpleTitle(
+    scenario.main.title,
+    scenario.type,
+    action,
+    "main"
+  );
+  document.getElementById("main-desc").innerText = getSimpleDescription(scenario.main.description);
+  document.getElementById("main-label-1").innerText = cleanLabel(scenario.main.label1);
+  document.getElementById("main-value-1").innerText = cleanValue(scenario.main.value1);
+  document.getElementById("main-label-2").innerText = cleanLabel(scenario.main.label2);
+  document.getElementById("main-value-2").innerText = cleanValue(scenario.main.value2);
 
-      document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
-      document.getElementById("sec-title").innerText = getSimpleTitle(scenario.secondary.title, scenario.type, action);
-      document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
-      document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
-      document.getElementById("sec-value-1").innerText = cleanValue(scenario.secondary.value1);
-      document.getElementById("sec-label-2").innerText = cleanLabel(scenario.secondary.label2);
-      document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
+  document.getElementById("sec-prob").innerText = scenario.secondary.probability + "%";
+  document.getElementById("sec-title").innerText = getSimpleTitle(
+    scenario.secondary.title,
+    scenario.type,
+    action,
+    "secondary"
+  );
+  document.getElementById("sec-desc").innerText = getSimpleDescription(scenario.secondary.description);
+  document.getElementById("sec-label-1").innerText = cleanLabel(scenario.secondary.label1);
+  document.getElementById("sec-value-1").innerText = cleanValue(scenario.secondary.value1);
+  document.getElementById("sec-label-2").innerText = cleanLabel(scenario.secondary.label2);
+  document.getElementById("sec-value-2").innerText = cleanValue(scenario.secondary.value2);
 
-      document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
-      document.getElementById("alt-title").innerText = getSimpleTitle(scenario.alternative.title, scenario.type, action);
-      document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
-      document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
-      document.getElementById("alt-value-1").innerText = cleanValue(scenario.alternative.value1);
-      document.getElementById("alt-label-2").innerText = cleanLabel(scenario.alternative.label2);
-      document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
+  document.getElementById("alt-prob").innerText = scenario.alternative.probability + "%";
+  document.getElementById("alt-title").innerText = getSimpleTitle(
+    scenario.alternative.title,
+    scenario.type,
+    action,
+    "alternative"
+  );
+  document.getElementById("alt-desc").innerText = getSimpleDescription(scenario.alternative.description);
+  document.getElementById("alt-label-1").innerText = cleanLabel(scenario.alternative.label1);
+  document.getElementById("alt-value-1").innerText = cleanValue(scenario.alternative.value1);
+  document.getElementById("alt-label-2").innerText = cleanLabel(scenario.alternative.label2);
+  document.getElementById("alt-value-2").innerText = cleanValue(scenario.alternative.value2);
 
-      localStorage.setItem("auren_previous_type", scenario.type || data.direction || "neutral");
-      localStorage.setItem("auren_previous_action", action);
-      localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
+  localStorage.setItem("auren_previous_type", scenario.type || data.direction || "neutral");
+  localStorage.setItem("auren_previous_action", action);
+  localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
     }
 
     async function loadLiveScenario() {
