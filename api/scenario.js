@@ -1290,52 +1290,56 @@ function buildScenarioV2(data) {
   const resistanceText = resistance.toFixed(2);
   const operatingRange = supportText + " - " + resistanceText;
 
-  if (!tradability.tradable) {
-    return {
-      type: "neutral",
-      action: "wait",
-      horizon: "30m",
-      interpretation: "Scenario operativo: attendere.",
-      main: {
-        probability: signalQuality.overall,
-        title: "Nessun ingresso consigliato",
-        description:
-          "Il mercato non offre una condizione abbastanza pulita per un segnale operativo affidabile. " +
-          buildWhyText(reasons, structure15m, structure30m, structure1h),
-        label1: "Motivo principale",
-        value1: tradability.reasons[0] || "Segnale non sufficientemente chiaro",
-        label2: "Regime mercato",
-        value2: marketRegime
-      },
-      secondary: {
-        probability: Math.max(20, Math.round(signalQuality.overall * 0.45)),
-        title: "Attendere conferma",
-        description:
-          "Meglio attendere una rottura chiara della zona alta o bassa prima di considerare una direzione.",
-        label1: "Sopra",
-        value1: resistanceText,
-        label2: "Sotto",
-        value2: supportText
-      },
-      alternative: {
-        probability: 100 - Math.min(85, signalQuality.overall),
-        title: "Possibile falso segnale",
-        description:
-          "In condizioni sporche o laterali XAU/USD puo generare movimenti rapidi ma poco affidabili.",
-        label1: "Range operativo",
-        value1: operatingRange,
-        label2: "RSI M30",
-        value2: rsi30m.toFixed(2)
-      },
-      evaluation: {
-        direction: "neutral",
-        entryPrice: Number(priceText),
-        threshold: round(threshold),
-        expectedMove: round(expectedMove),
-        rule: "Scenario corretto se il prezzo resta poco direzionale o non supera zone chiave con conferma."
-      }
-    };
-  }
+ if (!tradability.tradable) {
+  const mainProb = Math.min(75, Math.max(45, signalQuality.overall));
+  const secondProb = Math.round((100 - mainProb) * 0.55);
+  const altProb = 100 - mainProb - secondProb;
+
+  return {
+    type: "neutral",
+    action: "wait",
+    horizon: "30m",
+    interpretation: "Scenario informativo: meglio attendere conferma.",
+    main: {
+      probability: mainProb,
+      title: "Meglio attendere",
+      description:
+        "Il mercato non offre una condizione abbastanza pulita per una lettura affidabile. " +
+        buildWhyText(reasons, structure15m, structure30m, structure1h),
+      label1: "Motivo principale",
+      value1: tradability.reasons[0] || "Segnale non sufficientemente chiaro",
+      label2: "Regime mercato",
+      value2: marketRegime
+    },
+    secondary: {
+      probability: secondProb,
+      title: "Attendere conferma",
+      description:
+        "Meglio attendere una rottura chiara della zona alta o bassa prima di dare peso a una direzione.",
+      label1: "Sopra",
+      value1: resistanceText,
+      label2: "Sotto",
+      value2: supportText
+    },
+    alternative: {
+      probability: altProb,
+      title: "Possibile falso segnale",
+      description:
+        "In condizioni sporche o laterali XAU/USD può generare movimenti rapidi ma poco affidabili.",
+      label1: "Area complessiva",
+      value1: operatingRange,
+      label2: "Forza M30",
+      value2: rsi30m.toFixed(2)
+    },
+    evaluation: {
+      direction: "neutral",
+      entryPrice: Number(priceText),
+      threshold: round(threshold),
+      expectedMove: round(expectedMove),
+      rule: "Scenario neutrale: la lettura viene considerata non operativa e non viene conteggiata come confermata o non confermata."
+    }
+  };
+}
 
   if (score >= 4.5) {
     const mainProb = Math.min(78, Math.max(58, signalQuality.overall));
