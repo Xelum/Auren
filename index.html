@@ -2255,7 +2255,59 @@ function buildScenarioCards(data) {
   localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
 }
 
-    async function loadLiveScenario() {
+    const CURRENT_SCENARIO_KEY = "auren_current_locked_scenario";
+
+    function getScenarioSlotKey(date = new Date()) {
+      const d = new Date(date);
+
+      if (d.getMinutes() < 30) {
+        d.setMinutes(0, 0, 0);
+      } else {
+        d.setMinutes(30, 0, 0);
+      }
+
+      return d.toISOString();
+    }
+
+    function getLockedScenario() {
+      try {
+        return JSON.parse(localStorage.getItem(CURRENT_SCENARIO_KEY) || "null");
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveLockedScenario(data) {
+      const payload = {
+        slotKey: getScenarioSlotKey(new Date()),
+        savedAt: new Date().toISOString(),
+        data
+      };
+
+      localStorage.setItem(CURRENT_SCENARIO_KEY, JSON.stringify(payload));
+      localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
+    }
+
+    function isLockedScenarioValid(savedScenario) {
+      if (!savedScenario || !savedScenario.data || !savedScenario.slotKey) {
+        return false;
+      }
+
+      return savedScenario.slotKey === getScenarioSlotKey(new Date());
+    }
+
+    async function loadLiveScenario(forceNew = false) {
+      const savedScenario = getLockedScenario();
+
+      if (!forceNew && isLockedScenarioValid(savedScenario)) {
+        renderScenarioFromApi(savedScenario.data);
+
+        document.getElementById("scenario-message").innerText =
+          "Scenario M30 bloccato: la lettura resta valida fino al prossimo ciclo.";
+
+        return;
+      }
+
       try {
         const response = await fetch("/api/scenario", {
           cache: "no-store"
@@ -2271,12 +2323,21 @@ function buildScenarioCards(data) {
           throw new Error("Scenario mancante");
         }
 
+        saveLockedScenario(data);
         renderScenarioFromApi(data);
       } catch (error) {
-        const saved = localStorage.getItem("auren_last_api_scenario");
+        const fallbackScenario = getLockedScenario();
+        const lastSaved = localStorage.getItem("auren_last_api_scenario");
 
-        if (saved) {
-          renderScenarioFromApi(JSON.parse(saved));
+        if (fallbackScenario && fallbackScenario.data) {
+          renderScenarioFromApi(fallbackScenario.data);
+          document.getElementById("scenario-message").innerText =
+            "Dati live temporaneamente non disponibili. Mostro lo scenario bloccato corrente.";
+          return;
+        }
+
+        if (lastSaved) {
+          renderScenarioFromApi(JSON.parse(lastSaved));
           document.getElementById("scenario-message").innerText =
             "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.";
         } else {
@@ -2300,16 +2361,23 @@ function buildScenarioCards(data) {
         String(minutes).padStart(2, "0") + ":" +
         String(seconds).padStart(2, "0");
 
-      if (diff <= 1000) {
-        setTimeout(loadLiveScenario, 1200);
-      }
     }
+
+    let lastAutoRefreshSlot = getScenarioSlotKey(new Date());
 
     loadLiveScenario();
     updateTimer();
 
     setInterval(updateTimer, 1000);
-    setInterval(loadLiveScenario, 1800000);
+
+    setInterval(() => {
+      const currentSlot = getScenarioSlotKey(new Date());
+
+      if (currentSlot !== lastAutoRefreshSlot) {
+        lastAutoRefreshSlot = currentSlot;
+        loadLiveScenario(true);
+      }
+    }, 1000);
 
     const waitlistForm = document.getElementById("waitlistForm");
     const emailInput = document.getElementById("emailInput");
