@@ -226,6 +226,7 @@
       font-weight: 700;
       transition: 0.2s ease;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .btn:hover {
@@ -239,6 +240,24 @@
       color: #111;
       border: none;
       box-shadow: 0 0 40px rgba(198,168,90,0.25);
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, rgba(121,217,139,0.22), rgba(198,168,90,0.10));
+      border-color: rgba(121,217,139,0.38);
+      color: var(--green);
+    }
+
+    .btn-export:hover {
+      background: rgba(121,217,139,0.14);
+      box-shadow: 0 0 28px rgba(121,217,139,0.18);
+    }
+
+    .control-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     main {
@@ -628,6 +647,10 @@
         grid-template-columns: 1fr;
       }
 
+      .control-actions {
+        justify-content: flex-start;
+      }
+
       .page-hero {
         align-items: start;
       }
@@ -713,7 +736,10 @@
           <option value="wait">Neutrale</option>
         </select>
 
-        <button class="btn" type="button" id="refreshBtn">Aggiorna</button>
+        <div class="control-actions">
+          <button class="btn btn-export" type="button" id="exportBtn">Scarica Excel</button>
+          <button class="btn" type="button" id="refreshBtn">Aggiorna</button>
+        </div>
       </div>
 
       <div class="summary-grid">
@@ -826,6 +852,7 @@
     const dateFilter = document.getElementById("dateFilter");
     const actionFilter = document.getElementById("actionFilter");
     const refreshBtn = document.getElementById("refreshBtn");
+    const exportBtn = document.getElementById("exportBtn");
 
     let historyItems = [];
 
@@ -1079,16 +1106,16 @@
         const items = Array.isArray(data) ? data : data.items || [];
 
         historyItems = items
-  .sort((a, b) => new Date(a.createdAt || a.updatedAt || a.timestamp) - new Date(b.createdAt || b.updatedAt || b.timestamp))
-  .map(normalizeHistoryItem)
-  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          .sort((a, b) => new Date(a.createdAt || a.updatedAt || a.timestamp) - new Date(b.createdAt || b.updatedAt || b.timestamp))
+          .map(normalizeHistoryItem)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       } catch (error) {
         const localItems = loadLocalHistory();
 
         historyItems = localItems
-  .sort((a, b) => new Date(a.createdAt || a.updatedAt || a.timestamp) - new Date(b.createdAt || b.updatedAt || b.timestamp))
-  .map(normalizeHistoryItem)
-  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          .sort((a, b) => new Date(a.createdAt || a.updatedAt || a.timestamp) - new Date(b.createdAt || b.updatedAt || b.timestamp))
+          .map(normalizeHistoryItem)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       }
 
       populateDateFilter();
@@ -1295,28 +1322,141 @@
       }).join("");
     }
 
+    function escapeCsvValue(value) {
+      if (value === null || value === undefined) return "";
+
+      return String(value)
+        .replaceAll('"', '""')
+        .replace(/\r?\n|\r/g, " ")
+        .trim();
+    }
+
+    function buildCsvRow(values) {
+      return values.map(value => `"${escapeCsvValue(value)}"`).join(";");
+    }
+
+    function exportHistoryToCsv() {
+      const items = getFilteredItems();
+
+      if (!items.length) {
+        alert("Nessuno scenario da esportare con i filtri attuali.");
+        return;
+      }
+
+      const totalScenarios = items.length;
+      const operativeItems = items.filter(item => item.action !== "wait");
+      const correctItems = operativeItems.filter(item => item.result === "correct");
+      const wrongItems = operativeItems.filter(item => item.result === "wrong");
+      const pendingItems = operativeItems.filter(item => item.result === "pending");
+      const waitItems = items.filter(item => item.action === "wait" || item.result === "neutral");
+      const closedOperative = correctItems.length + wrongItems.length;
+
+      const winrate = closedOperative > 0
+        ? ((correctItems.length / closedOperative) * 100).toFixed(2)
+        : "0.00";
+
+      const totalPoints = operativeItems
+        .filter(item => item.result === "correct" || item.result === "wrong")
+        .reduce((total, item) => total + Number(item.priceDifference || 0), 0);
+
+      const theoreticalEuro100 = totalPoints * 100;
+
+      const summaryRows = [
+        ["Report Auren - Storico scenari"],
+        ["Data esportazione", new Date().toLocaleString("it-IT")],
+        ["Scenari esportati", totalScenarios],
+        ["Scenari confermati", correctItems.length],
+        ["Scenari non confermati", wrongItems.length],
+        ["Scenari in verifica", pendingItems.length],
+        ["Scenari neutrali / non operativi", waitItems.length],
+        ["Accuratezza storica", winrate + "%"],
+        ["Punti totali", totalPoints.toFixed(2)],
+        ["Valore teorico con unità da 100 euro", theoreticalEuro100.toFixed(2) + " euro"],
+        []
+      ];
+
+      const headers = [
+        "ID",
+        "Data",
+        "Orario",
+        "Scenario",
+        "Esito",
+        "Prezzo iniziale",
+        "Prezzo finale",
+        "Variazione punti",
+        "Variazione percentuale",
+        "Affidabilità",
+        "Supporto",
+        "Resistenza",
+        "Lettura"
+      ];
+
+      const rows = items.map(item => [
+        item.displayId,
+        item.dateLabel,
+        item.timeLabel,
+        actionLabel(item.action),
+        resultLabel(item.result),
+        item.entryPrice ?? "",
+        item.closePrice ?? "",
+        item.priceDifference ?? "",
+        item.percentageChange ?? "",
+        item.reliability ?? "",
+        item.support ?? "",
+        item.resistance ?? "",
+        item.description ?? ""
+      ]);
+
+      const csvContent = [
+        ...summaryRows.map(buildCsvRow),
+        buildCsvRow(headers),
+        ...rows.map(buildCsvRow)
+      ].join("\n");
+
+      const bom = "\uFEFF";
+      const blob = new Blob([bom + csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const selectedDate = dateFilter.value || "storico";
+      const fileName = `Auren_Storico_Scenari_${selectedDate}.csv`;
+
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
     searchInput.addEventListener("input", renderHistory);
     dateFilter.addEventListener("change", renderHistory);
     actionFilter.addEventListener("change", renderHistory);
 
-   refreshBtn.addEventListener("click", async () => {
-  refreshBtn.disabled = true;
-  refreshBtn.innerText = "Aggiorno...";
+    exportBtn.addEventListener("click", exportHistoryToCsv);
 
-  try {
-    await fetch("/api/scenario", {
-      cache: "no-store"
+    refreshBtn.addEventListener("click", async () => {
+      refreshBtn.disabled = true;
+      refreshBtn.innerText = "Aggiorno...";
+
+      try {
+        await fetch("/api/scenario", {
+          cache: "no-store"
+        });
+
+        await loadHistory();
+      } catch (error) {
+        console.error("Errore aggiornamento storico:", error);
+        await loadHistory();
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.innerText = "Aggiorna";
+      }
     });
-
-    await loadHistory();
-  } catch (error) {
-    console.error("Errore aggiornamento storico:", error);
-    await loadHistory();
-  } finally {
-    refreshBtn.disabled = false;
-    refreshBtn.innerText = "Aggiorna";
-  }
-});
 
     loadHistory();
   </script>
