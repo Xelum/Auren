@@ -2,6 +2,9 @@ import { createClient } from "redis";
 
 let redisClient;
 
+const MIN_SCORE_TO_TRADE = 6.2;
+const MIN_QUALITY_TO_TRADE = 66;
+
 async function getRedisClient() {
   if (!redisClient) {
     redisClient = createClient({
@@ -149,7 +152,7 @@ export default async function handler(req, res) {
       recentRange30m
     });
 
-    const directionData = calculateM30DirectionScore({
+    const directionDataRaw = calculateM30DirectionScore({
       price,
       support,
       resistance,
@@ -187,12 +190,12 @@ export default async function handler(req, res) {
       marketRegime
     });
 
-    const signalQuality = calculateSignalQuality({
+    const signalQualityRaw = calculateSignalQuality({
       price,
       support,
       resistance,
-      score: directionData.score,
-      confidence: directionData.confidence,
+      score: directionDataRaw.score,
+      confidence: directionDataRaw.confidence,
       marketRegime,
       atr15m,
       atr30m,
@@ -209,6 +212,51 @@ export default async function handler(req, res) {
       slope30m,
       slope1h
     });
+
+    const riskAdjustment = applyRiskPenalties({
+      score: directionDataRaw.score,
+      signalQuality: signalQualityRaw,
+      marketRegime,
+      rsi15m,
+      rsi30m,
+      atr30m,
+      price,
+      structure15m,
+      structure30m,
+      structure1h,
+      momentum15m,
+      momentum30m
+    });
+
+    const timePenalty = getTimePenalty(analysisTime);
+
+    const adjustedScore = riskAdjustment.score * timePenalty.multiplier;
+    const adjustedQuality = clamp(
+      riskAdjustment.quality - timePenalty.qualityPenalty,
+      0,
+      100
+    );
+
+    const riskWarnings = [
+      ...riskAdjustment.penalties,
+      ...(timePenalty.reason ? [timePenalty.reason] : [])
+    ];
+
+    const directionData = {
+      ...directionDataRaw,
+      score: adjustedScore,
+      confidence: scoreToConfidence(adjustedScore),
+      reasons: [
+        ...(directionDataRaw.reasons || []),
+        ...riskWarnings
+      ].slice(0, 8)
+    };
+
+    const signalQuality = {
+      ...signalQualityRaw,
+      overall: Math.round(adjustedQuality),
+      riskWarnings
+    };
 
     const tradability = calculateTradability({
       directionData,
@@ -262,8 +310,11 @@ export default async function handler(req, res) {
       marketRegime,
 
       score: round(directionData.score),
+      rawScore: round(directionDataRaw.score),
       confidence: directionData.confidence,
+      rawConfidence: directionDataRaw.confidence,
       reliability: signalQuality.overall,
+      rawReliability: signalQualityRaw.overall,
 
       threshold: round(directionData.threshold),
       expectedMove: round(directionData.expectedMove),
@@ -307,6 +358,7 @@ export default async function handler(req, res) {
 
       signalQuality,
       tradability,
+      riskWarnings,
 
       updatedAt: analysisTime.toISOString(),
       nextUpdateAt: nextUpdate.toISOString(),
@@ -363,7 +415,8 @@ async function updateScenarioHistory(payload, currentPrice, analysisTime) {
       percentageChange:
         resultData.percentageChange !== null && resultData.percentageChange !== undefined
           ? round(resultData.percentageChange, 3)
-          : null
+          : null,
+      errorLevel: resultData.errorLevel
     };
   });
 
@@ -401,16 +454,45 @@ function buildHistoryItem(payload, analysisTime) {
     closePrice: null,
     priceDifference: null,
     percentageChange: null,
+    errorLevel: null,
 
     support: round(payload.support),
     resistance: round(payload.resistance),
+
     reliability: payload.reliability,
+    rawReliability: payload.rawReliability,
     marketRegime: payload.marketRegime,
     direction: payload.direction,
     tradable: payload.tradable,
 
+    score: round(payload.score),
+    rawScore: round(payload.rawScore),
+    confidence: payload.confidence,
+    rawConfidence: payload.rawConfidence,
+
     threshold: round(payload.threshold || evaluation.threshold || 0),
     expectedMove: round(payload.expectedMove || evaluation.expectedMove || 0),
+
+    rsi15m: payload.rsi15m,
+    rsi30m: payload.rsi30m,
+    rsi1h: payload.rsi1h,
+
+    atr15m: payload.atr15m,
+    atr30m: payload.atr30m,
+    atr1h: payload.atr1h,
+    atr4h: payload.atr4h,
+
+    structure15m: payload.structure15m,
+    structure30m: payload.structure30m,
+    structure1h: payload.structure1h,
+    structure4h: payload.structure4h,
+
+    momentum: payload.momentum,
+    impulse: payload.impulse,
+    slopes: payload.slopes,
+    signalQuality: payload.signalQuality,
+    tradability: payload.tradability,
+    riskWarnings: payload.riskWarnings || [],
 
     title: scenario.main?.title || "Scenario salvato",
     description:
@@ -427,13 +509,15 @@ function evaluateScenarioResult(item, currentPrice) {
   const action = item.action;
   const entryPrice = Number(item.entryPrice);
   const closePrice = Number(currentPrice);
+  const threshold = Number(item.threshold || 0);
 
   if (!entryPrice || Number.isNaN(entryPrice) || Number.isNaN(closePrice)) {
     return {
       result: "pending",
       resultText: "In verifica",
       priceDifference: null,
-      percentageChange: null
+      percentageChange: null,
+      errorLevel: null
     };
   }
 
@@ -442,40 +526,50 @@ function evaluateScenarioResult(item, currentPrice) {
       result: "neutral",
       resultText: "Attesa",
       priceDifference: null,
-      percentageChange: null
+      percentageChange: null,
+      errorLevel: null
     };
   }
 
-  if (action === "buy") {
-    const difference = closePrice - entryPrice;
-    const percentageChange = entryPrice ? (difference / entryPrice) * 100 : 0;
+  let difference = 0;
 
-    return {
-      result: difference > 0 ? "correct" : "wrong",
-      resultText: difference > 0 ? "Realizzato" : "Non realizzato",
-      priceDifference: difference,
-      percentageChange
-    };
+  if (action === "buy") {
+    difference = closePrice - entryPrice;
   }
 
   if (action === "sell") {
-    const difference = entryPrice - closePrice;
-    const percentageChange = entryPrice ? (difference / entryPrice) * 100 : 0;
+    difference = entryPrice - closePrice;
+  }
 
-    return {
-      result: difference > 0 ? "correct" : "wrong",
-      resultText: difference > 0 ? "Realizzato" : "Non realizzato",
-      priceDifference: difference,
-      percentageChange
-    };
+  const percentageChange = entryPrice ? (difference / entryPrice) * 100 : 0;
+
+  let result = "neutral";
+  let resultText = "Movimento insufficiente";
+
+  if (difference >= threshold) {
+    result = "correct";
+    resultText = "Realizzato";
+  } else if (difference <= -threshold) {
+    result = "wrong";
+    resultText = "Non realizzato";
   }
 
   return {
-    result: "neutral",
-    resultText: "Non operativo",
-    priceDifference: null,
-    percentageChange: null
+    result,
+    resultText,
+    priceDifference: difference,
+    percentageChange,
+    errorLevel: classifyErrorLevel(difference, threshold)
   };
+}
+
+function classifyErrorLevel(difference, threshold) {
+  const absDiff = Math.abs(Number(difference || 0));
+  const minThreshold = Math.max(Number(threshold || 0), 0.01);
+
+  if (absDiff < minThreshold) return "basso";
+  if (absDiff < minThreshold * 2.5) return "medio";
+  return "alto";
 }
 
 function buildHistoryId(date) {
@@ -860,6 +954,7 @@ function calculateM30DirectionScore(data) {
     resistance,
     atr15m,
     atr30m,
+    atr1h,
     ema9_15m,
     ema21_15m,
     ema50_15m,
@@ -1046,22 +1141,24 @@ function calculateM30DirectionScore(data) {
     reasons.push("M15 e M30 non sono allineati");
   }
 
-  const absScore = Math.abs(score);
-
-  const confidence =
-    absScore >= 9 ? "Molto Alta" :
-    absScore >= 7 ? "Alta" :
-    absScore >= 4.5 ? "Media" :
-    absScore >= 2.8 ? "Debole" :
-    "Bassa";
-
   return {
     score,
-    confidence,
+    confidence: scoreToConfidence(score),
     threshold: Math.max(atr30m * 0.18, price * 0.0004),
     expectedMove: Math.max(atr30m * 0.65, atr15m * 1.0),
     reasons: reasons.slice(0, 5)
   };
+}
+
+function scoreToConfidence(score) {
+  const absScore = Math.abs(Number(score || 0));
+
+  if (absScore >= 9) return "Molto Alta";
+  if (absScore >= 7) return "Alta";
+  if (absScore >= 4.5) return "Media";
+  if (absScore >= 2.8) return "Debole";
+
+  return "Bassa";
 }
 
 function calculateSignalQuality(data) {
@@ -1188,6 +1285,125 @@ function calculateSignalQuality(data) {
   };
 }
 
+function applyRiskPenalties({
+  score,
+  signalQuality,
+  marketRegime,
+  rsi15m,
+  rsi30m,
+  atr30m,
+  price,
+  structure15m,
+  structure30m,
+  structure1h,
+  momentum15m,
+  momentum30m
+}) {
+  let adjustedScore = score;
+  let adjustedQuality = signalQuality.overall;
+  const penalties = [];
+
+  const volatilityRatio = atr30m / price;
+
+  const highVolatility = volatilityRatio > 0.0048;
+  const veryLowVolatility = volatilityRatio < 0.0010;
+
+  const extremeRsi =
+    rsi15m >= 76 ||
+    rsi15m <= 24 ||
+    rsi30m >= 74 ||
+    rsi30m <= 26;
+
+  const structureConflict =
+    structure15m !== "neutral" &&
+    structure30m !== "neutral" &&
+    structure15m !== structure30m;
+
+  const higherTimeframeConflict =
+    structure30m !== "neutral" &&
+    structure1h !== "neutral" &&
+    structure30m !== structure1h;
+
+  const momentumConflict =
+    Math.sign(momentum15m) !== Math.sign(momentum30m) &&
+    Math.abs(momentum15m) > 0.6 &&
+    Math.abs(momentum30m) > 0.6;
+
+  if (highVolatility) {
+    adjustedScore *= 0.72;
+    adjustedQuality -= 14;
+    penalties.push("Volatilita molto alta");
+  }
+
+  if (veryLowVolatility) {
+    adjustedScore *= 0.78;
+    adjustedQuality -= 10;
+    penalties.push("Volatilita troppo bassa");
+  }
+
+  if (extremeRsi) {
+    adjustedScore *= 0.82;
+    adjustedQuality -= 10;
+    penalties.push("RSI in zona estrema");
+  }
+
+  if (structureConflict) {
+    adjustedScore *= 0.70;
+    adjustedQuality -= 16;
+    penalties.push("Conflitto tra M15 e M30");
+  }
+
+  if (higherTimeframeConflict) {
+    adjustedScore *= 0.82;
+    adjustedQuality -= 8;
+    penalties.push("M30 e H1 non allineati");
+  }
+
+  if (momentumConflict) {
+    adjustedScore *= 0.78;
+    adjustedQuality -= 12;
+    penalties.push("Momentum non allineato");
+  }
+
+  if (marketRegime === "choppy" || marketRegime === "conflict") {
+    adjustedScore *= 0.68;
+    adjustedQuality -= 18;
+    penalties.push("Mercato sporco o contrastato");
+  }
+
+  return {
+    score: adjustedScore,
+    quality: Math.max(0, Math.min(100, Math.round(adjustedQuality))),
+    penalties
+  };
+}
+
+function getTimePenalty(date = new Date()) {
+  const hour = date.getHours();
+
+  if (hour === 13 || hour === 14 || hour === 18 || hour === 0) {
+    return {
+      multiplier: 0.90,
+      qualityPenalty: 5,
+      reason: "Fascia oraria storicamente meno stabile"
+    };
+  }
+
+  if (hour === 15 || hour === 17) {
+    return {
+      multiplier: 1.03,
+      qualityPenalty: 0,
+      reason: "Fascia oraria storicamente interessante"
+    };
+  }
+
+  return {
+    multiplier: 1,
+    qualityPenalty: 0,
+    reason: null
+  };
+}
+
 function calculateTradability(data) {
   const {
     directionData,
@@ -1215,8 +1431,11 @@ function calculateTradability(data) {
   const distanceFromResistance = Math.abs(resistance - price);
   const distanceFromSupport = Math.abs(price - support);
 
-  const tooCloseToResistance = direction === "bullish" && distanceFromResistance < atr30m * 0.8;
-  const tooCloseToSupport = direction === "bearish" && distanceFromSupport < atr30m * 0.8;
+  const tooCloseToResistance =
+    direction === "bullish" && distanceFromResistance < atr30m * 0.8;
+
+  const tooCloseToSupport =
+    direction === "bearish" && distanceFromSupport < atr30m * 0.8;
 
   let tradable = true;
   const reasons = [];
@@ -1226,12 +1445,12 @@ function calculateTradability(data) {
     reasons.push("Direzione non sufficientemente chiara");
   }
 
-  if (absScore < 5.2) {
+  if (absScore < MIN_SCORE_TO_TRADE) {
     tradable = false;
     reasons.push("Score tecnico non abbastanza forte");
   }
 
-  if (signalQuality.overall < 62) {
+  if (signalQuality.overall < MIN_QUALITY_TO_TRADE) {
     tradable = false;
     reasons.push("Qualita complessiva del segnale sotto soglia");
   }
@@ -1249,6 +1468,11 @@ function calculateTradability(data) {
   if (tooCloseToSupport) {
     tradable = false;
     reasons.push("Prezzo troppo vicino al supporto");
+  }
+
+  if (signalQuality.riskWarnings && signalQuality.riskWarnings.length >= 2) {
+    tradable = false;
+    reasons.push("Troppi segnali di rischio contemporanei");
   }
 
   const action =
@@ -1290,56 +1514,56 @@ function buildScenarioV2(data) {
   const resistanceText = resistance.toFixed(2);
   const operatingRange = supportText + " - " + resistanceText;
 
- if (!tradability.tradable) {
-  const mainProb = Math.min(75, Math.max(45, signalQuality.overall));
-  const secondProb = Math.round((100 - mainProb) * 0.55);
-  const altProb = 100 - mainProb - secondProb;
+  if (!tradability.tradable) {
+    const mainProb = Math.min(75, Math.max(45, signalQuality.overall));
+    const secondProb = Math.round((100 - mainProb) * 0.55);
+    const altProb = 100 - mainProb - secondProb;
 
-  return {
-    type: "neutral",
-    action: "wait",
-    horizon: "30m",
-    interpretation: "Scenario informativo: meglio attendere conferma.",
-    main: {
-      probability: mainProb,
-      title: "Meglio attendere",
-      description:
-        "Il mercato non offre una condizione abbastanza pulita per una lettura affidabile. " +
-        buildWhyText(reasons, structure15m, structure30m, structure1h),
-      label1: "Motivo principale",
-      value1: tradability.reasons[0] || "Segnale non sufficientemente chiaro",
-      label2: "Regime mercato",
-      value2: marketRegime
-    },
-    secondary: {
-      probability: secondProb,
-      title: "Attendere conferma",
-      description:
-        "Meglio attendere una rottura chiara della zona alta o bassa prima di dare peso a una direzione.",
-      label1: "Sopra",
-      value1: resistanceText,
-      label2: "Sotto",
-      value2: supportText
-    },
-    alternative: {
-      probability: altProb,
-      title: "Possibile falso segnale",
-      description:
-        "In condizioni sporche o laterali XAU/USD può generare movimenti rapidi ma poco affidabili.",
-      label1: "Area complessiva",
-      value1: operatingRange,
-      label2: "Forza M30",
-      value2: rsi30m.toFixed(2)
-    },
-    evaluation: {
-      direction: "neutral",
-      entryPrice: Number(priceText),
-      threshold: round(threshold),
-      expectedMove: round(expectedMove),
-      rule: "Scenario neutrale: la lettura viene considerata non operativa e non viene conteggiata come confermata o non confermata."
-    }
-  };
-}
+    return {
+      type: "neutral",
+      action: "wait",
+      horizon: "30m",
+      interpretation: "Scenario informativo: meglio attendere conferma.",
+      main: {
+        probability: mainProb,
+        title: "Meglio attendere",
+        description:
+          "Il mercato non offre una condizione abbastanza pulita per una lettura affidabile. " +
+          buildWhyText(reasons, structure15m, structure30m, structure1h),
+        label1: "Motivo principale",
+        value1: tradability.reasons[0] || "Segnale non sufficientemente chiaro",
+        label2: "Regime mercato",
+        value2: marketRegime
+      },
+      secondary: {
+        probability: secondProb,
+        title: "Attendere conferma",
+        description:
+          "Meglio attendere una rottura chiara della zona alta o bassa prima di dare peso a una direzione.",
+        label1: "Sopra",
+        value1: resistanceText,
+        label2: "Sotto",
+        value2: supportText
+      },
+      alternative: {
+        probability: altProb,
+        title: "Possibile falso segnale",
+        description:
+          "In condizioni sporche o laterali XAU/USD puo generare movimenti rapidi ma poco affidabili.",
+        label1: "Area complessiva",
+        value1: operatingRange,
+        label2: "Forza M30",
+        value2: rsi30m.toFixed(2)
+      },
+      evaluation: {
+        direction: "neutral",
+        entryPrice: Number(priceText),
+        threshold: round(threshold),
+        expectedMove: round(expectedMove),
+        rule: "Scenario neutrale: la lettura viene considerata non operativa e non viene conteggiata come confermata o non confermata."
+      }
+    };
+  }
 
   if (score >= 4.5) {
     const mainProb = Math.min(78, Math.max(58, signalQuality.overall));
