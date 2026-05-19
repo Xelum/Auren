@@ -1132,6 +1132,86 @@
         grid-template-columns: 92px 1fr 38px;
       }
     }
+
+    /* Fix stabile sezione risultati: evita rendering verticale/non formattato */
+    .results-section {
+      display: block !important;
+      width: 100% !important;
+      padding-top: 18px !important;
+      padding-bottom: 34px !important;
+    }
+
+    .results-section .results-board {
+      display: block !important;
+      width: 100% !important;
+      padding: 30px !important;
+      border-radius: 34px !important;
+      background:
+        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
+        rgba(255,255,255,0.025) !important;
+      border: 1px solid var(--border-gold) !important;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(255,217,120,0.05) !important;
+      overflow: hidden !important;
+    }
+
+    .results-section .results-top {
+      display: grid !important;
+      grid-template-columns: 1fr auto !important;
+      gap: 24px !important;
+      align-items: flex-start !important;
+      margin-bottom: 22px !important;
+    }
+
+    .results-section .stats-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 12px !important;
+      margin-bottom: 16px !important;
+      width: 100% !important;
+    }
+
+    .results-section .stat-card {
+      display: block !important;
+      border: 1px solid var(--border-gold-soft) !important;
+      background: rgba(0,0,0,0.22) !important;
+      border-radius: 22px !important;
+      padding: 18px !important;
+      min-height: 112px !important;
+      overflow: hidden !important;
+    }
+
+    .results-section .validation-pill {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 9px !important;
+      min-height: 42px !important;
+      padding: 0 18px !important;
+      border-radius: 999px !important;
+      border: 1px solid rgba(121,217,139,0.35) !important;
+      background: rgba(121,217,139,0.08) !important;
+      color: var(--green) !important;
+      font-weight: 900 !important;
+      white-space: nowrap !important;
+    }
+
+    .results-section .transparency-note {
+      display: block !important;
+      padding: 16px 18px !important;
+      border-radius: 20px !important;
+      border: 1px solid rgba(120,183,255,0.22) !important;
+      background: rgba(120,183,255,0.07) !important;
+      color: var(--muted) !important;
+      line-height: 1.6 !important;
+      font-size: 14px !important;
+      clear: both !important;
+    }
+
+    @media (max-width: 900px) {
+      .results-section .results-top,
+      .results-section .stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
   </style>
 </head>
 
@@ -2563,3 +2643,4 @@ function buildScenarioCards(data) {
   </script>
 </body>
 </html>
+
