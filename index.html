@@ -1301,27 +1301,30 @@
       }
     }
 
-    /* Restyling forte delle card risultati */
+    /* Card risultati raffinate e coerenti con Auren */
     .results-section .stats-grid-premium {
       display: grid !important;
       grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-      gap: 16px !important;
-      margin-top: 24px !important;
+      gap: 14px !important;
+      margin-top: 22px !important;
       margin-bottom: 18px !important;
     }
 
     .results-section .stats-grid-premium .stat-card {
       position: relative !important;
-      min-height: 152px !important;
-      padding: 22px 20px !important;
-      border-radius: 28px !important;
+      min-height: 118px !important;
+      padding: 18px 18px 16px !important;
+      border-radius: 22px !important;
       overflow: hidden !important;
       isolation: isolate !important;
-      border: 1px solid rgba(255,217,120,0.34) !important;
-      background: rgba(10,10,10,0.50) !important;
+      border: 1px solid rgba(198,168,90,0.34) !important;
+      background:
+        linear-gradient(145deg, rgba(198,168,90,0.08), rgba(255,255,255,0.025)),
+        rgba(0,0,0,0.22) !important;
       box-shadow:
-        0 18px 54px rgba(0,0,0,0.32),
-        inset 0 0 0 1px rgba(255,255,255,0.04) !important;
+        inset 0 0 0 1px rgba(255,217,120,0.035),
+        0 12px 34px rgba(0,0,0,0.20) !important;
+      transition: 0.22s ease !important;
     }
 
     .results-section .stats-grid-premium .stat-card::before {
@@ -1329,9 +1332,7 @@
       position: absolute !important;
       inset: 0 !important;
       z-index: -2 !important;
-      background:
-        radial-gradient(circle at 78% 18%, rgba(255,217,120,0.18), transparent 32%),
-        linear-gradient(145deg, rgba(255,255,255,0.08), rgba(0,0,0,0.08)) !important;
+      background: radial-gradient(circle at 82% 12%, rgba(255,217,120,0.09), transparent 32%) !important;
     }
 
     .results-section .stats-grid-premium .stat-card::after {
@@ -1340,91 +1341,106 @@
       left: 18px !important;
       right: 18px !important;
       bottom: 0 !important;
-      height: 4px !important;
+      height: 2px !important;
       border-radius: 999px 999px 0 0 !important;
-      background: rgba(255,217,120,0.75) !important;
-      box-shadow: 0 0 22px rgba(255,217,120,0.28) !important;
+      background: rgba(198,168,90,0.72) !important;
+      box-shadow: 0 0 14px rgba(198,168,90,0.20) !important;
     }
 
-    .results-section .stat-card-profit {
-      border-color: rgba(121,217,139,0.44) !important;
+    .results-section .stat-card-profit,
+    .results-section .stat-card-operative {
+      border-color: rgba(198,168,90,0.34) !important;
     }
 
     .results-section .stat-card-profit::before {
-      background:
-        radial-gradient(circle at 78% 18%, rgba(121,217,139,0.24), transparent 34%),
-        linear-gradient(145deg, rgba(121,217,139,0.10), rgba(0,0,0,0.08)) !important;
-    }
-
-    .results-section .stat-card-profit::after {
-      background: rgba(121,217,139,0.85) !important;
-      box-shadow: 0 0 24px rgba(121,217,139,0.35) !important;
-    }
-
-    .results-section .stat-card-operative {
-      border-color: rgba(120,183,255,0.44) !important;
+      background: radial-gradient(circle at 82% 12%, rgba(121,217,139,0.10), transparent 32%) !important;
     }
 
     .results-section .stat-card-operative::before {
-      background:
-        radial-gradient(circle at 78% 18%, rgba(120,183,255,0.24), transparent 34%),
-        linear-gradient(145deg, rgba(120,183,255,0.10), rgba(0,0,0,0.08)) !important;
+      background: radial-gradient(circle at 82% 12%, rgba(120,183,255,0.10), transparent 32%) !important;
+    }
+
+    .results-section .stat-card-profit::after {
+      background: rgba(121,217,139,0.62) !important;
+      box-shadow: 0 0 14px rgba(121,217,139,0.18) !important;
     }
 
     .results-section .stat-card-operative::after {
-      background: rgba(120,183,255,0.85) !important;
-      box-shadow: 0 0 24px rgba(120,183,255,0.35) !important;
+      background: rgba(120,183,255,0.62) !important;
+      box-shadow: 0 0 14px rgba(120,183,255,0.18) !important;
     }
 
     .results-section .stat-icon {
-      width: 38px !important;
-      height: 38px !important;
-      border-radius: 14px !important;
+      width: 30px !important;
+      height: 30px !important;
+      border-radius: 11px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      margin-bottom: 16px !important;
-      color: #111 !important;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
-      font-weight: 950 !important;
-      font-size: 18px !important;
-      box-shadow: 0 0 28px rgba(255,217,120,0.20) !important;
+      margin-bottom: 13px !important;
+      color: var(--gold-light) !important;
+      background: rgba(198,168,90,0.13) !important;
+      border: 1px solid rgba(198,168,90,0.28) !important;
+      font-weight: 900 !important;
+      font-size: 14px !important;
+      box-shadow: none !important;
     }
 
     .results-section .stat-card-profit .stat-icon {
-      background: linear-gradient(135deg, #b9ffca, var(--green)) !important;
+      color: var(--green) !important;
+      background: rgba(121,217,139,0.10) !important;
+      border-color: rgba(121,217,139,0.24) !important;
     }
 
     .results-section .stat-card-operative .stat-icon {
-      background: linear-gradient(135deg, #c3ddff, var(--blue)) !important;
+      color: var(--blue) !important;
+      background: rgba(120,183,255,0.10) !important;
+      border-color: rgba(120,183,255,0.24) !important;
     }
 
     .results-section .stats-grid-premium .stat-label {
-      color: rgba(245,245,245,0.72) !important;
-      font-size: 12px !important;
-      font-weight: 850 !important;
-      letter-spacing: 0.08em !important;
+      color: rgba(245,245,245,0.66) !important;
+      font-size: 11px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.075em !important;
       text-transform: uppercase !important;
-      margin-bottom: 9px !important;
+      margin-bottom: 8px !important;
+      line-height: 1.2 !important;
     }
 
     .results-section .stats-grid-premium .stat-value {
-      font-size: clamp(34px, 3.8vw, 48px) !important;
-      line-height: 0.95 !important;
-      font-weight: 1000 !important;
-      letter-spacing: -0.08em !important;
-      margin-bottom: 10px !important;
+      font-size: clamp(28px, 2.65vw, 36px) !important;
+      line-height: 1 !important;
+      font-weight: 900 !important;
+      letter-spacing: -0.055em !important;
+      margin-bottom: 8px !important;
+      text-shadow: none !important;
+    }
+
+    .results-section .stats-grid-premium .stat-value.green {
+      color: var(--green) !important;
+    }
+
+    .results-section .stats-grid-premium .stat-value.gold {
+      color: var(--gold-light) !important;
+    }
+
+    .results-section .stats-grid-premium .stat-value.blue {
+      color: var(--blue) !important;
     }
 
     .results-section .stats-grid-premium .stat-sub {
-      color: rgba(167,167,167,0.92) !important;
-      font-size: 13px !important;
+      color: rgba(167,167,167,0.86) !important;
+      font-size: 12px !important;
       line-height: 1.35 !important;
     }
 
     .results-section .stats-grid-premium .stat-card:hover {
-      transform: translateY(-6px) scale(1.01) !important;
-      border-color: rgba(255,217,120,0.62) !important;
+      transform: translateY(-3px) !important;
+      border-color: rgba(255,217,120,0.46) !important;
+      background:
+        linear-gradient(145deg, rgba(198,168,90,0.105), rgba(255,255,255,0.03)),
+        rgba(0,0,0,0.24) !important;
     }
 
     @media (max-width: 900px) {
