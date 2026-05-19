@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auren | Analisi probabilistica sull'oro</title>
+  <title>Auren | Lettura XAU/USD ogni 30 minuti</title>
 
   <style>
     :root {
@@ -997,6 +997,286 @@
       font-size: 13px;
     }
 
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 22px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.22);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero-badge strong {
+      color: var(--gold-light);
+    }
+
+    .results-section {
+      padding-top: 18px;
+      padding-bottom: 34px;
+    }
+
+    .results-board,
+    .how-board,
+    .feedback-board {
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
+        rgba(255,255,255,0.025);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(255,217,120,0.05);
+      overflow: hidden;
+      padding: 30px;
+    }
+
+    .results-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    .results-top h2,
+    .how-board h2 {
+      font-size: clamp(32px, 4vw, 50px);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      margin-bottom: 10px;
+    }
+
+    .results-top p,
+    .how-board p {
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 760px;
+    }
+
+    .validation-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+      color: var(--green);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.22);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 112px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      color: var(--soft-white);
+      font-size: clamp(25px, 3vw, 34px);
+      font-weight: 950;
+      letter-spacing: -0.05em;
+    }
+
+    .stat-value.gold { color: var(--gold-light); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue { color: var(--blue); }
+    .stat-sub {
+      margin-top: 7px;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .transparency-note {
+      padding: 16px 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(120,183,255,0.22);
+      background: rgba(120,183,255,0.07);
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .transparency-note strong {
+      color: var(--gold-light);
+    }
+
+    .scenario-badges {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
+    .scenario-mini-card {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.22);
+    }
+
+    .scenario-mini-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .scenario-mini-card strong {
+      display: block;
+      color: var(--soft-white);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .how-section {
+      padding-top: 20px;
+      padding-bottom: 34px;
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .how-card {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--border-gold-soft);
+    }
+
+    .how-card h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .how-card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .how-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 10px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid var(--border-gold-soft);
+    }
+
+    .how-tag.buy {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+    }
+
+    .how-tag.sell {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
+    }
+
+    .how-tag.wait {
+      color: var(--blue);
+      border-color: rgba(120,183,255,0.35);
+      background: rgba(120,183,255,0.08);
+    }
+
+    .feedback-board {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 26px;
+    }
+
+    .feedback-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .feedback-top h3 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .feedback-top p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .feedback-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .feedback-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.22);
+      color: var(--soft-white);
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .feedback-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,217,120,0.55);
+      background: rgba(198,168,90,0.12);
+    }
+
+    .feedback-message {
+      display: none;
+      margin-top: 12px;
+      color: var(--gold-light);
+      font-size: 13px;
+    }
+
+
     @media (max-width: 900px) {
       .cursor-glow,
       .mouse-trail { display: none; }
@@ -1023,8 +1303,15 @@
       .scenario-grid,
       .scenario-board-top,
       .bias-board,
-      .decision-strip {
+      .decision-strip,
+      .stats-grid,
+      .how-grid,
+      .scenario-badges {
         grid-template-columns: 1fr;
+      }
+
+      .results-top {
+        flex-direction: column;
       }
 
       .chart-top { flex-direction: column; }
@@ -1111,12 +1398,13 @@
       <div class="nav-links">
         <a href="#analisi">Analisi</a>
         <a href="#grafico">Grafico live</a>
+        <a href="#risultati">Risultati</a>
         <a href="#cosa-legge">Cosa legge</a>
         <a href="#scenario">Scenario</a>
         <a href="#premium">Premium</a>
       </div>
 
-      <a href="#premium" class="btn">Entra nella beta</a>
+      <a href="#premium" class="btn">Prova la beta</a>
     </nav>
   </header>
 
@@ -1125,25 +1413,32 @@
       <div>
         <div class="eyebrow">
           <span class="pulse"></span>
-          Lettura semplice del mercato XAU/USD
+          Lettura XAU/USD ogni 30 minuti
         </div>
 
-        <h1><span class="gold-text">XAU</span>, spiegato in modo semplice.</h1>
+        <h1><span class="gold-text">XAU/USD</span>, letto in modo semplice ogni 30 minuti.</h1>
 
         <p>
-          Auren trasforma i dati dell'oro in una lettura semplice: direzione probabile,
-          chiarezza del segnale, fase di mercato e affidabilità. Non dà ordini di acquisto o vendita:
-          mostra il contesto in modo comprensibile.
+          Auren analizza trend, momentum, volatilità, supporti e resistenze per trasformare il mercato
+          dell'oro in una lettura chiara: rialzista, ribassista o attesa. Ogni scenario viene bloccato
+          per 30 minuti e verificato nello storico.
         </p>
+
+        <div class="hero-badges">
+          <div class="hero-badge"><strong>M30</strong> scenario bloccato</div>
+          <div class="hero-badge"><strong>Storico</strong> verificabile</div>
+          <div class="hero-badge"><strong>Beta</strong> in validazione reale</div>
+        </div>
 
         <div class="hero-actions">
           <a href="#scenario" class="btn btn-primary">Vedi scenario attuale</a>
+          <a href="#risultati" class="btn">Guarda risultati live</a>
           <a href="#grafico" class="btn">Apri grafico live</a>
         </div>
 
         <div class="small-note">
-          Le analisi sono fornite solo a scopo informativo ed educativo.
-          Non costituiscono consulenza finanziaria, raccomandazione o invito all'investimento.
+          Auren mostra scenari probabilistici e dati di validazione. Le analisi sono fornite solo a scopo informativo ed educativo
+          e non costituiscono consulenza finanziaria, raccomandazione o invito all'investimento.
         </div>
       </div>
 
@@ -1172,6 +1467,56 @@
               </script>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-section" id="risultati">
+      <div class="results-board">
+        <div class="results-top">
+          <div>
+            <h2>Risultati in osservazione.</h2>
+            <p>
+              Auren non nasconde lo storico: ogni scenario viene registrato, verificato e usato per migliorare
+              l'algoritmo. Questi numeri sono in validazione reale e possono cambiare con i nuovi dati.
+            </p>
+          </div>
+
+          <div class="validation-pill">
+            <span class="live-dot"></span>
+            Validazione pubblica
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Punti ultimi 4 giorni</div>
+            <div class="stat-value green" id="stat-points">+90,98</div>
+            <div class="stat-sub">Dato iniziale di test reale</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Scenari analizzati</div>
+            <div class="stat-value gold" id="stat-total">65</div>
+            <div class="stat-sub">Inclusi scenari di attesa</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Scenari operativi</div>
+            <div class="stat-value blue" id="stat-operative">44</div>
+            <div class="stat-sub">Rialzisti o ribassisti</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Accuratezza operativa</div>
+            <div class="stat-value gold" id="stat-winrate">47,73%</div>
+            <div class="stat-sub">In fase di calibrazione</div>
+          </div>
+        </div>
+
+        <div class="transparency-note">
+          <strong>Nota importante:</strong> i risultati sono in fase di validazione pubblica. Auren viene aggiornato
+          e migliorato sulla base dello storico reale, degli errori e della reazione degli utenti.
         </div>
       </div>
     </section>
@@ -1255,13 +1600,52 @@
       </div>
     </section>
 
+    <section class="how-section" id="come-leggere">
+      <div class="how-board">
+        <h2>Come leggere Auren.</h2>
+        <p>
+          Auren non dà ordini operativi. Ti aiuta a capire se il mercato dell'oro mostra una direzione leggibile
+          oppure se è meglio restare in osservazione.
+        </p>
+
+        <div class="how-grid">
+          <div class="how-card">
+            <div class="how-tag buy">Rialzista</div>
+            <h3>Pressione verso l'alto</h3>
+            <p>
+              Il mercato mostra maggiore forza in salita nei prossimi 30 minuti. La lettura resta valida solo
+              se il prezzo mantiene le zone tecniche principali.
+            </p>
+          </div>
+
+          <div class="how-card">
+            <div class="how-tag sell">Ribassista</div>
+            <h3>Pressione verso il basso</h3>
+            <p>
+              Il mercato mostra maggiore debolezza nei prossimi 30 minuti. La zona di blocco diventa fondamentale
+              per capire se lo scenario resta coerente.
+            </p>
+          </div>
+
+          <div class="how-card">
+            <div class="how-tag wait">Attesa</div>
+            <h3>Mercato non pulito</h3>
+            <p>
+              Quando trend, volatilità o struttura non sono abbastanza chiari, Auren preferisce non forzare
+              una lettura direzionale.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="scenario-section" id="scenario">
       <div class="scenario-board">
         <div class="scenario-board-top">
           <div>
             <h2>Scenario attuale sull'oro.</h2>
             <p>
-              Una lettura semplice per capire cosa sta facendo XAU/USD, senza trasformare il dato in un invito operativo.
+              Una lettura semplice e bloccata per 30 minuti: direzione, qualità del segnale, fase di mercato e storico verificabile.
             </p>
           </div>
 
@@ -1281,6 +1665,23 @@
           <div class="timer-pill">
             Prossima analisi tra
             <span id="timer">--:--:--</span>
+          </div>
+        </div>
+
+        <div class="scenario-badges">
+          <div class="scenario-mini-card">
+            <span>Validità scenario</span>
+            <strong id="scenario-validity">Finestra M30 corrente</strong>
+          </div>
+
+          <div class="scenario-mini-card">
+            <span>Stato operativo</span>
+            <strong id="scenario-operational-state">In caricamento</strong>
+          </div>
+
+          <div class="scenario-mini-card">
+            <span>Trasparenza</span>
+            <strong>Registrato nello storico</strong>
           </div>
         </div>
 
@@ -1310,7 +1711,7 @@
         </div>
 
         <div class="history-action-wrap">
-          <a href="/storico.html" class="btn history-btn">Visualizza storico scenari</a>
+          <a href="/storico.html" class="btn history-btn">Visualizza storico verificabile</a>
         </div>
 
         <div class="bias-board">
@@ -1507,32 +1908,50 @@
             </div>
           </div>
         </div>
+
+        <div class="feedback-board">
+          <div class="feedback-top">
+            <div>
+              <h3>Questa lettura ti è utile?</h3>
+              <p>Il feedback ci aiuta a migliorare Auren e a capire cosa rendere più chiaro nella beta.</p>
+            </div>
+
+            <div class="feedback-actions">
+              <button class="feedback-btn" type="button" data-feedback="chiaro">Chiaro</button>
+              <button class="feedback-btn" type="button" data-feedback="utile">Utile</button>
+              <button class="feedback-btn" type="button" data-feedback="non_capisco">Non capisco</button>
+            </div>
+          </div>
+
+          <div class="feedback-message" id="feedbackMessage">
+            Feedback registrato. Grazie, ci aiuta a migliorare Auren.
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="premium">
   <div class="premium">
     <div class="premium-content">
-      <h2>Entra nella lista di accesso alla versione Premium.</h2>
+      <h2>Vuoi provare Auren in anteprima?</h2>
 
       <p>
-        Stiamo preparando una versione Premium di Auren con analisi più frequenti, avvisi live,
-        spiegazioni più dettagliate, dashboard del rischio, storico delle previsioni e statistiche
-        di affidabilità reali.
+        Stiamo aprendo l'accesso alla beta di Auren. Lascia la tua email per ricevere aggiornamenti,
+        risultati reali, accesso anticipato alla dashboard e nuove funzioni in fase di sviluppo.
       </p>
 
       <p>
-        Lascia la tua email per ricevere una comunicazione appena la versione Premium sarà disponibile,
-        con tutti i dettagli sulle funzionalità incluse, i costi e le modalità di accesso.
+        La beta serve a validare il prodotto con utenti reali: scenario attuale, storico verificabile,
+        statistiche, feedback e miglioramento progressivo dell'algoritmo.
       </p>
 
       <form class="waitlist-form" id="waitlistForm">
-        <input type="email" id="emailInput" placeholder="Lascia la tua email" required />
-        <button type="submit" class="btn btn-primary">Avvisami</button>
+        <input type="email" id="emailInput" placeholder="La tua email per la beta" required />
+        <button type="submit" class="btn btn-primary">Voglio provare Auren</button>
       </form>
 
       <div class="form-message" id="formMessage">
-        Email registrata. Riceverai una comunicazione quando la versione Premium sarà disponibile.
+        Email registrata. Riceverai aggiornamenti sulla beta e sull'accesso anticipato ad Auren.
       </div>
     </div>
   </div>
@@ -1540,7 +1959,7 @@
   </main>
 
   <footer>
-    © 2026 Auren. Analisi informativa di mercato. Non costituisce consulenza finanziaria.
+    © 2026 Auren. Lettura informativa e probabilistica di mercato. Non costituisce consulenza finanziaria.
   </footer>
 
   <script>
@@ -2072,187 +2491,110 @@ function buildScenarioCards(data) {
       }
 
       if (previousType === "bearish" && currentType === "bullish") {
-        return "Cambio scenario M30: il mercato passa da debole a più costruttivo.";
+        return "Cambio scenario M30: il mercato passa da pressione in discesa a lettura più costruttiva.";
       }
 
       if (previousType === "bullish" && currentType === "bearish") {
-        return "Cambio scenario M30: il mercato passa da positivo a più debole.";
+        return "Cambio scenario M30: il mercato passa da pressione in salita a lettura più debole.";
       }
 
-      return "Lo scenario M30 si aggiorna con una nuova lettura rispetto alla precedente analisi.";
-    }
-
-    function renderDecisionStrip(data) {
-      const scenario = data.scenario || {};
-      const type = scenario.type || data.direction || "neutral";
-      const regime = data.marketRegime || "--";
-
-      const reliability = typeof data.reliability === "number"
-        ? data.reliability
-        : data.signalQuality && typeof data.signalQuality.overall === "number"
-          ? data.signalQuality.overall
-          : 0;
-
-      const actionEl = document.getElementById("action-value");
-      const clarityEl = document.getElementById("tradable-value");
-      const regimeEl = document.getElementById("regime-value");
-      const reliabilityEl = document.getElementById("reliability-value");
-      const reliabilityFill = document.getElementById("reliability-fill");
-
-      actionEl.innerText = translateMarketSentiment(data);
-      actionEl.className = "decision-value gold";
-
-      if (type === "bullish") actionEl.className = "decision-value green";
-      if (type === "bearish") actionEl.className = "decision-value red";
-
-      const clarity = getSignalClarity(data);
-      clarityEl.innerText = clarity;
-      clarityEl.className = "decision-value gold";
-
-      if (clarity.includes("Alta")) clarityEl.className = "decision-value green";
-      if (clarity.includes("Bassa")) clarityEl.className = "decision-value red";
-
-      regimeEl.innerText = translateRegime(regime);
-      reliabilityEl.innerText = formatPercent(reliability);
-      reliabilityFill.style.width = Math.max(0, Math.min(100, reliability)) + "%";
-    }
-
-    function setMiniBar(key, value) {
-      const fill = document.getElementById("bar-" + key);
-      const label = document.getElementById("val-" + key);
-
-      if (!fill || !label) return;
-
-      const safeValue = Math.max(0, Math.min(100, Number(value || 0)));
-      fill.style.width = safeValue + "%";
-      label.innerText = Math.round(safeValue);
-    }
-
-    function renderQualityBars(signalQuality) {
-      const q = signalQuality || {};
-
-      setMiniBar("trend", q.trendAlignment);
-      setMiniBar("volatility", q.volatility);
-      setMiniBar("structure", q.structure);
-      setMiniBar("momentum", q.momentum);
-      setMiniBar("riskReward", q.riskReward);
-      setMiniBar("cleanliness", q.cleanliness);
-    }
-
-    function renderReadingMetrics(data, action) {
-      document.getElementById("metric-price").innerText = formatPrice(data.price);
-      document.getElementById("metric-support").innerText = formatPrice(data.support);
-      document.getElementById("metric-resistance").innerText = formatPrice(data.resistance);
-      document.getElementById("metric-expected").innerText = data.expectedMove
-        ? formatPrice(data.expectedMove) + " punti"
-        : "--";
-
-      const readingNote = document.getElementById("reading-note");
-      const scenario = data.scenario || {};
-      const type = scenario.type || data.direction || "neutral";
-
-      if (type === "bullish" && action !== "wait") {
-        readingNote.innerHTML =
-          "La lettura resta positiva finché il prezzo rimane sopra la <strong>zona di rimbalzo</strong>. " +
-          "Una perdita chiara di questa zona può indebolire lo scenario.";
-      } else if (type === "bearish" && action !== "wait") {
-        readingNote.innerHTML =
-          "La lettura resta negativa finché il prezzo rimane sotto la <strong>zona di blocco</strong>. " +
-          "Un recupero chiaro sopra questa zona può cambiare lo scenario.";
-      } else {
-        readingNote.innerHTML =
-          "Il mercato non offre ancora una direzione pulita. Meglio osservare una conferma sopra la zona alta o sotto la zona bassa.";
-      }
-    }
-
-    function renderBias(data) {
-      const scenario = data.scenario || {};
-      const price = Number(data.price);
-      const support = Number(data.support);
-      const resistance = Number(data.resistance);
-      const action = data.action || scenario.action || "wait";
-      const type = scenario.type || data.direction || "neutral";
-
-      let biasText = "Mercato laterale";
-      let description = "Nei prossimi 30 minuti il mercato non mostra ancora una direzione abbastanza chiara. Meglio osservare le zone principali prima di trarre conclusioni.";
-
-      if (action === "wait") {
-        biasText = "Meglio osservare";
-        description = "Auren non rileva una condizione sufficientemente pulita. La scelta più prudente è attendere una conferma sulle zone principali.";
-      } else if (type === "bullish") {
-        biasText = "Pressione rialzista";
-        description = "Nei prossimi 30 minuti l'oro mostra più forza verso l'alto. La lettura resta positiva finché il prezzo mantiene la zona di rimbalzo indicata.";
-      } else if (type === "bearish") {
-        biasText = "Pressione ribassista";
-        description = "Nei prossimi 30 minuti l'oro mostra più debolezza. La lettura resta negativa finché il prezzo non recupera la zona di blocco indicata.";
-      }
-
-      const plainSignal = document.getElementById("plain-signal");
-
-      document.getElementById("bias-value").innerText = biasText;
-      document.getElementById("bias-description").innerText = description;
-      plainSignal.innerText = buildPlainSignal(data);
-      plainSignal.className = "plain-signal " + (action === "wait" ? "neutral" : type);
-
-      document.getElementById("signal-quality").innerText = getSignalQuality(data);
-      document.getElementById("support-distance").innerText = formatDistance(price, support);
-      document.getElementById("resistance-distance").innerText = formatDistance(price, resistance);
-      document.getElementById("atr-value").innerText = data.atr30m ? formatPrice(data.atr30m) + " punti" : "--";
-
-      const reason = data.tradability && data.tradability.reasons && data.tradability.reasons.length
-        ? data.tradability.reasons.join("\n")
-        : data.tradable
-          ? "Lettura sufficientemente chiara"
-          : "Nessun blocco specifico";
-
-      document.getElementById("trade-reason").innerText = reason;
-
-      renderReadingMetrics(data, action);
-      renderQualityBars(data.signalQuality);
+      return buildPlainSignal(data);
     }
 
     function renderScenarioFromApi(data) {
-  const scenario = data.scenario || {};
-  const updateDate = data.updatedAt ? new Date(data.updatedAt) : new Date();
-  const message = buildLiveMessage(data);
-  const action = data.action || scenario.action || "wait";
+      const scenario = data.scenario || {};
+      const action = data.action || scenario.action || "wait";
+      const type = scenario.type || data.direction || "neutral";
 
-  document.getElementById("scenario-message").innerText = message;
-  document.getElementById("last-update").innerText = formatTime(updateDate);
-  document.getElementById("current-price").innerText = formatPrice(data.price);
+      const marketText = translateMarketSentiment(data);
+      const signalClarity = getSignalClarity(data);
+      const regimeText = translateRegime(data.marketRegime);
+      const reliability = typeof data.reliability === "number" ? data.reliability : 0;
+      const cards = buildScenarioCards(data);
 
-  renderDecisionStrip(data);
-  renderBias(data);
+      document.getElementById("current-price").innerText = formatPrice(data.price);
+      document.getElementById("last-update").innerText = data.updatedAt ? formatTime(new Date(data.updatedAt)) : formatTime(new Date());
 
-  const displayCards = buildScenarioCards(data);
+      document.getElementById("scenario-message").innerText = buildLiveMessage(data);
 
-  document.getElementById("main-prob").innerText = displayCards.main.probability + "%";
-  document.getElementById("main-title").innerText = displayCards.main.title;
-  document.getElementById("main-desc").innerText = displayCards.main.description;
-  document.getElementById("main-label-1").innerText = displayCards.main.label1;
-  document.getElementById("main-value-1").innerText = displayCards.main.value1;
-  document.getElementById("main-label-2").innerText = displayCards.main.label2;
-  document.getElementById("main-value-2").innerText = displayCards.main.value2;
+      document.getElementById("action-value").innerText = marketText;
+      document.getElementById("tradable-value").innerText = signalClarity;
+      document.getElementById("regime-value").innerText = regimeText;
+      document.getElementById("reliability-value").innerText = formatPercent(reliability);
+      document.getElementById("reliability-fill").style.width = Math.max(0, Math.min(100, reliability)) + "%";
 
-  document.getElementById("sec-prob").innerText = displayCards.secondary.probability + "%";
-  document.getElementById("sec-title").innerText = displayCards.secondary.title;
-  document.getElementById("sec-desc").innerText = displayCards.secondary.description;
-  document.getElementById("sec-label-1").innerText = displayCards.secondary.label1;
-  document.getElementById("sec-value-1").innerText = displayCards.secondary.value1;
-  document.getElementById("sec-label-2").innerText = displayCards.secondary.label2;
-  document.getElementById("sec-value-2").innerText = displayCards.secondary.value2;
+      document.getElementById("bias-value").innerText =
+        action === "buy" ? "Rialzista" :
+        action === "sell" ? "Ribassista" :
+        "Attesa";
 
-  document.getElementById("alt-prob").innerText = displayCards.alternative.probability + "%";
-  document.getElementById("alt-title").innerText = displayCards.alternative.title;
-  document.getElementById("alt-desc").innerText = displayCards.alternative.description;
-  document.getElementById("alt-label-1").innerText = displayCards.alternative.label1;
-  document.getElementById("alt-value-1").innerText = displayCards.alternative.value1;
-  document.getElementById("alt-label-2").innerText = displayCards.alternative.label2;
-  document.getElementById("alt-value-2").innerText = displayCards.alternative.value2;
+      document.getElementById("bias-description").innerText =
+        action === "wait"
+          ? "Auren non forza una direzione quando il mercato non è abbastanza leggibile."
+          : "Auren mostra la pressione prevalente del mercato sulla finestra M30.";
+
+      const plainSignal = document.getElementById("plain-signal");
+      plainSignal.className = "plain-signal " + action + " " + type;
+      plainSignal.innerText = buildPlainSignal(data);
+
+      document.getElementById("metric-price").innerText = formatPrice(data.price);
+      document.getElementById("metric-support").innerText = formatPrice(data.support);
+      document.getElementById("metric-resistance").innerText = formatPrice(data.resistance);
+      document.getElementById("metric-expected").innerText = formatPrice(data.expectedMove) + " punti";
+
+      document.getElementById("signal-quality").innerText = getSignalQuality(data);
+      document.getElementById("support-distance").innerText = formatDistance(data.price, data.support);
+      document.getElementById("resistance-distance").innerText = formatDistance(data.price, data.resistance);
+      document.getElementById("atr-value").innerText = formatPrice(data.atr30m) + " punti";
+      document.getElementById("trade-reason").innerText = getMainReason(data);
+
+      const quality = data.signalQuality || {};
+      const qualityMap = {
+        trend: quality.trendAlignment,
+        volatility: quality.volatility,
+        structure: quality.structure,
+        momentum: quality.momentum,
+        riskReward: quality.riskReward,
+        cleanliness: quality.cleanliness
+      };
+
+      Object.entries(qualityMap).forEach(([key, value]) => {
+        const number = typeof value === "number" ? Math.round(value) : 0;
+        const bar = document.getElementById("bar-" + key);
+        const val = document.getElementById("val-" + key);
+
+        if (bar) bar.style.width = Math.max(0, Math.min(100, number)) + "%";
+        if (val) val.innerText = number ? number + "%" : "--";
+      });
+
+      document.getElementById("main-prob").innerText = cards.main.probability + "%";
+      document.getElementById("main-title").innerText = cards.main.title;
+      document.getElementById("main-desc").innerText = cards.main.description;
+      document.getElementById("main-label-1").innerText = cards.main.label1;
+      document.getElementById("main-value-1").innerText = cards.main.value1;
+      document.getElementById("main-label-2").innerText = cards.main.label2;
+      document.getElementById("main-value-2").innerText = cards.main.value2;
+
+      document.getElementById("sec-prob").innerText = cards.secondary.probability + "%";
+      document.getElementById("sec-title").innerText = cards.secondary.title;
+      document.getElementById("sec-desc").innerText = cards.secondary.description;
+      document.getElementById("sec-label-1").innerText = cards.secondary.label1;
+      document.getElementById("sec-value-1").innerText = cards.secondary.value1;
+      document.getElementById("sec-label-2").innerText = cards.secondary.label2;
+      document.getElementById("sec-value-2").innerText = cards.secondary.value2;
+
+      document.getElementById("alt-prob").innerText = cards.alternative.probability + "%";
+      document.getElementById("alt-title").innerText = cards.alternative.title;
+      document.getElementById("alt-desc").innerText = cards.alternative.description;
+      document.getElementById("alt-label-1").innerText = cards.alternative.label1;
+      document.getElementById("alt-value-1").innerText = cards.alternative.value1;
+      document.getElementById("alt-label-2").innerText = cards.alternative.label2;
+      document.getElementById("alt-value-2").innerText = cards.alternative.value2;
 
   localStorage.setItem("auren_previous_type", scenario.type || data.direction || "neutral");
   localStorage.setItem("auren_previous_action", action);
   localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
+  updateScenarioUtilityLabels(data);
 }
 
     const CURRENT_SCENARIO_KEY = "auren_current_locked_scenario";
@@ -2351,10 +2693,10 @@ function buildScenarioCards(data) {
       const now = new Date();
       const next = getNextFreeUpdate();
       const diff = Math.max(0, next - now);
-
-      const hours = Math.floor(diff / 1000 / 60 / 60);
-      const minutes = Math.floor((diff / 1000 / 60) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      const totalSeconds = Math.floor(diff / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
 
       document.getElementById("timer").innerText =
         String(hours).padStart(2, "0") + ":" +
@@ -2378,6 +2720,117 @@ function buildScenarioCards(data) {
         loadLiveScenario(true);
       }
     }, 1000);
+
+
+    async function loadPublicStats() {
+      const fallback = {
+        points: "+90,98",
+        total: "65",
+        operative: "44",
+        winrate: "47,73%"
+      };
+
+      try {
+        const response = await fetch("/api/history", { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Storico non disponibile");
+        }
+
+        const data = await response.json();
+        const items = Array.isArray(data) ? data : data.items || [];
+
+        if (!items.length) {
+          throw new Error("Storico vuoto");
+        }
+
+        const closed = items.filter(item =>
+          item.result === "correct" ||
+          item.result === "wrong" ||
+          item.result === "neutral"
+        );
+
+        const operative = closed.filter(item =>
+          item.action === "buy" ||
+          item.action === "sell"
+        );
+
+        const correct = operative.filter(item => item.result === "correct");
+        const wrong = operative.filter(item => item.result === "wrong");
+
+        const totalPoints = operative.reduce((sum, item) => {
+          return sum + Number(item.priceDifference || 0);
+        }, 0);
+
+        const winrate = correct.length + wrong.length > 0
+          ? (correct.length / (correct.length + wrong.length)) * 100
+          : 0;
+
+        document.getElementById("stat-points").innerText =
+          (totalPoints >= 0 ? "+" : "") + totalPoints.toLocaleString("it-IT", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+
+        document.getElementById("stat-total").innerText = String(items.length);
+        document.getElementById("stat-operative").innerText = String(operative.length);
+        document.getElementById("stat-winrate").innerText =
+          winrate.toLocaleString("it-IT", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) + "%";
+      } catch (error) {
+        document.getElementById("stat-points").innerText = fallback.points;
+        document.getElementById("stat-total").innerText = fallback.total;
+        document.getElementById("stat-operative").innerText = fallback.operative;
+        document.getElementById("stat-winrate").innerText = fallback.winrate;
+      }
+    }
+
+    function updateScenarioUtilityLabels(data) {
+      const action = data.action || (data.scenario && data.scenario.action) || "wait";
+      const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
+      const nextUpdateAt = data.nextUpdateAt ? new Date(data.nextUpdateAt) : getNextFreeUpdate();
+
+      const validity = formatTime(updatedAt) + " - " + formatTime(nextUpdateAt);
+      const state =
+        action === "buy" ? "Operativo rialzista" :
+        action === "sell" ? "Operativo ribassista" :
+        "Non operativo / attesa";
+
+      const validityElement = document.getElementById("scenario-validity");
+      const stateElement = document.getElementById("scenario-operational-state");
+
+      if (validityElement) validityElement.innerText = validity;
+      if (stateElement) stateElement.innerText = state;
+    }
+
+    function setupFeedbackButtons() {
+      const buttons = document.querySelectorAll("[data-feedback]");
+      const message = document.getElementById("feedbackMessage");
+
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          const feedback = button.getAttribute("data-feedback");
+          const savedFeedback = JSON.parse(localStorage.getItem("auren_feedback") || "[]");
+
+          savedFeedback.push({
+            feedback,
+            createdAt: new Date().toISOString()
+          });
+
+          localStorage.setItem("auren_feedback", JSON.stringify(savedFeedback));
+
+          if (message) {
+            message.style.display = "block";
+          }
+        });
+      });
+    }
+
+
+    loadPublicStats();
+    setupFeedbackButtons();
 
     const waitlistForm = document.getElementById("waitlistForm");
     const emailInput = document.getElementById("emailInput");
@@ -2405,3 +2858,4 @@ function buildScenarioCards(data) {
   </script>
 </body>
 </html>
+
