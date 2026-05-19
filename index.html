@@ -1133,7 +1133,7 @@
       }
     }
 
-    /* Fix stabile sezione risultati: evita rendering verticale/non formattato */
+    /* Fix stabile sezione risultati + stile card premium */
     .results-section {
       display: block !important;
       width: 100% !important;
@@ -1147,7 +1147,8 @@
       padding: 30px !important;
       border-radius: 34px !important;
       background:
-        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
+        radial-gradient(circle at 18% 18%, rgba(255,217,120,0.12), transparent 28%),
+        linear-gradient(135deg, rgba(198,168,90,0.16), rgba(255,255,255,0.035)),
         rgba(255,255,255,0.025) !important;
       border: 1px solid var(--border-gold) !important;
       box-shadow: 0 24px 80px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(255,217,120,0.05) !important;
@@ -1165,19 +1166,101 @@
     .results-section .stats-grid {
       display: grid !important;
       grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-      gap: 12px !important;
-      margin-bottom: 16px !important;
+      gap: 14px !important;
+      margin-bottom: 18px !important;
       width: 100% !important;
     }
 
     .results-section .stat-card {
+      position: relative !important;
       display: block !important;
-      border: 1px solid var(--border-gold-soft) !important;
-      background: rgba(0,0,0,0.22) !important;
-      border-radius: 22px !important;
-      padding: 18px !important;
-      min-height: 112px !important;
+      border: 1px solid rgba(198,168,90,0.32) !important;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.07), rgba(0,0,0,0.20)),
+        rgba(0,0,0,0.22) !important;
+      border-radius: 24px !important;
+      padding: 19px !important;
+      min-height: 124px !important;
       overflow: hidden !important;
+      box-shadow: inset 0 0 0 1px rgba(255,217,120,0.04), 0 14px 38px rgba(0,0,0,0.22) !important;
+      transition: 0.22s ease !important;
+    }
+
+    .results-section .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255,217,120,0.95), rgba(198,168,90,0.25));
+    }
+
+    .results-section .stat-card::after {
+      content: "";
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      right: -38px;
+      top: -38px;
+      border-radius: 50%;
+      background: rgba(255,217,120,0.08);
+      filter: blur(2px);
+    }
+
+    .results-section .stat-card:hover {
+      transform: translateY(-4px) !important;
+      border-color: rgba(255,217,120,0.52) !important;
+      background:
+        linear-gradient(145deg, rgba(198,168,90,0.12), rgba(0,0,0,0.22)),
+        rgba(0,0,0,0.24) !important;
+      box-shadow: 0 18px 54px rgba(0,0,0,0.32), 0 0 34px rgba(198,168,90,0.10) !important;
+    }
+
+    .results-section .stat-label {
+      position: relative;
+      z-index: 1;
+      color: var(--muted) !important;
+      font-size: 12px !important;
+      line-height: 1.35 !important;
+      margin-bottom: 10px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+    }
+
+    .results-section .stat-value {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(28px, 3.2vw, 38px) !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.06em !important;
+      line-height: 1 !important;
+      margin-bottom: 8px;
+    }
+
+    .results-section .stat-value.green {
+      color: var(--green) !important;
+      text-shadow: 0 0 20px rgba(121,217,139,0.18);
+    }
+
+    .results-section .stat-value.gold {
+      color: var(--gold-light) !important;
+      text-shadow: 0 0 20px rgba(255,217,120,0.18);
+    }
+
+    .results-section .stat-value.blue {
+      color: var(--blue) !important;
+      text-shadow: 0 0 20px rgba(120,183,255,0.18);
+    }
+
+    .results-section .stat-sub {
+      position: relative;
+      z-index: 1;
+      margin-top: 7px !important;
+      color: #8d8d8d !important;
+      font-size: 12px !important;
+      line-height: 1.4 !important;
     }
 
     .results-section .validation-pill {
@@ -1192,6 +1275,7 @@
       color: var(--green) !important;
       font-weight: 900 !important;
       white-space: nowrap !important;
+      box-shadow: 0 0 28px rgba(121,217,139,0.08);
     }
 
     .results-section .transparency-note {
@@ -1206,9 +1290,145 @@
       clear: both !important;
     }
 
+    .results-section .transparency-note strong {
+      color: var(--gold-light) !important;
+    }
+
     @media (max-width: 900px) {
       .results-section .results-top,
       .results-section .stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* Restyling forte delle card risultati */
+    .results-section .stats-grid-premium {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 16px !important;
+      margin-top: 24px !important;
+      margin-bottom: 18px !important;
+    }
+
+    .results-section .stats-grid-premium .stat-card {
+      position: relative !important;
+      min-height: 152px !important;
+      padding: 22px 20px !important;
+      border-radius: 28px !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      border: 1px solid rgba(255,217,120,0.34) !important;
+      background: rgba(10,10,10,0.50) !important;
+      box-shadow:
+        0 18px 54px rgba(0,0,0,0.32),
+        inset 0 0 0 1px rgba(255,255,255,0.04) !important;
+    }
+
+    .results-section .stats-grid-premium .stat-card::before {
+      content: "" !important;
+      position: absolute !important;
+      inset: 0 !important;
+      z-index: -2 !important;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(255,217,120,0.18), transparent 32%),
+        linear-gradient(145deg, rgba(255,255,255,0.08), rgba(0,0,0,0.08)) !important;
+    }
+
+    .results-section .stats-grid-premium .stat-card::after {
+      content: "" !important;
+      position: absolute !important;
+      left: 18px !important;
+      right: 18px !important;
+      bottom: 0 !important;
+      height: 4px !important;
+      border-radius: 999px 999px 0 0 !important;
+      background: rgba(255,217,120,0.75) !important;
+      box-shadow: 0 0 22px rgba(255,217,120,0.28) !important;
+    }
+
+    .results-section .stat-card-profit {
+      border-color: rgba(121,217,139,0.44) !important;
+    }
+
+    .results-section .stat-card-profit::before {
+      background:
+        radial-gradient(circle at 78% 18%, rgba(121,217,139,0.24), transparent 34%),
+        linear-gradient(145deg, rgba(121,217,139,0.10), rgba(0,0,0,0.08)) !important;
+    }
+
+    .results-section .stat-card-profit::after {
+      background: rgba(121,217,139,0.85) !important;
+      box-shadow: 0 0 24px rgba(121,217,139,0.35) !important;
+    }
+
+    .results-section .stat-card-operative {
+      border-color: rgba(120,183,255,0.44) !important;
+    }
+
+    .results-section .stat-card-operative::before {
+      background:
+        radial-gradient(circle at 78% 18%, rgba(120,183,255,0.24), transparent 34%),
+        linear-gradient(145deg, rgba(120,183,255,0.10), rgba(0,0,0,0.08)) !important;
+    }
+
+    .results-section .stat-card-operative::after {
+      background: rgba(120,183,255,0.85) !important;
+      box-shadow: 0 0 24px rgba(120,183,255,0.35) !important;
+    }
+
+    .results-section .stat-icon {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-bottom: 16px !important;
+      color: #111 !important;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+      font-weight: 950 !important;
+      font-size: 18px !important;
+      box-shadow: 0 0 28px rgba(255,217,120,0.20) !important;
+    }
+
+    .results-section .stat-card-profit .stat-icon {
+      background: linear-gradient(135deg, #b9ffca, var(--green)) !important;
+    }
+
+    .results-section .stat-card-operative .stat-icon {
+      background: linear-gradient(135deg, #c3ddff, var(--blue)) !important;
+    }
+
+    .results-section .stats-grid-premium .stat-label {
+      color: rgba(245,245,245,0.72) !important;
+      font-size: 12px !important;
+      font-weight: 850 !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      margin-bottom: 9px !important;
+    }
+
+    .results-section .stats-grid-premium .stat-value {
+      font-size: clamp(34px, 3.8vw, 48px) !important;
+      line-height: 0.95 !important;
+      font-weight: 1000 !important;
+      letter-spacing: -0.08em !important;
+      margin-bottom: 10px !important;
+    }
+
+    .results-section .stats-grid-premium .stat-sub {
+      color: rgba(167,167,167,0.92) !important;
+      font-size: 13px !important;
+      line-height: 1.35 !important;
+    }
+
+    .results-section .stats-grid-premium .stat-card:hover {
+      transform: translateY(-6px) scale(1.01) !important;
+      border-color: rgba(255,217,120,0.62) !important;
+    }
+
+    @media (max-width: 900px) {
+      .results-section .stats-grid-premium {
         grid-template-columns: 1fr !important;
       }
     }
@@ -1320,29 +1540,33 @@
           </div>
         </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
+        <div class="stats-grid stats-grid-premium">
+          <div class="stat-card stat-card-profit">
+            <div class="stat-icon">↗</div>
             <div class="stat-label">Punti totali test</div>
             <div class="stat-value green" id="stat-points">+90,98</div>
-            <div class="stat-sub">Dato iniziale di test reale</div>
+            <div class="stat-sub">Performance in osservazione</div>
           </div>
 
-          <div class="stat-card">
+          <div class="stat-card stat-card-total">
+            <div class="stat-icon">◎</div>
             <div class="stat-label">Letture generate</div>
             <div class="stat-value gold" id="stat-total">65</div>
-            <div class="stat-sub">Inclusi scenari di attesa</div>
+            <div class="stat-sub">Ogni 30 minuti</div>
           </div>
 
-          <div class="stat-card">
+          <div class="stat-card stat-card-operative">
+            <div class="stat-icon">◆</div>
             <div class="stat-label">Letture operative</div>
             <div class="stat-value blue" id="stat-operative">44</div>
-            <div class="stat-sub">Rialzisti o ribassisti</div>
+            <div class="stat-sub">Rialziste o ribassiste</div>
           </div>
 
-          <div class="stat-card">
+          <div class="stat-card stat-card-accuracy">
+            <div class="stat-icon">%</div>
             <div class="stat-label">Precisione operativa</div>
             <div class="stat-value gold" id="stat-winrate">47,73%</div>
-            <div class="stat-sub">In fase di calibrazione</div>
+            <div class="stat-sub">In calibrazione</div>
           </div>
         </div>
 
@@ -2643,5 +2867,3 @@ function buildScenarioCards(data) {
   </script>
 </body>
 </html>
-
-
