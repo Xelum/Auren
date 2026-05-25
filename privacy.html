@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auren | Lettura XAU/USD ogni 30 minuti</title>
+  <title>Privacy Policy | Auren</title>
 
   <style>
     :root {
@@ -12,9 +12,6 @@
       --muted: #A7A7A7;
       --gold: #C6A85A;
       --gold-light: #FFD978;
-      --danger: #E66B6B;
-      --green: #79D98B;
-      --blue: #78B7FF;
       --border-gold: rgba(198, 168, 90, 0.42);
       --border-gold-soft: rgba(198, 168, 90, 0.28);
     }
@@ -31,32 +28,20 @@
 
     body {
       min-height: 100vh;
-      background: var(--black);
+      background:
+        radial-gradient(circle at 20% 18%, rgba(198,168,90,0.13), transparent 28%),
+        radial-gradient(circle at 80% 12%, rgba(198,168,90,0.08), transparent 26%),
+        linear-gradient(180deg, #111111 0%, #080808 100%);
       color: var(--soft-white);
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       overflow-x: hidden;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .background {
+    body::before {
+      content: "";
       position: fixed;
       inset: 0;
-      z-index: -5;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 20% 18%, rgba(198,168,90,0.13), transparent 28%),
-        radial-gradient(circle at 80% 12%, rgba(198,168,90,0.08), transparent 26%),
-        linear-gradient(180deg, #111111 0%, #080808 100%);
-    }
-
-    .background::before {
-      content: "";
-      position: absolute;
-      inset: 0;
+      z-index: -1;
       background-image:
         linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
@@ -64,105 +49,14 @@
       mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 92%);
     }
 
-    .gold-rain,
-    .meteor-rain {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .gold-rain { z-index: -3; }
-    .meteor-rain { z-index: -2; }
-
-    .gold-streak {
-      position: absolute;
-      top: -180px;
-      width: 2px;
-      height: 140px;
-      background: linear-gradient(to bottom, transparent, rgba(255,217,120,0.9), transparent);
-      filter: drop-shadow(0 0 12px rgba(255,217,120,0.75));
-      animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-      0% { transform: translateY(-220px) translateX(0) rotate(10deg); opacity: 0; }
-      10% { opacity: 0.65; }
-      85% { opacity: 0.35; }
-      100% { transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg); opacity: 0; }
-    }
-
-    .meteor {
-      position: absolute;
-      top: -40px;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--gold-light);
-      box-shadow:
-        0 0 10px rgba(255,217,120,0.9),
-        0 0 24px rgba(255,217,120,0.55),
-        0 0 42px rgba(198,168,90,0.28);
-      opacity: 0;
-      animation: meteorFall linear infinite;
-    }
-
-    .meteor::after {
-      content: "";
-      position: absolute;
-      width: 2px;
-      height: 42px;
-      left: 50%;
-      bottom: 2px;
-      transform: translateX(-50%);
-      background: linear-gradient(to top, rgba(255,217,120,0.7), transparent);
-      filter: blur(1px);
-    }
-
-    @keyframes meteorFall {
-      0% { transform: translateY(-80px) translateX(0) scale(0.6); opacity: 0; }
-      12% { opacity: 0.75; }
-      80% { opacity: 0.45; }
-      100% { transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1); opacity: 0; }
-    }
-
-    .cursor-glow {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 150px;
-      height: 150px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      background: radial-gradient(circle, rgba(255,217,120,0.16), rgba(198,168,90,0.07) 35%, transparent 70%);
-      filter: blur(8px);
-      opacity: 0.75;
-    }
-
-    .mouse-trail {
-      position: fixed;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9997;
-      background: radial-gradient(circle, rgba(255,217,120,0.34), rgba(198,168,90,0.12) 45%, transparent 72%);
-      box-shadow: 0 0 22px rgba(255,217,120,0.3);
-      animation: trailFade 0.7s ease-out forwards;
-    }
-
-    @keyframes trailFade {
-      from { transform: translate(-50%, -50%) scale(1); opacity: 0.75; }
-      to { transform: translate(-50%, -50%) scale(1.9); opacity: 0; }
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     header {
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
       z-index: 50;
       backdrop-filter: blur(18px);
       background: rgba(11,11,11,0.82);
@@ -172,42 +66,42 @@
     .nav {
       max-width: 1120px;
       margin: 0 auto;
-      padding: 8px 24px;
+      padding: 14px 24px;
       min-height: 74px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 20px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      min-width: 190px;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 24px;
     }
 
-    .logo-img-big {
-      height: 58px;
-      width: auto;
-      max-width: 185px;
-      object-fit: contain;
-      display: block;
-      filter:
-        drop-shadow(0 0 10px rgba(255,217,120,0.75))
-        drop-shadow(0 0 28px rgba(198,168,90,0.45));
-      transition: all 0.3s ease;
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      box-shadow: 0 0 28px rgba(198,168,90,0.34);
     }
-
-    .brand:hover .logo-img-big { transform: scale(1.04); }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 18px;
       color: var(--muted);
       font-size: 14px;
     }
 
-    .nav-links a:hover { color: var(--gold-light); }
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
 
     .btn {
       display: inline-flex;
@@ -219,7 +113,7 @@
       border: 1px solid var(--border-gold);
       background: rgba(198,168,90,0.08);
       color: var(--soft-white);
-      font-weight: 700;
+      font-weight: 800;
       transition: 0.2s ease;
       cursor: pointer;
     }
@@ -230,22 +124,14 @@
       box-shadow: 0 0 28px rgba(198,168,90,0.24);
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #111;
-      border: none;
-      box-shadow: 0 0 40px rgba(198,168,90,0.25);
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 76px 24px 70px;
     }
 
     .hero {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 118px 24px 26px;
-      display: grid;
-      grid-template-columns: 1fr 0.88fr;
-      gap: 58px;
-      align-items: center;
-      min-height: 570px;
+      margin-bottom: 34px;
     }
 
     .eyebrow {
@@ -267,20 +153,13 @@
       border-radius: 50%;
       background: var(--gold-light);
       box-shadow: 0 0 20px rgba(255,217,120,0.9);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.35); }
     }
 
     h1 {
-      font-size: clamp(50px, 6vw, 78px);
+      font-size: clamp(42px, 6vw, 72px);
       line-height: 0.98;
       letter-spacing: -0.07em;
-      margin-bottom: 22px;
-      max-width: 620px;
+      margin-bottom: 18px;
     }
 
     .gold-text {
@@ -292,701 +171,69 @@
 
     .hero p {
       color: var(--muted);
-      font-size: 18px;
-      line-height: 1.65;
-      max-width: 610px;
-      margin-bottom: 28px;
+      font-size: 17px;
+      line-height: 1.7;
+      max-width: 780px;
     }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .small-note {
-      margin-top: 20px;
-      color: #777;
-      font-size: 13px;
-      line-height: 1.5;
-      max-width: 560px;
-    }
-
-    .terminal-card {
-      position: relative;
-      border-radius: 30px;
-      padding: 1px;
-      background: linear-gradient(145deg, rgba(255,217,120,0.65), rgba(198,168,90,0.18), rgba(255,255,255,0.10));
-      box-shadow: 0 24px 90px rgba(0,0,0,0.55), 0 0 80px rgba(198,168,90,0.14);
-      overflow: hidden;
-      max-width: 470px;
-      justify-self: end;
-      width: 100%;
-    }
-
-    .terminal-inner {
-      border-radius: 29px;
-      background: rgba(15,15,15,0.92);
-      backdrop-filter: blur(20px);
-      padding: 24px;
-      position: relative;
-      z-index: 1;
-      border: 1px solid rgba(198,168,90,0.18);
-    }
-
-    .terminal-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
-    }
-
-    .window-dots { display: flex; gap: 7px; }
-
-    .window-dots span {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.20);
-    }
-
-    .status-badge {
-      font-size: 12px;
-      color: var(--gold-light);
-      border: 1px solid var(--border-gold);
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(198,168,90,0.10);
-    }
-
-    .market-title {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-
-    .live-price-widget {
-      position: relative;
-      width: 100%;
-      height: 170px;
-      border-radius: 22px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid var(--border-gold-soft);
-      padding: 12px;
-      pointer-events: none;
-    }
-
-    .live-price-widget::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 30;
-      cursor: default;
-    }
-
-    .tradingview-widget-container,
-    .tradingview-widget-container__widget {
-      width: 100%;
-      min-height: 145px;
-      pointer-events: none;
-    }
-
-    section {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 44px 24px;
-    }
-
-    .chart-section {
-      padding-top: 28px;
-      padding-bottom: 42px;
-    }
-
-    .chart-board,
-    .scenario-board,
-    .premium {
+    .policy-card {
       border-radius: 34px;
       background:
+        radial-gradient(circle at 18% 18%, rgba(255,217,120,0.10), transparent 30%),
         linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
         rgba(255,255,255,0.025);
       border: 1px solid var(--border-gold);
       box-shadow: 0 24px 80px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,217,120,0.05);
       overflow: hidden;
+      padding: 34px;
     }
 
-    .chart-board { padding: 28px; }
-
-    .chart-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 24px;
-      margin-bottom: 22px;
+    .policy-section {
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.09);
     }
 
-    .chart-top h2 {
-      font-size: clamp(32px, 4vw, 50px);
-      line-height: 1.05;
-      letter-spacing: -0.05em;
-      margin-bottom: 10px;
+    .policy-section:first-child {
+      padding-top: 0;
     }
 
-    .chart-top p {
-      color: var(--muted);
-      line-height: 1.65;
-      max-width: 690px;
-    }
-
-    .chart-pill,
-    .market-pill,
-    .timer-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 18px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.24);
-      border: 1px solid var(--border-gold);
-      color: var(--gold-light);
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .market-pill-live { gap: 9px; }
-
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--gold-light);
-      box-shadow: 0 0 16px rgba(255,217,120,0.9);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-
-    .advanced-chart-wrap {
-      width: 100%;
-      height: 520px;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid var(--border-gold-soft);
-      background: rgba(0,0,0,0.28);
-      pointer-events: auto;
-    }
-
-    .advanced-chart-wrap .tradingview-widget-container,
-    .advanced-chart-wrap .tradingview-widget-container__widget {
-      width: 100%;
-      height: 100%;
-      min-height: 520px;
-      pointer-events: auto;
-    }
-
-    #cosa-legge { padding-top: 34px; }
-
-    .section-heading {
-      text-align: center;
-      max-width: 780px;
-      margin: 0 auto 34px;
-    }
-
-    .section-heading h2 {
-      font-size: clamp(34px, 5vw, 56px);
-      letter-spacing: -0.05em;
-      margin-bottom: 14px;
-    }
-
-    .section-heading p {
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.65;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .feature-card,
-    .scenario-card {
-      padding: 28px;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid var(--border-gold-soft);
-      box-shadow: inset 0 0 0 1px rgba(255,217,120,0.04), 0 14px 40px rgba(0,0,0,0.22);
-      transition: 0.25s ease;
-    }
-
-    .feature-card:hover,
-    .scenario-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      border-color: rgba(255,217,120,0.55);
-      background: rgba(198,168,90,0.075);
-      box-shadow: 0 18px 54px rgba(0,0,0,0.32), 0 0 34px rgba(198,168,90,0.10);
-    }
-
-    .icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(198,168,90,0.14);
-      border: 1px solid rgba(198,168,90,0.24);
-      color: var(--gold-light);
-      margin-bottom: 22px;
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .feature-card h3,
-    .scenario-card h3 {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-
-    .feature-card p,
-    .scenario-card p {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    .scenario-section { padding-top: 46px; }
-
-    .scenario-board { padding: 30px; }
-
-    .scenario-board-top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
-    .scenario-board h2 {
-      font-size: clamp(34px, 5vw, 56px);
-      letter-spacing: -0.05em;
-      margin-bottom: 12px;
-    }
-
-    .scenario-board p {
-      color: var(--muted);
-      line-height: 1.65;
-      max-width: 690px;
-    }
-
-    .scenario-status {
-      margin-bottom: 18px;
-      padding: 18px 20px;
-      border-radius: 22px;
-      border: 1px solid var(--border-gold-soft);
-      background: rgba(0,0,0,0.20);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .scenario-status-left {
-      display: grid;
-      gap: 5px;
-    }
-
-    .scenario-message {
-      color: var(--gold-light);
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .scenario-update-text {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .timer-pill span {
-      margin-left: 8px;
-      color: var(--soft-white);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .decision-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .decision-box {
-      border: 1px solid var(--border-gold-soft);
-      background: rgba(0,0,0,0.20);
-      border-radius: 20px;
-      padding: 16px;
-    }
-
-    .decision-label {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    .decision-value {
-      color: var(--soft-white);
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-    }
-
-    .decision-value.gold { color: var(--gold-light); }
-    .decision-value.green { color: var(--green); }
-    .decision-value.red { color: var(--danger); }
-    .decision-value.blue { color: var(--blue); }
-
-    .reliability-bar {
-      width: 100%;
-      height: 9px;
-      margin-top: 10px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.08);
-    }
-
-    .reliability-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-      transition: width 0.4s ease;
-    }
-
-    .history-action-wrap {
-      margin: -6px 0 22px;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    .history-btn {
-      min-height: 38px;
-      padding: 0 16px;
-      font-size: 13px;
-      color: var(--gold-light);
-      background: rgba(0,0,0,0.22);
-    }
-
-    .history-btn:hover { background: rgba(198,168,90,0.14); }
-
-    .bias-board {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 16px;
-      margin-bottom: 16px;
-      align-items: stretch;
-    }
-
-    .bias-card {
-      padding: 28px;
-      border-radius: 28px;
-      background: rgba(0,0,0,0.22);
-      border: 1px solid var(--border-gold-soft);
-      min-height: 100%;
-    }
-
-    .bias-label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .bias-value {
-      font-size: clamp(34px, 4vw, 52px);
-      font-weight: 950;
-      letter-spacing: -0.06em;
-      color: var(--gold-light);
-      margin-bottom: 10px;
-    }
-
-    .bias-description {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    .plain-signal {
-      margin-top: 18px;
-      padding: 16px 18px;
-      border-radius: 20px;
-      background: rgba(198,168,90,0.10);
-      border: 1px solid rgba(255,217,120,0.24);
-      color: var(--soft-white);
-      line-height: 1.6;
-      font-size: 15px;
-      font-weight: 650;
-    }
-
-    .plain-signal.wait,
-    .plain-signal.neutral {
-      background: rgba(120,183,255,0.08);
-      border-color: rgba(120,183,255,0.22);
-    }
-
-    .plain-signal.buy,
-    .plain-signal.bullish {
-      background: rgba(121,217,139,0.08);
-      border-color: rgba(121,217,139,0.22);
-    }
-
-    .plain-signal.sell,
-    .plain-signal.bearish {
-      background: rgba(230,107,107,0.08);
-      border-color: rgba(230,107,107,0.22);
-    }
-
-    .reading-metrics {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .reading-metric {
-      padding: 14px 15px;
-      border-radius: 18px;
-      background: rgba(0,0,0,0.22);
-      border: 1px solid rgba(198,168,90,0.22);
-    }
-
-    .reading-metric span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-      margin-bottom: 7px;
-    }
-
-    .reading-metric strong {
-      display: block;
-      color: var(--soft-white);
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-    }
-
-    .reading-metric.gold strong { color: var(--gold-light); }
-    .reading-metric.green strong { color: var(--green); }
-    .reading-metric.red strong { color: var(--danger); }
-
-    .reading-note {
-      margin-top: 14px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .reading-note strong { color: var(--gold-light); }
-
-    .technical-title {
-      color: var(--gold-light);
-      font-size: 14px;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-
-    .quality-list { display: grid; gap: 12px; }
-
-    .quality-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      color: var(--muted);
-      font-size: 14px;
-      white-space: pre-line;
-    }
-
-    .quality-row:last-child {
+    .policy-section:last-child {
       border-bottom: none;
       padding-bottom: 0;
     }
 
-    .quality-row strong {
-      color: var(--soft-white);
-      text-align: right;
-      white-space: pre-line;
-    }
-
-    .info {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      margin-left: 6px;
-      border-radius: 50%;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      background: rgba(198,168,90,0.15);
-      color: var(--gold-light);
-      border: 1px solid var(--border-gold);
-      position: relative;
-      vertical-align: middle;
-    }
-
-    .tooltip {
-      position: absolute;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 230px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(15,15,15,0.97);
-      border: 1px solid var(--border-gold-soft);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.2s ease;
-      z-index: 9999;
-      box-shadow: 0 12px 34px rgba(0,0,0,0.45);
-      text-align: left;
-      font-weight: 500;
-    }
-
-    .info:hover .tooltip { opacity: 1; }
-
-    .quality-bars {
-      margin-top: 18px;
-      display: grid;
-      gap: 12px;
-    }
-
-    .quality-bar-row {
-      display: grid;
-      grid-template-columns: 120px 1fr 44px;
-      gap: 10px;
-      align-items: center;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .mini-bar {
-      height: 8px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .mini-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, rgba(198,168,90,0.7), var(--gold-light));
-      border-radius: 999px;
-      transition: width 0.4s ease;
-    }
-
-    .scenario-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 16px;
-    }
-
-    .scenario-card.main {
-      background: rgba(198,168,90,0.10);
-      border-color: rgba(255,217,120,0.42);
-    }
-
-    .prob {
-      font-size: 42px;
-      font-weight: 900;
-      color: var(--gold-light);
-      margin-bottom: 16px;
+    h2 {
+      font-size: clamp(24px, 3vw, 34px);
       letter-spacing: -0.04em;
-    }
-
-    .scenario-meta {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,0.10);
-      display: grid;
-      gap: 10px;
-    }
-
-    .scenario-meta div {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .scenario-meta strong {
+      margin-bottom: 12px;
       color: var(--soft-white);
-      text-align: right;
     }
 
-    .premium {
-      padding: 46px;
-      display: block;
-    }
-
-    .premium-content { max-width: 820px; }
-
-    .premium h2 {
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1.08;
-      letter-spacing: -0.05em;
-      margin-bottom: 18px;
-      max-width: 900px;
-    }
-
-    .premium p {
+    p, li {
       color: var(--muted);
       line-height: 1.7;
-      max-width: 780px;
-      font-size: 16px;
+      font-size: 15px;
     }
 
-    .waitlist-form {
-      margin-top: 26px;
-      display: flex;
-      gap: 12px;
-      max-width: 620px;
+    ul {
+      padding-left: 20px;
+      display: grid;
+      gap: 8px;
     }
 
-    .waitlist-form input {
-      width: 100%;
-      min-height: 50px;
-      border-radius: 999px;
-      border: 1px solid var(--border-gold-soft);
-      background: rgba(255,255,255,0.05);
-      color: var(--soft-white);
-      padding: 0 18px;
-      outline: none;
-      font-size: 14px;
-    }
-
-    .waitlist-form input:focus {
-      border-color: rgba(255,217,120,0.55);
-      box-shadow: 0 0 24px rgba(198,168,90,0.14);
-    }
-
-    .form-message {
-      margin-top: 14px;
+    strong {
       color: var(--gold-light);
-      font-size: 13px;
-      display: none;
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(120,183,255,0.22);
+      background: rgba(120,183,255,0.07);
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
     }
 
     footer {
@@ -997,2108 +244,164 @@
       font-size: 13px;
     }
 
-    .hero-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 0 0 22px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 36px;
-      padding: 0 13px;
-      border-radius: 999px;
-      border: 1px solid var(--border-gold-soft);
-      background: rgba(0,0,0,0.22);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .hero-badge strong {
-      color: var(--gold-light);
-    }
-
-    .results-section {
-      padding-top: 18px;
-      padding-bottom: 34px;
-    }
-
-    .results-board,
-    .how-board,
-@media (max-width: 900px) {
-      .cursor-glow,
-      .mouse-trail { display: none; }
-
-      .nav { min-height: 72px; }
-      .logo-img-big { height: 54px; max-width: 170px; }
-      .nav-links { display: none; }
-      .brand { min-width: auto; }
-
-      .hero {
-        grid-template-columns: 1fr;
-        padding-top: 110px;
-        padding-bottom: 28px;
-        min-height: auto;
-        gap: 36px;
-      }
-
-      .terminal-card {
-        justify-self: start;
-        max-width: 100%;
-      }
-
-      .features,
-      .scenario-grid,
-      .scenario-board-top,
-      .bias-board,
-      .decision-strip,
-      .stats-grid,
-      .how-grid,
-      .scenario-badges {
-        grid-template-columns: 1fr;
-      }
-
-      .results-top {
-        flex-direction: column;
-      }
-
-      .chart-top { flex-direction: column; }
-      .advanced-chart-wrap { height: 460px; }
-
-      .advanced-chart-wrap .tradingview-widget-container,
-      .advanced-chart-wrap .tradingview-widget-container__widget {
-        min-height: 460px;
-      }
-
-      .market-pill,
-      .chart-pill { justify-self: start; }
-      section { padding: 42px 24px; }
-      #cosa-legge { padding-top: 24px; }
-      .premium { padding: 34px; }
-    }
-
-    @media (max-width: 520px) {
-      .logo-img-big { height: 50px; max-width: 150px; }
-
-      .nav {
-        min-height: 70px;
-        padding: 8px 18px;
-      }
-
-      .nav .btn {
-        min-height: 40px;
-        padding: 0 14px;
-        font-size: 13px;
-      }
-
-      h1 { font-size: 46px; }
-
-      .hero {
-        padding: 104px 20px 26px;
-        gap: 30px;
-      }
-
-      .hero-actions .btn,
-      .waitlist-form .btn { width: 100%; }
-
-      .waitlist-form { flex-direction: column; }
-
-      .scenario-board,
-      .premium,
-      .chart-board { padding: 24px; }
-
-      .premium h2 { font-size: 34px; }
-      .advanced-chart-wrap { height: 390px; }
-
-      .advanced-chart-wrap .tradingview-widget-container,
-      .advanced-chart-wrap .tradingview-widget-container__widget {
-        min-height: 390px;
-      }
-
-      .reading-metrics { grid-template-columns: 1fr; }
-
-      .tooltip {
-        left: auto;
-        right: -20px;
-        transform: none;
-        width: 210px;
-      }
-
-      .quality-bar-row {
-        grid-template-columns: 92px 1fr 38px;
-      }
-    }
-
-    /* Fix stabile sezione risultati + stile card premium */
-    .results-section {
-      display: block !important;
-      width: 100% !important;
-      padding-top: 18px !important;
-      padding-bottom: 34px !important;
-    }
-
-    .results-section .results-board {
-      display: block !important;
-      width: 100% !important;
-      padding: 30px !important;
-      border-radius: 34px !important;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(255,217,120,0.12), transparent 28%),
-        linear-gradient(135deg, rgba(198,168,90,0.16), rgba(255,255,255,0.035)),
-        rgba(255,255,255,0.025) !important;
-      border: 1px solid var(--border-gold) !important;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(255,217,120,0.05) !important;
-      overflow: hidden !important;
-    }
-
-    .results-section .results-top {
-      display: grid !important;
-      grid-template-columns: 1fr auto !important;
-      gap: 24px !important;
-      align-items: flex-start !important;
-      margin-bottom: 22px !important;
-    }
-
-    .results-section .stats-grid {
-      display: grid !important;
-      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-      gap: 14px !important;
-      margin-bottom: 18px !important;
-      width: 100% !important;
-    }
-
-    .results-section .stat-card {
-      position: relative !important;
-      display: block !important;
-      border: 1px solid rgba(198,168,90,0.32) !important;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,0.07), rgba(0,0,0,0.20)),
-        rgba(0,0,0,0.22) !important;
-      border-radius: 24px !important;
-      padding: 19px !important;
-      min-height: 124px !important;
-      overflow: hidden !important;
-      box-shadow: inset 0 0 0 1px rgba(255,217,120,0.04), 0 14px 38px rgba(0,0,0,0.22) !important;
-      transition: 0.22s ease !important;
-    }
-
-    .results-section .stat-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(255,217,120,0.95), rgba(198,168,90,0.25));
-    }
-
-    .results-section .stat-card::after {
-      content: "";
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      right: -38px;
-      top: -38px;
-      border-radius: 50%;
-      background: rgba(255,217,120,0.08);
-      filter: blur(2px);
-    }
-
-    .results-section .stat-card:hover {
-      transform: translateY(-4px) !important;
-      border-color: rgba(255,217,120,0.52) !important;
-      background:
-        linear-gradient(145deg, rgba(198,168,90,0.12), rgba(0,0,0,0.22)),
-        rgba(0,0,0,0.24) !important;
-      box-shadow: 0 18px 54px rgba(0,0,0,0.32), 0 0 34px rgba(198,168,90,0.10) !important;
-    }
-
-    .results-section .stat-label {
-      position: relative;
-      z-index: 1;
-      color: var(--muted) !important;
-      font-size: 12px !important;
-      line-height: 1.35 !important;
-      margin-bottom: 10px !important;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 800;
-    }
-
-    .results-section .stat-value {
-      position: relative;
-      z-index: 1;
-      font-size: clamp(28px, 3.2vw, 38px) !important;
-      font-weight: 950 !important;
-      letter-spacing: -0.06em !important;
-      line-height: 1 !important;
-      margin-bottom: 8px;
-    }
-
-    .results-section .stat-value.green {
-      color: var(--green) !important;
-      text-shadow: 0 0 20px rgba(121,217,139,0.18);
-    }
-
-    .results-section .stat-value.gold {
-      color: var(--gold-light) !important;
-      text-shadow: 0 0 20px rgba(255,217,120,0.18);
-    }
-
-    .results-section .stat-value.blue {
-      color: var(--blue) !important;
-      text-shadow: 0 0 20px rgba(120,183,255,0.18);
-    }
-
-    .results-section .stat-sub {
-      position: relative;
-      z-index: 1;
-      margin-top: 7px !important;
-      color: #8d8d8d !important;
-      font-size: 12px !important;
-      line-height: 1.4 !important;
-    }
-
-    .results-section .validation-pill {
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 9px !important;
-      min-height: 42px !important;
-      padding: 0 18px !important;
-      border-radius: 999px !important;
-      border: 1px solid rgba(121,217,139,0.35) !important;
-      background: rgba(121,217,139,0.08) !important;
-      color: var(--green) !important;
-      font-weight: 900 !important;
-      white-space: nowrap !important;
-      box-shadow: 0 0 28px rgba(121,217,139,0.08);
-    }
-
-    .results-section .transparency-note {
-      display: block !important;
-      padding: 16px 18px !important;
-      border-radius: 20px !important;
-      border: 1px solid rgba(120,183,255,0.22) !important;
-      background: rgba(120,183,255,0.07) !important;
-      color: var(--muted) !important;
-      line-height: 1.6 !important;
-      font-size: 14px !important;
-      clear: both !important;
-    }
-
-    .results-section .transparency-note strong {
-      color: var(--gold-light) !important;
-    }
-
-    @media (max-width: 900px) {
-      .results-section .results-top,
-      .results-section .stats-grid {
-        grid-template-columns: 1fr !important;
-      }
-    }
-
-    /* Card risultati raffinate e coerenti con Auren */
-    .results-section .stats-grid-premium {
-      display: grid !important;
-      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-      gap: 14px !important;
-      margin-top: 22px !important;
-      margin-bottom: 18px !important;
-    }
-
-    .results-section .stats-grid-premium .stat-card {
-      position: relative !important;
-      min-height: 118px !important;
-      padding: 18px 18px 16px !important;
-      border-radius: 22px !important;
-      overflow: hidden !important;
-      isolation: isolate !important;
-      border: 1px solid rgba(198,168,90,0.34) !important;
-      background:
-        linear-gradient(145deg, rgba(198,168,90,0.08), rgba(255,255,255,0.025)),
-        rgba(0,0,0,0.22) !important;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,217,120,0.035),
-        0 12px 34px rgba(0,0,0,0.20) !important;
-      transition: 0.22s ease !important;
-    }
-
-    .results-section .stats-grid-premium .stat-card::before {
-      content: "" !important;
-      position: absolute !important;
-      inset: 0 !important;
-      z-index: -2 !important;
-      background: radial-gradient(circle at 82% 12%, rgba(255,217,120,0.09), transparent 32%) !important;
-    }
-
-    .results-section .stats-grid-premium .stat-card::after {
-      content: "" !important;
-      position: absolute !important;
-      left: 18px !important;
-      right: 18px !important;
-      bottom: 0 !important;
-      height: 2px !important;
-      border-radius: 999px 999px 0 0 !important;
-      background: rgba(198,168,90,0.72) !important;
-      box-shadow: 0 0 14px rgba(198,168,90,0.20) !important;
-    }
-
-    .results-section .stat-card-profit,
-    .results-section .stat-card-operative {
-      border-color: rgba(198,168,90,0.34) !important;
-    }
-
-    .results-section .stat-card-profit::before {
-      background: radial-gradient(circle at 82% 12%, rgba(121,217,139,0.10), transparent 32%) !important;
-    }
-
-    .results-section .stat-card-operative::before {
-      background: radial-gradient(circle at 82% 12%, rgba(120,183,255,0.10), transparent 32%) !important;
-    }
-
-    .results-section .stat-card-profit::after {
-      background: rgba(121,217,139,0.62) !important;
-      box-shadow: 0 0 14px rgba(121,217,139,0.18) !important;
-    }
-
-    .results-section .stat-card-operative::after {
-      background: rgba(120,183,255,0.62) !important;
-      box-shadow: 0 0 14px rgba(120,183,255,0.18) !important;
-    }
-
-    .results-section .stat-icon {
-      width: 30px !important;
-      height: 30px !important;
-      border-radius: 11px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      margin-bottom: 13px !important;
-      color: var(--gold-light) !important;
-      background: rgba(198,168,90,0.13) !important;
-      border: 1px solid rgba(198,168,90,0.28) !important;
-      font-weight: 900 !important;
-      font-size: 14px !important;
-      box-shadow: none !important;
-    }
-
-    .results-section .stat-card-profit .stat-icon {
-      color: var(--green) !important;
-      background: rgba(121,217,139,0.10) !important;
-      border-color: rgba(121,217,139,0.24) !important;
-    }
-
-    .results-section .stat-card-operative .stat-icon {
-      color: var(--blue) !important;
-      background: rgba(120,183,255,0.10) !important;
-      border-color: rgba(120,183,255,0.24) !important;
-    }
-
-    .results-section .stats-grid-premium .stat-label {
-      color: rgba(245,245,245,0.66) !important;
-      font-size: 11px !important;
-      font-weight: 800 !important;
-      letter-spacing: 0.075em !important;
-      text-transform: uppercase !important;
-      margin-bottom: 8px !important;
-      line-height: 1.2 !important;
-    }
-
-    .results-section .stats-grid-premium .stat-value {
-      font-size: clamp(28px, 2.65vw, 36px) !important;
-      line-height: 1 !important;
-      font-weight: 900 !important;
-      letter-spacing: -0.055em !important;
-      margin-bottom: 8px !important;
-      text-shadow: none !important;
-    }
-
-    .results-section .stats-grid-premium .stat-value.green {
-      color: var(--green) !important;
-    }
-
-    .results-section .stats-grid-premium .stat-value.gold {
-      color: var(--gold-light) !important;
-    }
-
-    .results-section .stats-grid-premium .stat-value.blue {
-      color: var(--blue) !important;
-    }
-
-    .results-section .stats-grid-premium .stat-sub {
-      color: rgba(167,167,167,0.86) !important;
-      font-size: 12px !important;
-      line-height: 1.35 !important;
-    }
-
-    .results-section .stats-grid-premium .stat-card:hover {
-      transform: translateY(-3px) !important;
-      border-color: rgba(255,217,120,0.46) !important;
-      background:
-        linear-gradient(145deg, rgba(198,168,90,0.105), rgba(255,255,255,0.03)),
-        rgba(0,0,0,0.24) !important;
-    }
-
-    @media (max-width: 900px) {
-      .results-section .stats-grid-premium {
-        grid-template-columns: 1fr !important;
-      }
-    }
-
-    /* Fix stabile sezione: Tre stati, zero confusione */
-    .how-section {
-      display: block !important;
-      width: 100% !important;
-      padding-top: 20px !important;
-      padding-bottom: 34px !important;
-    }
-
-    .how-section .how-board {
-      display: block !important;
-      width: 100% !important;
-      padding: 30px !important;
-      border-radius: 34px !important;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(255,217,120,0.10), transparent 30%),
-        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
-        rgba(255,255,255,0.025) !important;
-      border: 1px solid var(--border-gold) !important;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(255,217,120,0.05) !important;
-      overflow: hidden !important;
-    }
-
-    .how-section .how-grid {
-      display: grid !important;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-      gap: 14px !important;
-      margin-top: 24px !important;
-      width: 100% !important;
-    }
-
-    .how-section .how-card {
-      display: block !important;
-      padding: 24px !important;
-      border-radius: 24px !important;
-      background:
-        linear-gradient(145deg, rgba(198,168,90,0.08), rgba(255,255,255,0.025)),
-        rgba(0,0,0,0.22) !important;
-      border: 1px solid rgba(198,168,90,0.30) !important;
-      box-shadow: inset 0 0 0 1px rgba(255,217,120,0.035), 0 12px 34px rgba(0,0,0,0.20) !important;
-      min-height: 190px !important;
-      transition: 0.22s ease !important;
-    }
-
-    .how-section .how-card:hover {
-      transform: translateY(-3px) !important;
-      border-color: rgba(255,217,120,0.46) !important;
-      background:
-        linear-gradient(145deg, rgba(198,168,90,0.105), rgba(255,255,255,0.03)),
-        rgba(0,0,0,0.24) !important;
-    }
-
-    .how-section .how-card h3 {
-      font-size: 21px !important;
-      margin-bottom: 10px !important;
-      color: var(--soft-white) !important;
-      letter-spacing: -0.03em !important;
-    }
-
-    .how-section .how-card p {
-      color: var(--muted) !important;
-      font-size: 14px !important;
-      line-height: 1.6 !important;
-      margin: 0 !important;
-    }
-
-    .how-section .how-tag {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      min-height: 31px !important;
-      padding: 0 12px !important;
-      margin-bottom: 16px !important;
-      border-radius: 999px !important;
-      font-size: 12px !important;
-      font-weight: 900 !important;
-      border: 1px solid var(--border-gold-soft) !important;
-    }
-
-    .how-section .how-tag.buy {
-      color: var(--green) !important;
-      border-color: rgba(121,217,139,0.35) !important;
-      background: rgba(121,217,139,0.08) !important;
-    }
-
-    .how-section .how-tag.sell {
-      color: var(--danger) !important;
-      border-color: rgba(230,107,107,0.35) !important;
-      background: rgba(230,107,107,0.08) !important;
-    }
-
-    .how-section .how-tag.wait {
-      color: var(--blue) !important;
-      border-color: rgba(120,183,255,0.35) !important;
-      background: rgba(120,183,255,0.08) !important;
-    }
-
-    @media (max-width: 900px) {
-      .how-section .how-grid {
-        grid-template-columns: 1fr !important;
-      }
-    }
-
-    /* Banner privacy Auren */
-    .privacy-banner {
-      position: fixed;
-      left: 18px;
-      right: 18px;
-      bottom: 18px;
-      z-index: 10000;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 16px 18px;
-      border-radius: 24px;
-      border: 1px solid rgba(198,168,90,0.45);
-      background:
-        radial-gradient(circle at 10% 20%, rgba(255,217,120,0.13), transparent 35%),
-        linear-gradient(135deg, rgba(18,18,18,0.96), rgba(8,8,8,0.96));
-      box-shadow: 0 20px 70px rgba(0,0,0,0.55), 0 0 38px rgba(198,168,90,0.14);
-      backdrop-filter: blur(18px);
-    }
-
-    .privacy-banner.is-visible {
-      display: flex;
-    }
-
-    .privacy-banner-text {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .privacy-banner-text strong {
-      display: block;
-      color: var(--soft-white);
-      font-size: 14px;
-      margin-bottom: 3px;
-    }
-
-    .privacy-banner-text a {
-      color: var(--gold-light);
-      font-weight: 800;
-      text-decoration: underline;
-      text-decoration-color: rgba(255,217,120,0.35);
-      text-underline-offset: 4px;
-    }
-
-    .privacy-banner-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .privacy-link-footer {
-      display: inline-flex;
-      margin-left: 10px;
-      color: var(--gold-light);
-      font-weight: 700;
-    }
-
-    .privacy-link-footer:hover {
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-
     @media (max-width: 700px) {
-      .privacy-banner {
+      .nav {
         align-items: flex-start;
         flex-direction: column;
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-        padding: 16px;
       }
 
-      .privacy-banner-actions,
-      .privacy-banner-actions .btn {
-        width: 100%;
+      .nav-links {
+        flex-wrap: wrap;
+      }
+
+      main {
+        padding-top: 46px;
+      }
+
+      .policy-card {
+        padding: 24px;
+        border-radius: 28px;
       }
     }
-
   </style>
 </head>
 
 <body>
-  <div class="background"></div>
-  <div class="gold-rain" id="goldRain"></div>
-  <div class="meteor-rain" id="meteorRain"></div>
-  <div class="cursor-glow" id="cursorGlow"></div>
-
   <header>
     <nav class="nav">
-      <a href="#" class="brand">
-        <img src="logo0.png" alt="Logo Auren" class="logo-img-big" />
+      <a href="./index.html" class="brand" aria-label="Torna alla home Auren">
+        <span class="brand-mark"></span>
+        <span>Auren</span>
       </a>
 
       <div class="nav-links">
-        <a href="#scenario">Scenario</a>
-        <a href="#risultati">Risultati</a>
-        <a href="/storico.html">Storico</a>
-        <a href="#grafico">Grafico</a>
-        <a href="#premium">Beta</a>
-        <a href="/privacy.html">Privacy</a>
+        <a href="./index.html">Home</a>
+        <a href="./index.html#scenario">Scenario</a>
+        <a href="./index.html#risultati">Risultati</a>
+        <a href="./index.html#premium">Beta</a>
       </div>
 
-      <a href="#premium" class="btn">Prova la beta</a>
+      <a href="./index.html" class="btn">Torna alla home</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero" id="analisi">
-      <div>
-        <div class="eyebrow">
-          <span class="pulse"></span>
-          Scenario live sull'oro ogni 30 minuti
-        </div>
-
-        <h1><span class="gold-text">XAU</span>, spiegato in modo semplice.</h1>
-
-        <p>
-          Auren trasforma i dati dell'oro in una lettura semplice: direzione probabile,
-          chiarezza del segnale, fase di mercato e affidabilità. Non dà ordini di acquisto o vendita:
-          mostra il contesto in modo comprensibile.
-        </p>
-
-        <div class="hero-badges">
-          <div class="hero-badge"><strong>1</strong> guarda lo scenario</div>
-          <div class="hero-badge"><strong>2</strong> controlla i risultati</div>
-          <div class="hero-badge"><strong>3</strong> verifica lo storico</div>
-        </div>
-
-        <div class="hero-actions">
-          <a href="#scenario" class="btn btn-primary">Scenario attuale</a>
-          <a href="#risultati" class="btn">Risultati live</a>
-          <a href="/storico.html" class="btn">Storico scenari</a>
-          <a href="#grafico" class="btn">Grafico live</a>
-        </div>
-
-        <div class="small-note">
-          Auren mostra scenari probabilistici e dati di validazione. Le analisi sono fornite solo a scopo informativo ed educativo
-          e non costituiscono consulenza finanziaria, raccomandazione o invito all'investimento.
-        </div>
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="pulse"></span>
+        Informativa privacy
       </div>
 
-      <div class="terminal-card">
-        <div class="terminal-inner">
-          <div class="terminal-top">
-            <div class="window-dots">
-              <span></span><span></span><span></span>
-            </div>
-            <div class="status-badge">STATO LIVE</div>
-          </div>
-
-          <div class="market-title">Prezzo live XAU/USD</div>
-
-          <div class="live-price-widget">
-            <div class="tradingview-widget-container">
-              <div class="tradingview-widget-container__widget"></div>
-              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-              {
-                "symbol": "TVC:GOLD",
-                "width": "100%",
-                "isTransparent": true,
-                "colorTheme": "dark",
-                "locale": "it"
-              }
-              </script>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="results-section" id="risultati">
-      <div class="results-board">
-        <div class="results-top">
-          <div>
-            <h2>Numeri chiari, subito.</h2>
-            <p>
-              Ogni lettura viene salvata e verificata. Così puoi vedere se Auren sta funzionando davvero,
-              senza promesse e senza risultati nascosti.
-            </p>
-          </div>
-
-          <div class="validation-pill">
-            <span class="live-dot"></span>
-            Validazione pubblica
-          </div>
-        </div>
-
-        <div class="stats-grid stats-grid-premium">
-          <div class="stat-card stat-card-profit">
-            <div class="stat-icon">↗</div>
-            <div class="stat-label">Punti totali test</div>
-            <div class="stat-value green" id="stat-points">+90,98</div>
-            <div class="stat-sub">Performance in osservazione</div>
-          </div>
-
-          <div class="stat-card stat-card-total">
-            <div class="stat-icon">◎</div>
-            <div class="stat-label">Letture generate</div>
-            <div class="stat-value gold" id="stat-total">65</div>
-            <div class="stat-sub">Ogni 30 minuti</div>
-          </div>
-
-          <div class="stat-card stat-card-operative">
-            <div class="stat-icon">◆</div>
-            <div class="stat-label">Letture operative</div>
-            <div class="stat-value blue" id="stat-operative">44</div>
-            <div class="stat-sub">Rialziste o ribassiste</div>
-          </div>
-
-          <div class="stat-card stat-card-accuracy">
-            <div class="stat-icon">%</div>
-            <div class="stat-label">Precisione operativa</div>
-            <div class="stat-value gold" id="stat-winrate">47,73%</div>
-            <div class="stat-sub">In calibrazione</div>
-          </div>
-        </div>
-
-        <div class="transparency-note">
-          <strong>Trasparenza:</strong> i risultati sono in validazione reale. Auren migliora leggendo storico, errori e feedback degli utenti.
-        </div>
-      </div>
-    </section>
-
-    <section class="chart-section" id="grafico">
-      <div class="chart-board">
-        <div class="chart-top">
-          <div>
-            <h2>Grafico live XAU/USD.</h2>
-            <p>
-              Puoi vedere il grafico dell'oro in tempo reale.
-              Se non sai leggerlo, scorri sotto: Auren lo trasforma per te
-              in una lettura semplice e immediata.
-            </p>
-          </div>
-
-          <div class="chart-pill">TradingView Live</div>
-        </div>
-
-        <div class="advanced-chart-wrap">
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-            {
-              "symbol": "TVC:GOLD",
-              "interval": "60",
-              "timezone": "Europe/Rome",
-              "theme": "dark",
-              "style": "1",
-              "locale": "it",
-              "backgroundColor": "rgba(11, 11, 11, 1)",
-              "gridColor": "rgba(198, 168, 90, 0.12)",
-              "hide_top_toolbar": false,
-              "hide_legend": false,
-              "allow_symbol_change": false,
-              "save_image": false,
-              "calendar": false,
-              "support_host": "https://www.tradingview.com",
-              "width": "100%",
-              "height": "100%"
-            }
-            </script>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="cosa-legge">
-      <div class="section-heading">
-        <h2>Leggi il mercato in 10 secondi.</h2>
-        <p>
-          Auren toglie rumore e mostra solo le informazioni essenziali.
-        </p>
-      </div>
-
-      <div class="features">
-        <div class="feature-card">
-          <div class="icon">01</div>
-          <h3>Direzione</h3>
-          <p>
-            Rialzista, ribassista o attesa. L'informazione principale è subito visibile.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">02</div>
-          <h3>Chiarezza</h3>
-          <p>
-            Ti fa capire se la lettura è forte oppure se il mercato è ancora confuso.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">03</div>
-          <h3>Contesto</h3>
-          <p>
-            Mostra zone tecniche, volatilità e qualità del movimento in modo semplice.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="how-section" id="come-leggere">
-      <div class="how-board">
-        <h2>Tre stati, zero confusione.</h2>
-        <p>
-          L'utente deve capire tutto al primo sguardo: direzione, qualità e motivo della lettura.
-        </p>
-
-        <div class="how-grid">
-          <div class="how-card">
-            <div class="how-tag buy">Rialzista</div>
-            <h3>Pressione verso l'alto</h3>
-            <p>
-              Il mercato mostra maggiore forza in salita nei prossimi 30 minuti. La lettura resta valida solo
-              se il prezzo mantiene le zone tecniche principali.
-            </p>
-          </div>
-
-          <div class="how-card">
-            <div class="how-tag sell">Ribassista</div>
-            <h3>Pressione verso il basso</h3>
-            <p>
-              Il mercato mostra maggiore debolezza nei prossimi 30 minuti. La zona di blocco diventa fondamentale
-              per capire se lo scenario resta coerente.
-            </p>
-          </div>
-
-          <div class="how-card">
-            <div class="how-tag wait">Attesa</div>
-            <h3>Mercato non pulito</h3>
-            <p>
-              Quando trend, volatilità o struttura non sono abbastanza chiari, Auren preferisce non forzare
-              una lettura direzionale.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="scenario-section" id="scenario">
-      <div class="scenario-board">
-        <div class="scenario-board-top">
-          <div>
-            <h2>Scenario attuale.</h2>
-            <p>
-              La risposta più importante: cosa sta mostrando XAU/USD adesso e quando verrà aggiornata la prossima lettura.
-            </p>
-          </div>
-
-          <div class="market-pill market-pill-live"><span class="live-dot"></span>XAU/USD</div>
-        </div>
-
-        <div class="scenario-status">
-          <div class="scenario-status-left">
-            <div class="scenario-message" id="scenario-message">Scenario in caricamento...</div>
-            <div class="scenario-update-text">
-              Prezzo XAU/USD: <strong id="current-price">--</strong><br>
-              Ultima analisi alle ore: <strong id="last-update">--:--</strong><br>
-              <strong>Scenario aggiornato automaticamente ogni 30 minuti</strong>
-            </div>
-          </div>
-
-          <div class="timer-pill">
-            Prossima analisi tra
-            <span id="timer">--:--:--</span>
-          </div>
-        </div>
-
-        <div class="scenario-badges">
-          <div class="scenario-mini-card">
-            <span>Validità scenario</span>
-            <strong id="scenario-validity">Finestra M30 corrente</strong>
-          </div>
-
-          <div class="scenario-mini-card">
-            <span>Stato operativo</span>
-            <strong id="scenario-operational-state">In caricamento</strong>
-          </div>
-
-          <div class="scenario-mini-card">
-            <span>Trasparenza</span>
-            <strong>Registrato nello storico</strong>
-          </div>
-        </div>
-
-        <div class="decision-strip">
-          <div class="decision-box">
-            <div class="decision-label">Direzione M30</div>
-            <div class="decision-value gold" id="action-value">Neutrale</div>
-          </div>
-
-          <div class="decision-box">
-            <div class="decision-label">Chiarezza segnale</div>
-            <div class="decision-value gold" id="tradable-value">--</div>
-          </div>
-
-          <div class="decision-box">
-            <div class="decision-label">Fase di mercato</div>
-            <div class="decision-value blue" id="regime-value">--</div>
-          </div>
-
-          <div class="decision-box">
-            <div class="decision-label">Affidabilità</div>
-            <div class="decision-value gold" id="reliability-value">--%</div>
-            <div class="reliability-bar">
-              <div class="reliability-fill" id="reliability-fill"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-action-wrap">
-          <a href="/storico.html" class="btn history-btn">Apri storico scenari</a>
-        </div>
-
-        <div class="bias-board">
-          <div class="bias-card">
-            <div class="bias-label">Lettura sintetica</div>
-            <div class="bias-value" id="bias-value">--</div>
-            <div class="bias-description" id="bias-description">
-              In attesa dei dati live.
-            </div>
-            <div class="plain-signal" id="plain-signal">
-              Sto leggendo i dati del mercato.
-            </div>
-
-            <div class="reading-metrics">
-              <div class="reading-metric gold">
-                <span>Prezzo analizzato</span>
-                <strong id="metric-price">--</strong>
-              </div>
-
-              <div class="reading-metric green">
-                <span>Zona di rimbalzo</span>
-                <strong id="metric-support">--</strong>
-              </div>
-
-              <div class="reading-metric red">
-                <span>Zona di blocco</span>
-                <strong id="metric-resistance">--</strong>
-              </div>
-
-              <div class="reading-metric gold">
-                <span>Movimento medio atteso</span>
-                <strong id="metric-expected">--</strong>
-              </div>
-            </div>
-
-            <div class="reading-note" id="reading-note">
-              La lettura resta valida solo se il prezzo mantiene le zone tecniche principali indicate.
-            </div>
-          </div>
-
-          <div class="bias-card">
-            <div class="technical-title">Dettagli tecnici</div>
-            <div class="quality-list">
-              <div class="quality-row">
-                <span>
-                  Chiarezza del segnale
-                  <span class="info">i
-                    <span class="tooltip">
-                      Indica quanto la lettura del mercato è chiara. Alta significa che più elementi stanno andando nella stessa direzione.
-                    </span>
-                  </span>
-                </span>
-                <strong id="signal-quality">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
-                  Zona di rimbalzo
-                  <span class="info">i
-                    <span class="tooltip">
-                      Indica quanto il prezzo è lontano da una zona dove potrebbe rallentare o provare a reagire.
-                    </span>
-                  </span>
-                </span>
-                <strong id="support-distance">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
-                  Zona di blocco
-                  <span class="info">i
-                    <span class="tooltip">
-                      Indica quanto il prezzo è lontano da una zona dove potrebbe fermarsi, rallentare o invertire.
-                    </span>
-                  </span>
-                </span>
-                <strong id="resistance-distance">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
-                  Movimento medio M30
-                  <span class="info">i
-                    <span class="tooltip">
-                      Indica di quanto si muove mediamente il prezzo sul timeframe M30. Più è alto, più il mercato è veloce e instabile.
-                    </span>
-                  </span>
-                </span>
-                <strong id="atr-value">--</strong>
-              </div>
-
-              <div class="quality-row">
-                <span>
-                  Nota di lettura
-                  <span class="info">i
-                    <span class="tooltip">
-                      Se il segnale non è chiaro, qui trovi il motivo principale per cui Auren invita a osservare e non forzare la lettura.
-                    </span>
-                  </span>
-                </span>
-                <strong id="trade-reason">--</strong>
-              </div>
-            </div>
-
-            <div class="quality-bars">
-              <div class="quality-bar-row">
-                <span>Trend</span>
-                <div class="mini-bar"><div class="mini-fill" id="bar-trend"></div></div>
-                <strong id="val-trend">--</strong>
-              </div>
-
-              <div class="quality-bar-row">
-                <span>Volatilità</span>
-                <div class="mini-bar"><div class="mini-fill" id="bar-volatility"></div></div>
-                <strong id="val-volatility">--</strong>
-              </div>
-
-              <div class="quality-bar-row">
-                <span>Struttura</span>
-                <div class="mini-bar"><div class="mini-fill" id="bar-structure"></div></div>
-                <strong id="val-structure">--</strong>
-              </div>
-
-              <div class="quality-bar-row">
-                <span>Momentum</span>
-                <div class="mini-bar"><div class="mini-fill" id="bar-momentum"></div></div>
-                <strong id="val-momentum">--</strong>
-              </div>
-
-              <div class="quality-bar-row">
-                <span>Rischio</span>
-                <div class="mini-bar"><div class="mini-fill" id="bar-riskReward"></div></div>
-                <strong id="val-riskReward">--</strong>
-              </div>
-
-              <div class="quality-bar-row">
-                <span>Pulizia</span>
-                <div class="mini-bar"><div class="mini-fill" id="bar-cleanliness"></div></div>
-                <strong id="val-cleanliness">--</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="scenario-grid">
-          <div class="scenario-card main">
-            <div class="prob" id="main-prob">--%</div>
-            <h3 id="main-title">Caricamento...</h3>
-            <p id="main-desc">Lettura dello scenario in corso.</p>
-
-            <div class="scenario-meta">
-              <div>
-                <span id="main-label-1">Zona importante</span>
-                <strong id="main-value-1">--</strong>
-              </div>
-              <div>
-                <span id="main-label-2">Scenario cambia se</span>
-                <strong id="main-value-2">--</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="scenario-card">
-            <div class="prob" id="sec-prob">--%</div>
-            <h3 id="sec-title">Caricamento...</h3>
-            <p id="sec-desc">Lettura dello scenario secondario in corso.</p>
-
-            <div class="scenario-meta">
-              <div>
-                <span id="sec-label-1">Zona da osservare</span>
-                <strong id="sec-value-1">--</strong>
-              </div>
-              <div>
-                <span id="sec-label-2">Chiarezza</span>
-                <strong id="sec-value-2">--</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="scenario-card">
-            <div class="prob" id="alt-prob">--%</div>
-            <h3 id="alt-title">Caricamento...</h3>
-            <p id="alt-desc">Lettura dello scenario alternativo in corso.</p>
-
-            <div class="scenario-meta">
-              <div>
-                <span id="alt-label-1">Area complessiva</span>
-                <strong id="alt-value-1">--</strong>
-              </div>
-              <div>
-                <span id="alt-label-2">Dato utile</span>
-                <strong id="alt-value-2">--</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="premium">
-  <div class="premium">
-    <div class="premium-content">
-      <h2>Vuoi provare Auren in anteprima?</h2>
+      <h1><span class="gold-text">Privacy</span> Policy.</h1>
 
       <p>
-        Stiamo aprendo l'accesso alla beta di Auren. Lascia la tua email per ricevere aggiornamenti,
-        risultati reali, accesso anticipato alla dashboard e nuove funzioni in fase di sviluppo.
+        Questa pagina descrive in modo semplice come Auren tratta i dati personali raccolti tramite il sito,
+        con particolare riferimento all'eventuale inserimento dell'indirizzo email per la beta.
       </p>
+    </section>
 
-      <p>
-        La beta serve a validare il prodotto con utenti reali: scenario attuale, storico verificabile,
-        statistiche, feedback e miglioramento progressivo dell'algoritmo.
-      </p>
+    <article class="policy-card">
+      <section class="policy-section">
+        <h2>1. Titolare del trattamento</h2>
+        <p>
+          Il titolare del trattamento è <strong>[INSERIRE NOME / RAGIONE SOCIALE]</strong>,
+          con sede in <strong>[INSERIRE INDIRIZZO]</strong>.
+          Per qualsiasi richiesta relativa alla privacy puoi scrivere a:
+          <strong>[INSERIRE EMAIL DI CONTATTO]</strong>.
+        </p>
+      </section>
 
-      <form class="waitlist-form" id="waitlistForm">
-        <input type="email" id="emailInput" placeholder="La tua email per la beta" required />
-        <button type="submit" class="btn btn-primary">Voglio provare Auren</button>
-      </form>
+      <section class="policy-section">
+        <h2>2. Dati raccolti</h2>
+        <p>
+          Il sito può raccogliere i seguenti dati:
+        </p>
+        <ul>
+          <li>indirizzo email inserito volontariamente nel form di richiesta accesso alla beta;</li>
+          <li>dati tecnici necessari al corretto funzionamento del sito;</li>
+          <li>eventuali dati tecnici generati dai servizi esterni incorporati, come widget di mercato o grafici.</li>
+        </ul>
+      </section>
 
-      <div class="form-message" id="formMessage">
-        Email registrata. Riceverai aggiornamenti sulla beta e sull'accesso anticipato ad Auren.
-      </div>
-    </div>
-  </div>
-</section>
+      <section class="policy-section">
+        <h2>3. Finalità del trattamento</h2>
+        <p>
+          I dati vengono trattati per:
+        </p>
+        <ul>
+          <li>ricontattare l'utente in merito alla beta di Auren;</li>
+          <li>gestire richieste informative o comunicazioni volontarie;</li>
+          <li>garantire il corretto funzionamento tecnico del sito;</li>
+          <li>migliorare progressivamente il servizio e l'esperienza utente.</li>
+        </ul>
+      </section>
+
+      <section class="policy-section">
+        <h2>4. Base giuridica</h2>
+        <p>
+          Il trattamento dell'indirizzo email si basa sul consenso dell'utente, espresso tramite l'invio volontario
+          del form. I trattamenti tecnici necessari al funzionamento del sito si basano sul legittimo interesse
+          del titolare a garantire sicurezza, stabilità e corretta erogazione del servizio.
+        </p>
+      </section>
+
+      <section class="policy-section">
+        <h2>5. Conservazione dei dati</h2>
+        <p>
+          I dati vengono conservati per il tempo necessario a gestire la richiesta dell'utente, l'accesso alla beta
+          e le comunicazioni collegate ad Auren. L'utente può chiedere in qualsiasi momento la cancellazione dei propri dati.
+        </p>
+      </section>
+
+      <section class="policy-section">
+        <h2>6. Servizi esterni</h2>
+        <p>
+          Il sito può incorporare widget o contenuti provenienti da servizi terzi, ad esempio grafici di mercato.
+          Tali servizi potrebbero trattare dati tecnici secondo le rispettive informative privacy.
+          Auren non controlla direttamente le modalità di trattamento operate da tali soggetti terzi.
+        </p>
+      </section>
+
+      <section class="policy-section">
+        <h2>7. Diritti dell'utente</h2>
+        <p>
+          L'utente può esercitare i diritti previsti dalla normativa applicabile, tra cui:
+        </p>
+        <ul>
+          <li>accesso ai dati personali;</li>
+          <li>rettifica o aggiornamento;</li>
+          <li>cancellazione;</li>
+          <li>limitazione o opposizione al trattamento;</li>
+          <li>revoca del consenso, quando il trattamento è basato sul consenso.</li>
+        </ul>
+      </section>
+
+      <section class="policy-section">
+        <h2>8. Natura informativa del servizio</h2>
+        <p>
+          Auren fornisce letture probabilistiche e informative di mercato. I contenuti presenti sul sito non costituiscono
+          consulenza finanziaria, raccomandazione personalizzata, sollecitazione al risparmio o invito all'investimento.
+        </p>
+      </section>
+
+      <section class="policy-section">
+        <h2>9. Aggiornamenti della policy</h2>
+        <p>
+          La presente informativa può essere aggiornata nel tempo per adeguamenti tecnici, normativi o organizzativi.
+          La versione aggiornata sarà sempre disponibile su questa pagina.
+        </p>
+
+        <div class="note">
+          Nota: questo testo è una base operativa. Prima della pubblicazione definitiva, è consigliabile farlo verificare
+          da un consulente legale o privacy, soprattutto se il sito usa strumenti di analytics, advertising,
+          newsletter esterne o sistemi di profilazione.
+        </div>
+      </section>
+    </article>
   </main>
 
   <footer>
-    © 2026 Auren. Lettura informativa e probabilistica di mercato. Non costituisce consulenza finanziaria.
-    <a href="/privacy.html" class="privacy-link-footer">Privacy Policy</a>
+    © 2026 Auren. Privacy Policy.
   </footer>
-
-
-  <div class="privacy-banner" id="privacyBanner" role="dialog" aria-live="polite" aria-label="Informativa privacy">
-    <div class="privacy-banner-text">
-      <strong>Privacy e trasparenza</strong>
-      Utilizziamo solo strumenti necessari al funzionamento del sito e, se inserisci la tua email per la beta, tratteremo il dato solo per ricontattarti su Auren.
-      Puoi leggere l'informativa completa nella pagina dedicata alla <a href="/privacy.html">Privacy Policy</a>.
-    </div>
-
-    <div class="privacy-banner-actions">
-      <a href="/privacy.html" class="btn">Leggi privacy</a>
-      <button type="button" class="btn btn-primary" id="privacyAcceptBtn">Sono d'accordo</button>
-    </div>
-  </div>
-
-
-  <script>
-    const goldRain = document.getElementById("goldRain");
-    const streakCount = 22;
-
-    for (let i = 0; i < streakCount; i++) {
-      const streak = document.createElement("span");
-      streak.className = "gold-streak";
-      streak.style.left = Math.random() * 100 + "vw";
-      streak.style.animationDuration = 4.5 + Math.random() * 6 + "s";
-      streak.style.animationDelay = Math.random() * 7 + "s";
-      streak.style.height = 60 + Math.random() * 130 + "px";
-      streak.style.opacity = 0.12 + Math.random() * 0.38;
-      goldRain.appendChild(streak);
-    }
-
-    const meteorRain = document.getElementById("meteorRain");
-    const meteorCount = 30;
-
-    for (let i = 0; i < meteorCount; i++) {
-      const meteor = document.createElement("span");
-      meteor.className = "meteor";
-      const size = 2 + Math.random() * 4;
-      meteor.style.width = size + "px";
-      meteor.style.height = size + "px";
-      meteor.style.left = Math.random() * 100 + "vw";
-      meteor.style.animationDuration = 5 + Math.random() * 9 + "s";
-      meteor.style.animationDelay = Math.random() * 11 + "s";
-      meteor.style.opacity = 0.16 + Math.random() * 0.52;
-      meteorRain.appendChild(meteor);
-    }
-
-    const cursorGlow = document.getElementById("cursorGlow");
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let glowX = mouseX;
-    let glowY = mouseY;
-    let lastTrail = 0;
-
-    document.addEventListener("mousemove", (event) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-
-      const now = Date.now();
-
-      if (now - lastTrail > 42) {
-        const trail = document.createElement("span");
-        trail.className = "mouse-trail";
-        trail.style.left = mouseX + "px";
-        trail.style.top = mouseY + "px";
-        document.body.appendChild(trail);
-        setTimeout(() => trail.remove(), 700);
-        lastTrail = now;
-      }
-    });
-
-    function animateGlow() {
-      glowX += (mouseX - glowX) * 0.18;
-      glowY += (mouseY - glowY) * 0.18;
-      cursorGlow.style.left = glowX + "px";
-      cursorGlow.style.top = glowY + "px";
-      requestAnimationFrame(animateGlow);
-    }
-
-    animateGlow();
-
-    function formatTime(date) {
-      return String(date.getHours()).padStart(2, "0") + ":" +
-        String(date.getMinutes()).padStart(2, "0");
-    }
-
-    function getNextFreeUpdate() {
-      const now = new Date();
-      const next = new Date(now);
-
-      if (now.getMinutes() < 30) {
-        next.setMinutes(30, 0, 0);
-      } else {
-        next.setHours(now.getHours() + 1, 0, 0, 0);
-      }
-
-      return next;
-    }
-
-    function formatPrice(value) {
-      if (value === null || value === undefined || Number.isNaN(Number(value))) {
-        return "--";
-      }
-
-      return Number(value).toLocaleString("it-IT", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-    function formatPercent(value) {
-      if (value === null || value === undefined || Number.isNaN(Number(value))) {
-        return "--%";
-      }
-
-      return Math.round(Number(value)) + "%";
-    }
-
-    function formatDistance(price, level) {
-      if (!price || !level) return "--";
-
-      const distance = Math.abs(price - level);
-      const percentage = distance / price * 100;
-
-      return (
-        "Livello: " + formatPrice(level) +
-        "\nDistanza: " + formatPrice(distance) +
-        " punti (" + percentage.toFixed(2) + "%)"
-      );
-    }
-
-    function cleanLabel(label) {
-      if (!label) return "";
-
-      return label
-        .replace("Target / supporto utile", "Prima zona da osservare")
-        .replace("Target / resistenza utile", "Prima zona da osservare")
-        .replace("Invalidazione", "Scenario cambia se")
-        .replace("Area di rimbalzo", "Zona di possibile rimbalzo")
-        .replace("Area di ritracciamento", "Zona di possibile pausa")
-        .replace("Forza", "Chiarezza")
-        .replace("Range operativo", "Area complessiva")
-        .replace("RSI 1H", "Forza del movimento")
-        .replace("RSI M30", "Forza M30")
-        .replace("Volatilita ATR", "Movimento medio")
-        .replace("Volatilità ATR", "Movimento medio")
-        .replace("Sopra resistenza", "Se supera la zona alta")
-        .replace("Sotto supporto", "Se perde la zona bassa")
-        .replace("Struttura M30", "Direzione M30")
-        .replace("Struttura H1", "Direzione H1");
-    }
-
-    function cleanValue(value) {
-      if (value === null || value === undefined) return "";
-
-      return String(value)
-        .replace("sopra ", "prezzo sopra ")
-        .replace("sotto ", "prezzo sotto ")
-        .replace("bullish", "in salita")
-        .replace("bearish", "in discesa")
-        .replace("neutral", "laterale")
-        .replace("trend", "trend chiaro")
-        .replace("choppy", "laterale / sporco")
-        .replace("conflict", "segnali contrastanti")
-        .replace("low_volatility", "poca volatilità")
-        .replace("compression", "compressione")
-        .replace("impulse", "movimento forte")
-        .replace("balanced", "equilibrata");
-    }
-
-    function getSignalQuality(data) {
-      if (data.signalQuality && typeof data.signalQuality.overall === "number") {
-        return data.signalQuality.overall + "/100";
-      }
-
-      if (data.confidence) return data.confidence;
-
-      const score = Math.abs(Number(data.score || 0));
-
-      if (score >= 9) return "Molto alta";
-      if (score >= 7) return "Alta";
-      if (score >= 4.5) return "Media";
-      if (score >= 2.8) return "Debole";
-
-      return "Bassa";
-    }
-
-    function getSimpleTitle(title, type, action, cardType = "main") {
-  const t = title || "";
-
-  if (cardType === "main") {
-    if (action === "wait") return "Meglio osservare";
-    if (type === "bullish") return "Pressione rialzista";
-    if (type === "bearish") return "Pressione ribassista";
-    return "Mercato laterale";
-  }
-
-  if (cardType === "secondary") {
-    if (action === "wait") return "Zone da monitorare";
-    if (type === "bullish") return "Possibile pausa";
-    if (type === "bearish") return "Possibile rimbalzo";
-    return "Attendere conferma";
-  }
-
-  if (cardType === "alternative") {
-    if (action === "wait") return "Rischio falso segnale";
-    if (type === "bullish") return "Rischio perdita di forza";
-    if (type === "bearish") return "Possibile cambio direzione";
-    return "Possibile falso segnale";
-  }
-
-  if (t.includes("Pressione ribassista")) return "Pressione ribassista";
-  if (t.includes("Pressione rialzista")) return "Pressione rialzista";
-  if (t.includes("Mercato laterale")) return "Mercato laterale";
-  if (t.includes("Rimbalzo")) return "Possibile rimbalzo";
-  if (t.includes("pausa")) return "Possibile pausa";
-  if (t.includes("Cambio")) return "Possibile cambio direzione";
-  if (t.includes("Perdita")) return "Rischio perdita di forza";
-  if (t.includes("falso")) return "Possibile falso segnale";
-
-  return t || "Scenario in osservazione";
-}
-
-function getMainReason(data) {
-  if (
-    data.tradability &&
-    data.tradability.reasons &&
-    data.tradability.reasons.length
-  ) {
-    return data.tradability.reasons[0];
-  }
-
-  if (data.confidence) return data.confidence;
-
-  return "Lettura non abbastanza pulita";
-}
-function buildCardProbabilities(data) {
-  const reliabilityRaw = typeof data.reliability === "number"
-    ? data.reliability
-    : data.signalQuality && typeof data.signalQuality.overall === "number"
-      ? data.signalQuality.overall
-      : 60;
-
-  const main = Math.max(45, Math.min(85, Math.round(reliabilityRaw)));
-  const remaining = 100 - main;
-
-  const secondary = Math.max(10, Math.round(remaining * 0.65));
-  const alternative = Math.max(5, 100 - main - secondary);
-
-  const total = main + secondary + alternative;
-
-  if (total !== 100) {
-    return {
-      main,
-      secondary,
-      alternative: alternative + (100 - total)
-    };
-  }
-
-  return {
-    main,
-    secondary,
-    alternative
-  };
-}
-function buildScenarioCards(data) {
-  const scenario = data.scenario || {};
-  const action = data.action || scenario.action || "wait";
-  const type = scenario.type || data.direction || "neutral";
-
-  const support = formatPrice(data.support);
-  const resistance = formatPrice(data.resistance);
-
-  const probabilities = buildCardProbabilities(data);
-
-  const reliability = probabilities.main;
-  const secondaryProbability = probabilities.secondary;
-  const alternativeProbability = probabilities.alternative;
-
-  if (action === "wait") {
-    return {
-      main: {
-        probability: reliability,
-        title: "Meglio attendere",
-        description:
-          "Il mercato non offre una condizione abbastanza pulita per una lettura affidabile. Meglio osservare le zone principali prima di dare peso alla direzione.",
-        label1: "Motivo principale",
-        value1: getMainReason(data),
-        label2: "Fase di mercato",
-        value2: translateRegime(data.marketRegime)
-      },
-      secondary: {
-        probability: secondaryProbability,
-        title:
-          type === "bearish"
-            ? "Conferma sotto " + support
-            : type === "bullish"
-              ? "Conferma sopra " + resistance
-              : "Rottura da monitorare",
-        description:
-          type === "bearish"
-            ? "La lettura diventerebbe più debole solo con una perdita chiara della zona bassa, accompagnata da maggiore forza del movimento."
-            : type === "bullish"
-              ? "La lettura diventerebbe più costruttiva solo con una rottura chiara della zona alta, accompagnata da maggiore forza del movimento."
-              : "Serve una rottura chiara della zona alta o bassa per rendere il mercato più leggibile.",
-        label1: type === "bearish" ? "Sotto" : "Sopra",
-        value1: type === "bearish" ? support : resistance,
-        label2: "Serve",
-        value2: "Conferma pulita"
-      },
-      alternative: {
-        probability: alternativeProbability,
-        title: "Rischio falso movimento",
-        description:
-          "In condizioni poco pulite il mercato può generare movimenti rapidi ma difficili da leggere. La direzione può sembrare forte senza essere realmente affidabile.",
-        label1: "Area osservata",
-        value1: support + " - " + resistance,
-        label2: "Rischio",
-        value2: "Movimento sporco"
-      }
-    };
-  }
-
-  if (type === "bullish") {
-    return {
-      main: {
-        probability: reliability,
-        title: "Pressione rialzista",
-        description:
-          "Il mercato mostra una direzione recente più costruttiva. La lettura resta positiva finché il prezzo mantiene la zona di rimbalzo.",
-        label1: "Prima zona alta",
-        value1: resistance,
-        label2: "Scenario cambia se",
-        value2: "sotto " + support
-      },
-      secondary: {
-        probability: secondaryProbability,
-        title: "Possibile pausa",
-        description:
-          "Un ritorno verso la zona bassa può avvenire, ma viene letto come pausa finché il prezzo mantiene la struttura principale.",
-        label1: "Zona di pausa",
-        value1: support,
-        label2: "Serve",
-        value2: "Tenuta della zona"
-      },
-      alternative: {
-        probability: alternativeProbability,
-        title: "Rischio perdita di forza",
-        description:
-          "La lettura rialzista perde qualità se il prezzo perde la zona di rimbalzo con conferma sui timeframe veloci.",
-        label1: "Area osservata",
-        value1: support + " - " + resistance,
-        label2: "Rischio",
-        value2: "Indebolimento"
-      }
-    };
-  }
-
-  if (type === "bearish") {
-    return {
-      main: {
-        probability: reliability,
-        title: "Pressione ribassista",
-        description:
-          "Il mercato mostra una direzione recente più debole. La lettura resta negativa finché il prezzo rimane sotto la zona di blocco.",
-        label1: "Prima zona bassa",
-        value1: support,
-        label2: "Scenario cambia se",
-        value2: "sopra " + resistance
-      },
-      secondary: {
-        probability: secondaryProbability,
-        title: "Possibile rimbalzo",
-        description:
-          "Un recupero tecnico può avvenire, ma viene letto come reazione temporanea finché il prezzo non supera la zona alta.",
-        label1: "Zona di rimbalzo",
-        value1: resistance,
-        label2: "Serve",
-        value2: "Recupero pulito"
-      },
-      alternative: {
-        probability: alternativeProbability,
-        title: "Rischio cambio direzione",
-        description:
-          "La lettura ribassista perde qualità se il prezzo recupera sopra la zona di blocco con conferma sui timeframe veloci.",
-        label1: "Area osservata",
-        value1: support + " - " + resistance,
-        label2: "Rischio",
-        value2: "Cambio scenario"
-      }
-    };
-  }
-
-  return {
-    main: {
-      probability: reliability,
-      title: "Mercato laterale",
-      description:
-        "Il mercato non mostra una direzione abbastanza chiara. Meglio osservare le zone principali.",
-      label1: "Area osservata",
-      value1: support + " - " + resistance,
-      label2: "Fase",
-      value2: "Laterale"
-    },
-    secondary: {
-      probability: secondaryProbability,
-      title: "Rottura da monitorare",
-      description:
-        "Una rottura chiara della zona alta o bassa può rendere la lettura più definita.",
-      label1: "Sopra",
-      value1: resistance,
-      label2: "Sotto",
-      value2: support
-    },
-    alternative: {
-      probability: alternativeProbability,
-      title: "Rischio falso movimento",
-      description:
-        "In fase laterale possono verificarsi movimenti rapidi ma poco affidabili.",
-      label1: "Area osservata",
-      value1: support + " - " + resistance,
-      label2: "Rischio",
-      value2: "Falso segnale"
-    }
-  };
-}
-    
-    function getSimpleDescription(description) {
-      if (!description) return "";
-
-      return description
-        .replaceAll("pressione principale", "direzione principale")
-        .replaceAll("orientata al ribasso", "rivolta verso il basso")
-        .replaceAll("orientata al rialzo", "rivolta verso l'alto")
-        .replaceAll("resistenza", "zona di blocco")
-        .replaceAll("supporto", "zona di rimbalzo")
-        .replaceAll("rottura stabile", "superamento chiaro")
-        .replaceAll("chiusura convincente", "movimento chiaro")
-        .replaceAll("scenario ribassista", "scenario di discesa")
-        .replaceAll("scenario rialzista", "scenario di salita")
-        .replaceAll("struttura", "direzione recente")
-        .replaceAll("momentum", "forza del movimento")
-        .replaceAll("range operativo", "area di prezzo")
-        .replaceAll("Regime di mercato", "Condizione di mercato");
-    }
-
-    function translateMarketSentiment(data) {
-      const scenario = data.scenario || {};
-      const type = scenario.type || data.direction || "neutral";
-
-      if (type === "bullish") return "Rialzista";
-      if (type === "bearish") return "Ribassista";
-      return "Neutrale";
-    }
-
-    function translateRegime(regime) {
-      if (regime === "trend") return "Trend chiaro";
-      if (regime === "impulse") return "Movimento forte";
-      if (regime === "balanced") return "Equilibrata";
-      if (regime === "compression") return "Compressione";
-      if (regime === "choppy") return "Laterale / sporca";
-      if (regime === "conflict") return "Segnali contrastanti";
-      if (regime === "low_volatility") return "Poca volatilità";
-      return cleanValue(regime || "--");
-    }
-
-    function getSignalClarity(data) {
-      const reliability = typeof data.reliability === "number"
-        ? data.reliability
-        : data.signalQuality && typeof data.signalQuality.overall === "number"
-          ? data.signalQuality.overall
-          : 0;
-
-      const action = data.action || (data.scenario && data.scenario.action) || "wait";
-      const tradable = Boolean(data.tradable);
-
-      if (!tradable || action === "wait") {
-        if (reliability >= 70) return "Buona, ma senza conferma";
-        if (reliability >= 55) return "Media";
-        return "Bassa";
-      }
-
-      if (reliability >= 75) return "Alta";
-      if (reliability >= 60) return "Media";
-      return "Bassa";
-    }
-
-    function buildPlainSignal(data) {
-      const scenario = data.scenario || {};
-      const type = scenario.type || data.direction || "neutral";
-      const action = data.action || scenario.action || "wait";
-      const support = formatPrice(data.support);
-      const resistance = formatPrice(data.resistance);
-      const reason = data.tradability && data.tradability.reasons && data.tradability.reasons.length
-        ? data.tradability.reasons[0]
-        : "Segnale non sufficientemente pulito";
-
-      if (action === "wait") {
-        return "Auren suggerisce di osservare senza forzare la lettura. Il mercato non offre una condizione abbastanza pulita: " +
-          reason + ". Le zone principali da monitorare sono " + support + " e " + resistance + ".";
-      }
-
-      if (type === "bearish") {
-        return "La lettura M30 mostra pressione in discesa. Finché il prezzo resta sotto " + resistance +
-          ", il contesto rimane debole. La prima zona da monitorare è " + support +
-          ". Un recupero sopra la zona di blocco potrebbe cambiare lo scenario.";
-      }
-
-      if (type === "bullish") {
-        return "La lettura M30 mostra pressione in salita. Finché il prezzo resta sopra " + support +
-          ", il contesto rimane costruttivo. La prima zona da monitorare è " + resistance +
-          ". Una perdita della zona di rimbalzo potrebbe indebolire lo scenario.";
-      }
-
-      return "Il mercato non mostra ancora una direzione chiara. Il prezzo si trova tra " + support +
-        " e " + resistance + ". In questa fase è meglio attendere una conferma prima di dare peso alla direzione.";
-    }
-
-    function buildLiveMessage(data) {
-      const scenario = data.scenario || {};
-      const currentType = scenario.type || "neutral";
-      const action = data.action || scenario.action || "wait";
-      const previousType = localStorage.getItem("auren_previous_type");
-      const previousAction = localStorage.getItem("auren_previous_action");
-
-      if (action === "wait") {
-        if (previousAction && previousAction !== "wait") {
-          return "Aggiornamento M30: Auren riduce la forza della lettura e suggerisce osservazione.";
-        }
-        return "Analisi M30 aggiornata: nessuna lettura abbastanza pulita, meglio attendere conferma.";
-      }
-
-      if (!previousType) {
-        if (currentType === "bearish") return "Analisi M30 aggiornata: pressione in discesa sui prossimi 30 minuti.";
-        if (currentType === "bullish") return "Analisi M30 aggiornata: pressione in salita sui prossimi 30 minuti.";
-        return "Analisi M30 aggiornata: fase laterale sui prossimi 30 minuti.";
-      }
-
-      if (previousType === currentType) {
-        if (currentType === "bearish") return "La pressione in discesa resta presente rispetto alla precedente analisi.";
-        if (currentType === "bullish") return "La pressione in salita resta presente rispetto alla precedente analisi.";
-        return "La fase resta laterale: servono conferme sulle zone principali.";
-      }
-
-      if (previousType === "bearish" && currentType === "bullish") {
-        return "Cambio scenario M30: il mercato passa da pressione in discesa a lettura più costruttiva.";
-      }
-
-      if (previousType === "bullish" && currentType === "bearish") {
-        return "Cambio scenario M30: il mercato passa da pressione in salita a lettura più debole.";
-      }
-
-      return buildPlainSignal(data);
-    }
-
-    function renderScenarioFromApi(data) {
-      const scenario = data.scenario || {};
-      const action = data.action || scenario.action || "wait";
-      const type = scenario.type || data.direction || "neutral";
-
-      const marketText = translateMarketSentiment(data);
-      const signalClarity = getSignalClarity(data);
-      const regimeText = translateRegime(data.marketRegime);
-      const reliability = typeof data.reliability === "number" ? data.reliability : 0;
-      const cards = buildScenarioCards(data);
-
-      document.getElementById("current-price").innerText = formatPrice(data.price);
-      document.getElementById("last-update").innerText = data.updatedAt ? formatTime(new Date(data.updatedAt)) : formatTime(new Date());
-
-      document.getElementById("scenario-message").innerText = buildLiveMessage(data);
-
-      document.getElementById("action-value").innerText = marketText;
-      document.getElementById("tradable-value").innerText = signalClarity;
-      document.getElementById("regime-value").innerText = regimeText;
-      document.getElementById("reliability-value").innerText = formatPercent(reliability);
-      document.getElementById("reliability-fill").style.width = Math.max(0, Math.min(100, reliability)) + "%";
-
-      document.getElementById("bias-value").innerText =
-        action === "buy" ? "Rialzista" :
-        action === "sell" ? "Ribassista" :
-        "Attesa";
-
-      document.getElementById("bias-description").innerText =
-        action === "wait"
-          ? "Auren non forza una direzione quando il mercato non è abbastanza leggibile."
-          : "Auren mostra la pressione prevalente del mercato sulla finestra M30.";
-
-      const plainSignal = document.getElementById("plain-signal");
-      plainSignal.className = "plain-signal " + action + " " + type;
-      plainSignal.innerText = buildPlainSignal(data);
-
-      document.getElementById("metric-price").innerText = formatPrice(data.price);
-      document.getElementById("metric-support").innerText = formatPrice(data.support);
-      document.getElementById("metric-resistance").innerText = formatPrice(data.resistance);
-      document.getElementById("metric-expected").innerText = formatPrice(data.expectedMove) + " punti";
-
-      document.getElementById("signal-quality").innerText = getSignalQuality(data);
-      document.getElementById("support-distance").innerText = formatDistance(data.price, data.support);
-      document.getElementById("resistance-distance").innerText = formatDistance(data.price, data.resistance);
-      document.getElementById("atr-value").innerText = formatPrice(data.atr30m) + " punti";
-      document.getElementById("trade-reason").innerText = getMainReason(data);
-
-      const quality = data.signalQuality || {};
-      const qualityMap = {
-        trend: quality.trendAlignment,
-        volatility: quality.volatility,
-        structure: quality.structure,
-        momentum: quality.momentum,
-        riskReward: quality.riskReward,
-        cleanliness: quality.cleanliness
-      };
-
-      Object.entries(qualityMap).forEach(([key, value]) => {
-        const number = typeof value === "number" ? Math.round(value) : 0;
-        const bar = document.getElementById("bar-" + key);
-        const val = document.getElementById("val-" + key);
-
-        if (bar) bar.style.width = Math.max(0, Math.min(100, number)) + "%";
-        if (val) val.innerText = number ? number + "%" : "--";
-      });
-
-      document.getElementById("main-prob").innerText = cards.main.probability + "%";
-      document.getElementById("main-title").innerText = cards.main.title;
-      document.getElementById("main-desc").innerText = cards.main.description;
-      document.getElementById("main-label-1").innerText = cards.main.label1;
-      document.getElementById("main-value-1").innerText = cards.main.value1;
-      document.getElementById("main-label-2").innerText = cards.main.label2;
-      document.getElementById("main-value-2").innerText = cards.main.value2;
-
-      document.getElementById("sec-prob").innerText = cards.secondary.probability + "%";
-      document.getElementById("sec-title").innerText = cards.secondary.title;
-      document.getElementById("sec-desc").innerText = cards.secondary.description;
-      document.getElementById("sec-label-1").innerText = cards.secondary.label1;
-      document.getElementById("sec-value-1").innerText = cards.secondary.value1;
-      document.getElementById("sec-label-2").innerText = cards.secondary.label2;
-      document.getElementById("sec-value-2").innerText = cards.secondary.value2;
-
-      document.getElementById("alt-prob").innerText = cards.alternative.probability + "%";
-      document.getElementById("alt-title").innerText = cards.alternative.title;
-      document.getElementById("alt-desc").innerText = cards.alternative.description;
-      document.getElementById("alt-label-1").innerText = cards.alternative.label1;
-      document.getElementById("alt-value-1").innerText = cards.alternative.value1;
-      document.getElementById("alt-label-2").innerText = cards.alternative.label2;
-      document.getElementById("alt-value-2").innerText = cards.alternative.value2;
-
-  localStorage.setItem("auren_previous_type", scenario.type || data.direction || "neutral");
-  localStorage.setItem("auren_previous_action", action);
-  localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
-  updateScenarioUtilityLabels(data);
-}
-
-    const CURRENT_SCENARIO_KEY = "auren_current_locked_scenario";
-
-    function getScenarioSlotKey(date = new Date()) {
-      const d = new Date(date);
-
-      if (d.getMinutes() < 30) {
-        d.setMinutes(0, 0, 0);
-      } else {
-        d.setMinutes(30, 0, 0);
-      }
-
-      return d.toISOString();
-    }
-
-    function getLockedScenario() {
-      try {
-        return JSON.parse(localStorage.getItem(CURRENT_SCENARIO_KEY) || "null");
-      } catch (error) {
-        return null;
-      }
-    }
-
-    function saveLockedScenario(data) {
-      const payload = {
-        slotKey: getScenarioSlotKey(new Date()),
-        savedAt: new Date().toISOString(),
-        data
-      };
-
-      localStorage.setItem(CURRENT_SCENARIO_KEY, JSON.stringify(payload));
-      localStorage.setItem("auren_last_api_scenario", JSON.stringify(data));
-    }
-
-    function isLockedScenarioValid(savedScenario) {
-      if (!savedScenario || !savedScenario.data || !savedScenario.slotKey) {
-        return false;
-      }
-
-      return savedScenario.slotKey === getScenarioSlotKey(new Date());
-    }
-
-    async function loadLiveScenario(forceNew = false) {
-      const savedScenario = getLockedScenario();
-
-      if (!forceNew && isLockedScenarioValid(savedScenario)) {
-        renderScenarioFromApi(savedScenario.data);
-
-        document.getElementById("scenario-message").innerText =
-          "Scenario M30 bloccato: la lettura resta valida fino al prossimo ciclo.";
-
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/scenario", {
-          cache: "no-store"
-        });
-
-        if (!response.ok) {
-          throw new Error("Risposta API non valida");
-        }
-
-        const data = await response.json();
-
-        if (!data || !data.scenario) {
-          throw new Error("Scenario mancante");
-        }
-
-        saveLockedScenario(data);
-        renderScenarioFromApi(data);
-      } catch (error) {
-        const fallbackScenario = getLockedScenario();
-        const lastSaved = localStorage.getItem("auren_last_api_scenario");
-
-        if (fallbackScenario && fallbackScenario.data) {
-          renderScenarioFromApi(fallbackScenario.data);
-          document.getElementById("scenario-message").innerText =
-            "Dati live temporaneamente non disponibili. Mostro lo scenario bloccato corrente.";
-          return;
-        }
-
-        if (lastSaved) {
-          renderScenarioFromApi(JSON.parse(lastSaved));
-          document.getElementById("scenario-message").innerText =
-            "Dati live temporaneamente non disponibili. Mostro l'ultima analisi salvata.";
-        } else {
-          document.getElementById("scenario-message").innerText =
-            "Dati live temporaneamente non disponibili. Riprova tra poco.";
-        }
-      }
-    }
-
-    function updateTimer() {
-      const now = new Date();
-      const next = getNextFreeUpdate();
-      const diff = Math.max(0, next - now);
-      const totalSeconds = Math.floor(diff / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      document.getElementById("timer").innerText =
-        String(hours).padStart(2, "0") + ":" +
-        String(minutes).padStart(2, "0") + ":" +
-        String(seconds).padStart(2, "0");
-
-    }
-
-    let lastAutoRefreshSlot = getScenarioSlotKey(new Date());
-
-    loadLiveScenario();
-    updateTimer();
-
-    setInterval(updateTimer, 1000);
-
-    setInterval(() => {
-      const currentSlot = getScenarioSlotKey(new Date());
-
-      if (currentSlot !== lastAutoRefreshSlot) {
-        lastAutoRefreshSlot = currentSlot;
-        loadLiveScenario(true);
-      }
-    }, 1000);
-
-
-    async function loadPublicStats() {
-      const fallback = {
-        points: "+90,98",
-        total: "65",
-        operative: "44",
-        winrate: "47,73%"
-      };
-
-      try {
-        const response = await fetch("/api/history", { cache: "no-store" });
-
-        if (!response.ok) {
-          throw new Error("Storico non disponibile");
-        }
-
-        const data = await response.json();
-        const items = Array.isArray(data) ? data : data.items || [];
-
-        if (!items.length) {
-          throw new Error("Storico vuoto");
-        }
-
-        const closed = items.filter(item =>
-          item.result === "correct" ||
-          item.result === "wrong" ||
-          item.result === "neutral"
-        );
-
-        const operative = closed.filter(item =>
-          item.action === "buy" ||
-          item.action === "sell"
-        );
-
-        const correct = operative.filter(item => item.result === "correct");
-        const wrong = operative.filter(item => item.result === "wrong");
-
-        const totalPoints = operative.reduce((sum, item) => {
-          return sum + Number(item.priceDifference || 0);
-        }, 0);
-
-        const winrate = correct.length + wrong.length > 0
-          ? (correct.length / (correct.length + wrong.length)) * 100
-          : 0;
-
-        document.getElementById("stat-points").innerText =
-          (totalPoints >= 0 ? "+" : "") + totalPoints.toLocaleString("it-IT", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          });
-
-        document.getElementById("stat-total").innerText = String(items.length);
-        document.getElementById("stat-operative").innerText = String(operative.length);
-        document.getElementById("stat-winrate").innerText =
-          winrate.toLocaleString("it-IT", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          }) + "%";
-      } catch (error) {
-        document.getElementById("stat-points").innerText = fallback.points;
-        document.getElementById("stat-total").innerText = fallback.total;
-        document.getElementById("stat-operative").innerText = fallback.operative;
-        document.getElementById("stat-winrate").innerText = fallback.winrate;
-      }
-    }
-
-    function updateScenarioUtilityLabels(data) {
-      const action = data.action || (data.scenario && data.scenario.action) || "wait";
-      const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
-      const nextUpdateAt = data.nextUpdateAt ? new Date(data.nextUpdateAt) : getNextFreeUpdate();
-
-      const validity = formatTime(updatedAt) + " - " + formatTime(nextUpdateAt);
-      const state =
-        action === "buy" ? "Operativo rialzista" :
-        action === "sell" ? "Operativo ribassista" :
-        "Non operativo / attesa";
-
-      const validityElement = document.getElementById("scenario-validity");
-      const stateElement = document.getElementById("scenario-operational-state");
-
-      if (validityElement) validityElement.innerText = validity;
-      if (stateElement) stateElement.innerText = state;
-    }
-
-    loadPublicStats();
-
-    const waitlistForm = document.getElementById("waitlistForm");
-    const emailInput = document.getElementById("emailInput");
-    const formMessage = document.getElementById("formMessage");
-
-    waitlistForm.addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      const email = emailInput.value.trim();
-
-      if (!email) {
-        return;
-      }
-
-      const savedEmails = JSON.parse(localStorage.getItem("auren_waitlist") || "[]");
-
-      if (!savedEmails.includes(email)) {
-        savedEmails.push(email);
-        localStorage.setItem("auren_waitlist", JSON.stringify(savedEmails));
-      }
-
-      emailInput.value = "";
-      formMessage.style.display = "block";
-    });
-
-    const privacyBanner = document.getElementById("privacyBanner");
-    const privacyAcceptBtn = document.getElementById("privacyAcceptBtn");
-    const privacyAccepted = localStorage.getItem("auren_privacy_accepted");
-
-    if (privacyBanner && privacyAccepted !== "yes") {
-      privacyBanner.classList.add("is-visible");
-    }
-
-    if (privacyAcceptBtn && privacyBanner) {
-      privacyAcceptBtn.addEventListener("click", function() {
-        localStorage.setItem("auren_privacy_accepted", "yes");
-        privacyBanner.classList.remove("is-visible");
-      });
-    }
-
-  </script>
 </body>
 </html>
