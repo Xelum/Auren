@@ -77,18 +77,23 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      font-size: 24px;
+      min-width: 190px;
     }
 
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      box-shadow: 0 0 28px rgba(198,168,90,0.34);
+    .logo-img-big {
+      height: 58px;
+      width: auto;
+      max-width: 185px;
+      object-fit: contain;
+      display: block;
+      filter:
+        drop-shadow(0 0 10px rgba(255,217,120,0.75))
+        drop-shadow(0 0 28px rgba(198,168,90,0.45));
+      transition: all 0.3s ease;
+    }
+
+    .brand:hover .logo-img-big {
+      transform: scale(1.04);
     }
 
     .nav-links {
@@ -245,6 +250,11 @@
     }
 
     @media (max-width: 700px) {
+      .logo-img-big {
+        height: 52px;
+        max-width: 165px;
+      }
+
       .nav {
         align-items: flex-start;
         flex-direction: column;
@@ -270,8 +280,7 @@
   <header>
     <nav class="nav">
       <a href="./index.html" class="brand" aria-label="Torna alla home Auren">
-        <span class="brand-mark"></span>
-        <span>Auren</span>
+        <img src="logo0.png" alt="Logo Auren" class="logo-img-big" />
       </a>
 
       <div class="nav-links">
@@ -304,8 +313,8 @@
       <section class="policy-section">
         <h2>1. Titolare del trattamento</h2>
         <p>
-          Il titolare del trattamento è <strong>Auren Srl</strong>,
-          con sede in <strong>Viterbo,Strada Cassia Nord</strong>.
+          Il titolare del trattamento è <strong>Auren S.R.L</strong>,
+          con sede in <strong>VIterbo Strada Cassia Nord </strong>.
           Per qualsiasi richiesta relativa alla privacy puoi scrivere a:
           <strong>auren.xau@libero.it</strong>.
         </p>
