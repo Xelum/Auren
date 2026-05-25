@@ -1550,6 +1550,90 @@
         grid-template-columns: 1fr !important;
       }
     }
+
+    /* Banner privacy Auren */
+    .privacy-banner {
+      position: fixed;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(198,168,90,0.45);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255,217,120,0.13), transparent 35%),
+        linear-gradient(135deg, rgba(18,18,18,0.96), rgba(8,8,8,0.96));
+      box-shadow: 0 20px 70px rgba(0,0,0,0.55), 0 0 38px rgba(198,168,90,0.14);
+      backdrop-filter: blur(18px);
+    }
+
+    .privacy-banner.is-visible {
+      display: flex;
+    }
+
+    .privacy-banner-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .privacy-banner-text strong {
+      display: block;
+      color: var(--soft-white);
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .privacy-banner-text a {
+      color: var(--gold-light);
+      font-weight: 800;
+      text-decoration: underline;
+      text-decoration-color: rgba(255,217,120,0.35);
+      text-underline-offset: 4px;
+    }
+
+    .privacy-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .privacy-link-footer {
+      display: inline-flex;
+      margin-left: 10px;
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    .privacy-link-footer:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    @media (max-width: 700px) {
+      .privacy-banner {
+        align-items: flex-start;
+        flex-direction: column;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        padding: 16px;
+      }
+
+      .privacy-banner-actions,
+      .privacy-banner-actions .btn {
+        width: 100%;
+      }
+    }
+
   </style>
 </head>
 
@@ -1571,6 +1655,7 @@
         <a href="/storico.html">Storico</a>
         <a href="#grafico">Grafico</a>
         <a href="#premium">Beta</a>
+        <a href="/privacy.html">Privacy</a>
       </div>
 
       <a href="#premium" class="btn">Prova la beta</a>
@@ -2112,7 +2197,23 @@
 
   <footer>
     © 2026 Auren. Lettura informativa e probabilistica di mercato. Non costituisce consulenza finanziaria.
+    <a href="/privacy.html" class="privacy-link-footer">Privacy Policy</a>
   </footer>
+
+
+  <div class="privacy-banner" id="privacyBanner" role="dialog" aria-live="polite" aria-label="Informativa privacy">
+    <div class="privacy-banner-text">
+      <strong>Privacy e trasparenza</strong>
+      Utilizziamo solo strumenti necessari al funzionamento del sito e, se inserisci la tua email per la beta, tratteremo il dato solo per ricontattarti su Auren.
+      Puoi leggere l'informativa completa nella pagina dedicata alla <a href="/privacy.html">Privacy Policy</a>.
+    </div>
+
+    <div class="privacy-banner-actions">
+      <a href="/privacy.html" class="btn">Leggi privacy</a>
+      <button type="button" class="btn btn-primary" id="privacyAcceptBtn">Sono d'accordo</button>
+    </div>
+  </div>
+
 
   <script>
     const goldRain = document.getElementById("goldRain");
@@ -2982,6 +3083,22 @@ function buildScenarioCards(data) {
       emailInput.value = "";
       formMessage.style.display = "block";
     });
+
+    const privacyBanner = document.getElementById("privacyBanner");
+    const privacyAcceptBtn = document.getElementById("privacyAcceptBtn");
+    const privacyAccepted = localStorage.getItem("auren_privacy_accepted");
+
+    if (privacyBanner && privacyAccepted !== "yes") {
+      privacyBanner.classList.add("is-visible");
+    }
+
+    if (privacyAcceptBtn && privacyBanner) {
+      privacyAcceptBtn.addEventListener("click", function() {
+        localStorage.setItem("auren_privacy_accepted", "yes");
+        privacyBanner.classList.remove("is-visible");
+      });
+    }
+
   </script>
 </body>
 </html>
