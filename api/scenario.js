@@ -5,6 +5,12 @@ let redisClient;
 const MIN_SCORE_TO_TRADE = 6.2;
 const MIN_QUALITY_TO_TRADE = 66;
 
+// Auren V2 - miglioramenti principali:
+// 1) filtro anti-ingresso tardivo su posizione nel range M30;
+// 2) penalita orarie derivate dallo storico reale;
+// 3) distanza minima piu severa da supporti/resistenze;
+// 4) riduzione fiducia quando il segnale e forte ma gia esteso.
+
 async function getRedisClient() {
   if (!redisClient) {
     redisClient = createClient({
@@ -225,7 +231,8 @@ export default async function handler(req, res) {
       structure30m,
       structure1h,
       momentum15m,
-      momentum30m
+      momentum30m,
+      recentRange30m
     });
 
     const timePenalty = getTimePenalty(analysisTime);
@@ -1086,6 +1093,31 @@ function calculateM30DirectionScore(data) {
 
   const breakoutBuffer = Math.max(atr30m * 0.12, price * 0.00025);
 
+  const rangePosition =
+    recentRange30m.width > 0
+      ? (price - recentRange30m.low) / recentRange30m.width
+      : 0.5;
+
+  if (score > 0 && rangePosition > 0.78) {
+    score -= 1.4;
+    reasons.push("Prezzo gia vicino alla parte alta del range: rischio ingresso tardivo");
+  }
+
+  if (score < 0 && rangePosition < 0.22) {
+    score += 1.4;
+    reasons.push("Prezzo gia vicino alla parte bassa del range: rischio ingresso tardivo");
+  }
+
+  if (score > 0 && rangePosition > 0.88 && Math.abs(momentum30m) > 1.1) {
+    score -= 0.8;
+    reasons.push("Movimento rialzista gia molto esteso nel range M30");
+  }
+
+  if (score < 0 && rangePosition < 0.12 && Math.abs(momentum30m) > 1.1) {
+    score += 0.8;
+    reasons.push("Movimento ribassista gia molto esteso nel range M30");
+  }
+
   if (price > recentRange30m.high - breakoutBuffer && score > 0) {
     score += 0.7;
     reasons.push("Prezzo vicino alla parte alta del range M30");
@@ -1297,7 +1329,8 @@ function applyRiskPenalties({
   structure30m,
   structure1h,
   momentum15m,
-  momentum30m
+  momentum30m,
+  recentRange30m
 }) {
   let adjustedScore = score;
   let adjustedQuality = signalQuality.overall;
@@ -1371,6 +1404,37 @@ function applyRiskPenalties({
     penalties.push("Mercato sporco o contrastato");
   }
 
+  const rangePosition =
+    recentRange30m && recentRange30m.width > 0
+      ? (price - recentRange30m.low) / recentRange30m.width
+      : 0.5;
+
+  const bullishLateEntry =
+    score > 0 &&
+    rangePosition > 0.78 &&
+    Math.abs(momentum30m) > 1.1;
+
+  const bearishLateEntry =
+    score < 0 &&
+    rangePosition < 0.22 &&
+    Math.abs(momentum30m) > 1.1;
+
+  if (bullishLateEntry || bearishLateEntry) {
+    adjustedScore *= 0.86;
+    adjustedQuality -= 9;
+    penalties.push("Rischio ingresso tardivo dopo movimento gia esteso");
+  }
+
+  if (
+    signalQuality.overall >= 80 &&
+    Math.abs(momentum30m) > 1.4 &&
+    Math.abs(momentum15m) > 1.4
+  ) {
+    adjustedScore *= 0.88;
+    adjustedQuality -= 8;
+    penalties.push("Segnale forte ma possibile movimento gia esteso");
+  }
+
   return {
     score: adjustedScore,
     quality: Math.max(0, Math.min(100, Math.round(adjustedQuality))),
@@ -1381,7 +1445,23 @@ function applyRiskPenalties({
 function getTimePenalty(date = new Date()) {
   const hour = date.getHours();
 
-  if (hour === 13 || hour === 14 || hour === 18 || hour === 0) {
+  if (hour === 18 || hour === 0) {
+    return {
+      multiplier: 0.82,
+      qualityPenalty: 10,
+      reason: "Fascia oraria storicamente molto instabile"
+    };
+  }
+
+  if (hour === 9 || hour === 11 || hour === 16) {
+    return {
+      multiplier: 0.86,
+      qualityPenalty: 8,
+      reason: "Fascia oraria storicamente instabile per Auren"
+    };
+  }
+
+  if (hour === 13 || hour === 14) {
     return {
       multiplier: 0.90,
       qualityPenalty: 5,
@@ -1389,7 +1469,7 @@ function getTimePenalty(date = new Date()) {
     };
   }
 
-  if (hour === 15 || hour === 17) {
+  if (hour === 15 || hour === 17 || hour === 19) {
     return {
       multiplier: 1.03,
       qualityPenalty: 0,
@@ -1432,10 +1512,10 @@ function calculateTradability(data) {
   const distanceFromSupport = Math.abs(price - support);
 
   const tooCloseToResistance =
-    direction === "bullish" && distanceFromResistance < atr30m * 0.8;
+    direction === "bullish" && distanceFromResistance < atr30m * 1.15;
 
   const tooCloseToSupport =
-    direction === "bearish" && distanceFromSupport < atr30m * 0.8;
+    direction === "bearish" && distanceFromSupport < atr30m * 1.15;
 
   let tradable = true;
   const reasons = [];
