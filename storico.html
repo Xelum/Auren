@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -846,15 +847,27 @@
         box-shadow: 0 12px 32px rgba(0,0,0,0.18);
       }
 
+      th:nth-child(n),
+      td:nth-child(n) {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+      }
+
       td {
         display: grid;
-        grid-template-columns: 112px minmax(0, 1fr);
+        grid-template-columns: 136px minmax(0, 1fr);
         gap: 12px;
         align-items: center;
         padding: 11px 13px;
         border-bottom: 1px solid rgba(255,255,255,0.07);
         font-size: 13px;
-        overflow-wrap: anywhere;
+        overflow-wrap: normal;
+        word-break: normal;
+      }
+
+      td:not(.reading-cell) {
+        white-space: nowrap;
       }
 
       td:last-child {
@@ -874,6 +887,7 @@
       td.reading-cell {
         grid-template-columns: 1fr;
         gap: 8px;
+        white-space: normal;
       }
 
       td.reading-cell::before {
@@ -936,8 +950,13 @@
       }
 
       td {
-        grid-template-columns: 96px minmax(0, 1fr);
+        grid-template-columns: 118px minmax(0, 1fr);
         padding: 10px 12px;
+      }
+
+      td::before {
+        font-size: 9px;
+        letter-spacing: 0.06em;
       }
     }
 
