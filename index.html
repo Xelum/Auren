@@ -1027,8 +1027,6 @@
       padding-bottom: 34px;
     }
 
-    .results-board,
-    .how-board,
 @media (max-width: 900px) {
       .cursor-glow,
       .mouse-trail { display: none; }
@@ -1631,6 +1629,363 @@
       .privacy-banner-actions,
       .privacy-banner-actions .btn {
         width: 100%;
+      }
+    }
+
+
+
+    /* ================================
+       OTTIMIZZAZIONE MOBILE AUREN
+       Inserita per rendere il sito fluido su telefono
+       ================================ */
+    img,
+    svg,
+    iframe,
+    canvas,
+    video {
+      max-width: 100%;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .scenario-badges {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .scenario-mini-card {
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      border-radius: 18px;
+      padding: 14px 15px;
+      min-width: 0;
+    }
+
+    .scenario-mini-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-bottom: 7px;
+    }
+
+    .scenario-mini-card strong {
+      display: block;
+      color: var(--soft-white);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      .background::before {
+        background-size: 42px 42px;
+      }
+
+      .gold-rain,
+      .meteor-rain {
+        display: none;
+      }
+
+      header {
+        position: sticky;
+      }
+
+      .nav {
+        width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+        gap: 12px;
+      }
+
+      .brand {
+        flex: 0 1 auto;
+        min-width: 0;
+      }
+
+      .logo-img-big {
+        height: 46px;
+        max-width: 140px;
+      }
+
+      .nav > .btn {
+        flex: 0 0 auto;
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .hero,
+      section {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .hero {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 34px;
+      }
+
+      section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .eyebrow {
+        max-width: 100%;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      h1 {
+        font-size: clamp(40px, 13vw, 56px);
+        line-height: 1;
+        letter-spacing: -0.055em;
+      }
+
+      .hero p,
+      .section-heading p,
+      .chart-top p,
+      .scenario-board p,
+      .premium p,
+      .how-section .how-card p,
+      .feature-card p,
+      .scenario-card p {
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+      }
+
+      .hero-badges,
+      .hero-actions {
+        width: 100%;
+      }
+
+      .hero-badge {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+      }
+
+      .hero-actions .btn {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+
+      .terminal-inner,
+      .chart-board,
+      .scenario-board,
+      .premium,
+      .results-section .results-board,
+      .how-section .how-board {
+        border-radius: 24px !important;
+        padding: 20px !important;
+      }
+
+      .terminal-card {
+        border-radius: 25px;
+      }
+
+      .live-price-widget {
+        height: 150px;
+      }
+
+      .chart-top h2,
+      .scenario-board h2,
+      .section-heading h2,
+      .premium h2,
+      .how-board h2 {
+        font-size: clamp(30px, 9vw, 42px) !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.045em !important;
+      }
+
+      .chart-pill,
+      .market-pill,
+      .timer-pill,
+      .validation-pill {
+        width: 100%;
+        justify-content: center;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .advanced-chart-wrap {
+        height: 420px !important;
+        border-radius: 18px;
+      }
+
+      .advanced-chart-wrap .tradingview-widget-container,
+      .advanced-chart-wrap .tradingview-widget-container__widget {
+        min-height: 420px !important;
+      }
+
+      .scenario-status {
+        align-items: stretch;
+      }
+
+      .scenario-status-left,
+      .scenario-status-left strong,
+      .scenario-message,
+      .scenario-update-text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .scenario-badges {
+        grid-template-columns: 1fr;
+      }
+
+      .decision-box,
+      .reading-metric,
+      .scenario-mini-card,
+      .quality-row,
+      .stat-card,
+      .how-card,
+      .feature-card,
+      .bias-card {
+        min-width: 0 !important;
+      }
+
+      .decision-value,
+      .bias-value,
+      .prob,
+      .stat-value {
+        overflow-wrap: anywhere;
+      }
+
+      .quality-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .quality-row strong {
+        text-align: left;
+      }
+
+      .quality-bar-row {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .tooltip {
+        position: fixed;
+        left: 16px !important;
+        right: 16px !important;
+        bottom: auto !important;
+        top: 90px !important;
+        transform: none !important;
+        width: auto !important;
+        max-width: none;
+      }
+
+      .waitlist-form {
+        width: 100%;
+      }
+
+      .waitlist-form input,
+      .waitlist-form .btn {
+        width: 100%;
+      }
+
+      .privacy-banner {
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav {
+        min-height: 62px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+      }
+
+      .logo-img-big {
+        height: 42px;
+        max-width: 126px;
+      }
+
+      .nav > .btn {
+        min-height: 36px;
+        padding: 0 11px;
+        font-size: 11px;
+      }
+
+      .hero {
+        padding-top: 28px;
+        gap: 24px;
+      }
+
+      h1 {
+        font-size: clamp(38px, 12vw, 48px) !important;
+      }
+
+      .small-note {
+        font-size: 12px;
+      }
+
+      .terminal-inner,
+      .chart-board,
+      .scenario-board,
+      .premium,
+      .results-section .results-board,
+      .how-section .how-board {
+        padding: 18px !important;
+      }
+
+      .results-section .stats-grid-premium .stat-card,
+      .results-section .stat-card,
+      .feature-card,
+      .how-section .how-card,
+      .bias-card,
+      .scenario-card {
+        padding: 18px !important;
+        border-radius: 20px !important;
+      }
+
+      .advanced-chart-wrap {
+        height: 360px !important;
+      }
+
+      .advanced-chart-wrap .tradingview-widget-container,
+      .advanced-chart-wrap .tradingview-widget-container__widget {
+        min-height: 360px !important;
+      }
+
+      .decision-value {
+        font-size: 18px;
+      }
+
+      .bias-value {
+        font-size: 34px;
+      }
+
+      .live-price-widget {
+        height: 140px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
       }
     }
 
