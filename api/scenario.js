@@ -2,14 +2,17 @@ import { createClient } from "redis";
 
 let redisClient;
 
-const MIN_SCORE_TO_TRADE = 6.2;
-const MIN_QUALITY_TO_TRADE = 66;
+const MIN_SCORE_TO_TRADE = 7.8;
+const MIN_QUALITY_TO_TRADE = 78;
+const MIN_BULLISH_QUALITY_TO_TRADE = 80;
 
-// Auren V2 - miglioramenti principali:
-// 1) filtro anti-ingresso tardivo su posizione nel range M30;
-// 2) penalita orarie derivate dallo storico reale;
-// 3) distanza minima piu severa da supporti/resistenze;
-// 4) riduzione fiducia quando il segnale e forte ma gia esteso.
+// Auren V3 - aggiornamento su storico reale 26/05/2026 - 08/06/2026:
+// 1) soglia operativa piu severa: score minimo 7.8 e affidabilita minima 78;
+// 2) H1 diventa filtro decisivo: contrario = attesa, allineato = maggiore fiducia;
+// 3) penalita sulla zona centrale del range M30, dove lo storico ha mostrato piu falsi segnali;
+// 4) scenario rialzista piu selettivo, perche nello storico recente ha avuto vantaggio statistico debole;
+// 5) fasce orarie 09, 11, 15, 18 e 19 trattate con maggiore prudenza;
+// 6) classificazione errori basso/medio/alto basata sui punti effettivi contrari.
 
 async function getRedisClient() {
   if (!redisClient) {
@@ -272,7 +275,14 @@ export default async function handler(req, res) {
       price,
       support,
       resistance,
-      atr30m
+      atr30m,
+      recentRange30m,
+      structure15m,
+      structure30m,
+      structure1h,
+      slope1h,
+      rsi30m,
+      riskWarnings
     });
 
     const scenario = buildScenarioV2({
@@ -571,11 +581,17 @@ function evaluateScenarioResult(item, currentPrice) {
 }
 
 function classifyErrorLevel(difference, threshold) {
-  const absDiff = Math.abs(Number(difference || 0));
+  const diff = Number(difference || 0);
+
+  // L'errore va classificato solo quando il movimento e' contrario alla previsione.
+  if (diff >= 0) return null;
+
+  const pointsAgainst = Math.abs(diff);
   const minThreshold = Math.max(Number(threshold || 0), 0.01);
 
-  if (absDiff < minThreshold) return "basso";
-  if (absDiff < minThreshold * 2.5) return "medio";
+  // Soglie miste: rispettano sia i punti reali sia la soglia dinamica ATR.
+  if (pointsAgainst <= Math.max(5, minThreshold * 1.2)) return "basso";
+  if (pointsAgainst <= Math.max(15, minThreshold * 2.8)) return "medio";
   return "alto";
 }
 
@@ -1025,12 +1041,12 @@ function calculateM30DirectionScore(data) {
   }
 
   if (price > ema20_1h && ema20_1h > ema50_1h) {
-    score += 1.5;
+    score += 2.3;
     reasons.push("H1 conferma contesto positivo");
   }
 
   if (price < ema20_1h && ema20_1h < ema50_1h) {
-    score -= 1.5;
+    score -= 2.3;
     reasons.push("H1 conferma contesto debole");
   }
 
@@ -1054,7 +1070,7 @@ function calculateM30DirectionScore(data) {
 
   score += clamp(slope30m, -1.8, 1.8) * 1.25;
   score += clamp(slope15m, -1.5, 1.5) * 0.75;
-  score += clamp(slope1h, -1.0, 1.0) * 0.5;
+  score += clamp(slope1h, -1.2, 1.2) * 0.9;
 
   score += clamp(momentum30m, -2.0, 2.0) * 1.15;
   score += clamp(momentum15m, -1.8, 1.8) * 0.75;
@@ -1097,6 +1113,11 @@ function calculateM30DirectionScore(data) {
     recentRange30m.width > 0
       ? (price - recentRange30m.low) / recentRange30m.width
       : 0.5;
+
+  if (rangePosition >= 0.40 && rangePosition <= 0.60) {
+    score *= 0.84;
+    reasons.push("Prezzo nella zona centrale del range: segnale meno pulito");
+  }
 
   if (score > 0 && rangePosition > 0.78) {
     score -= 1.4;
@@ -1387,9 +1408,32 @@ function applyRiskPenalties({
   }
 
   if (higherTimeframeConflict) {
-    adjustedScore *= 0.82;
-    adjustedQuality -= 8;
-    penalties.push("M30 e H1 non allineati");
+    adjustedScore *= 0.62;
+    adjustedQuality -= 18;
+    penalties.push("H1 contrario alla direzione M30");
+  }
+
+  const h1NotAligned =
+    structure30m !== "neutral" &&
+    structure1h !== structure30m;
+
+  if (h1NotAligned && !higherTimeframeConflict) {
+    adjustedScore *= 0.88;
+    adjustedQuality -= 10;
+    penalties.push("H1 non conferma la direzione");
+  }
+
+  const rangePosition =
+    recentRange30m && recentRange30m.width > 0
+      ? (price - recentRange30m.low) / recentRange30m.width
+      : 0.5;
+
+  const centralRange = rangePosition >= 0.40 && rangePosition <= 0.60;
+
+  if (centralRange) {
+    adjustedScore *= 0.84;
+    adjustedQuality -= 15;
+    penalties.push("Prezzo nella zona centrale del range M30");
   }
 
   if (momentumConflict) {
@@ -1403,11 +1447,6 @@ function applyRiskPenalties({
     adjustedQuality -= 18;
     penalties.push("Mercato sporco o contrastato");
   }
-
-  const rangePosition =
-    recentRange30m && recentRange30m.width > 0
-      ? (price - recentRange30m.low) / recentRange30m.width
-      : 0.5;
 
   const bullishLateEntry =
     score > 0 &&
@@ -1444,36 +1483,36 @@ function applyRiskPenalties({
 
 function getTimePenalty(date = new Date()) {
   const hour = date.getHours();
+  const minute = date.getMinutes();
+  const halfHourKey = hour + ":" + (minute >= 30 ? "30" : "00");
 
-  if (hour === 18 || hour === 0) {
+  const veryUnstableHours = [15, 18, 19];
+  const unstableHours = [9, 11];
+  const lessStableHours = [13, 14, 16, 17];
+
+  // Dallo storico: 15:00/15:30 e 18:00-19:30 sono state fasce deboli.
+  if (veryUnstableHours.includes(hour)) {
     return {
-      multiplier: 0.82,
-      qualityPenalty: 10,
-      reason: "Fascia oraria storicamente molto instabile"
+      multiplier: 0.76,
+      qualityPenalty: 12,
+      reason: "Fascia oraria storicamente molto instabile per Auren"
     };
   }
 
-  if (hour === 9 || hour === 11 || hour === 16) {
+  // Dallo storico: 09:00 e 11:00 hanno prodotto diversi falsi segnali.
+  if (unstableHours.includes(hour)) {
     return {
-      multiplier: 0.86,
-      qualityPenalty: 8,
+      multiplier: 0.82,
+      qualityPenalty: 10,
       reason: "Fascia oraria storicamente instabile per Auren"
     };
   }
 
-  if (hour === 13 || hour === 14) {
+  if (lessStableHours.includes(hour)) {
     return {
       multiplier: 0.90,
-      qualityPenalty: 5,
-      reason: "Fascia oraria storicamente meno stabile"
-    };
-  }
-
-  if (hour === 15 || hour === 17 || hour === 19) {
-    return {
-      multiplier: 1.03,
-      qualityPenalty: 0,
-      reason: "Fascia oraria storicamente interessante"
+      qualityPenalty: 6,
+      reason: "Fascia oraria da trattare con prudenza"
     };
   }
 
@@ -1492,7 +1531,14 @@ function calculateTradability(data) {
     price,
     support,
     resistance,
-    atr30m
+    atr30m,
+    recentRange30m,
+    structure15m,
+    structure30m,
+    structure1h,
+    slope1h,
+    rsi30m,
+    riskWarnings
   } = data;
 
   const score = directionData.score;
@@ -1512,10 +1558,32 @@ function calculateTradability(data) {
   const distanceFromSupport = Math.abs(price - support);
 
   const tooCloseToResistance =
-    direction === "bullish" && distanceFromResistance < atr30m * 1.15;
+    direction === "bullish" && distanceFromResistance < atr30m * 1.25;
 
   const tooCloseToSupport =
-    direction === "bearish" && distanceFromSupport < atr30m * 1.15;
+    direction === "bearish" && distanceFromSupport < atr30m * 1.25;
+
+  const rangePosition =
+    recentRange30m && recentRange30m.width > 0
+      ? (price - recentRange30m.low) / recentRange30m.width
+      : 0.5;
+
+  const centralRange = rangePosition >= 0.40 && rangePosition <= 0.60;
+
+  const h1Contrary =
+    (direction === "bullish" && (structure1h === "bearish" || slope1h < -0.25)) ||
+    (direction === "bearish" && (structure1h === "bullish" || slope1h > 0.25));
+
+  const h1Aligned =
+    (direction === "bullish" && (structure1h === "bullish" || slope1h > 0.25)) ||
+    (direction === "bearish" && (structure1h === "bearish" || slope1h < -0.25));
+
+  const m15m30Aligned =
+    direction === "bullish"
+      ? structure15m === "bullish" && structure30m === "bullish"
+      : direction === "bearish"
+        ? structure15m === "bearish" && structure30m === "bearish"
+        : false;
 
   let tradable = true;
   const reasons = [];
@@ -1527,17 +1595,32 @@ function calculateTradability(data) {
 
   if (absScore < MIN_SCORE_TO_TRADE) {
     tradable = false;
-    reasons.push("Score tecnico non abbastanza forte");
+    reasons.push("Score tecnico sotto la nuova soglia operativa 7.8");
   }
 
   if (signalQuality.overall < MIN_QUALITY_TO_TRADE) {
     tradable = false;
-    reasons.push("Qualita complessiva del segnale sotto soglia");
+    reasons.push("Affidabilita sotto 78: meglio attendere");
   }
 
   if (badRegime) {
     tradable = false;
     reasons.push("Regime di mercato poco affidabile");
+  }
+
+  if (h1Contrary) {
+    tradable = false;
+    reasons.push("H1 contrario alla direzione: scenario reso neutrale");
+  }
+
+  if (signalQuality.overall < 85 && !h1Aligned) {
+    tradable = false;
+    reasons.push("Manca conferma H1 sufficiente");
+  }
+
+  if (centralRange && !h1Aligned) {
+    tradable = false;
+    reasons.push("Prezzo nella zona centrale del range senza conferma H1");
   }
 
   if (tooCloseToResistance) {
@@ -1550,9 +1633,37 @@ function calculateTradability(data) {
     reasons.push("Prezzo troppo vicino al supporto");
   }
 
+  // Il rialzista nello storico recente e' stato meno efficace: lo rendiamo piu selettivo.
+  if (direction === "bullish") {
+    if (signalQuality.overall < MIN_BULLISH_QUALITY_TO_TRADE) {
+      tradable = false;
+      reasons.push("Scenario rialzista sotto soglia rafforzata 80");
+    }
+
+    if (!m15m30Aligned) {
+      tradable = false;
+      reasons.push("Scenario rialzista senza pieno allineamento M15/M30");
+    }
+
+    if (!h1Aligned) {
+      tradable = false;
+      reasons.push("Scenario rialzista senza conferma H1");
+    }
+
+    if (rsi30m >= 68 && rangePosition > 0.68) {
+      tradable = false;
+      reasons.push("Rialzista gia esteso vicino alla parte alta del range");
+    }
+  }
+
   if (signalQuality.riskWarnings && signalQuality.riskWarnings.length >= 2) {
     tradable = false;
     reasons.push("Troppi segnali di rischio contemporanei");
+  }
+
+  if (Array.isArray(riskWarnings) && riskWarnings.length >= 3) {
+    tradable = false;
+    reasons.push("Accumulo eccessivo di penalita operative");
   }
 
   const action =
@@ -1565,6 +1676,9 @@ function calculateTradability(data) {
     tradable,
     action,
     direction,
+    rangePosition: round(rangePosition, 3),
+    h1Aligned,
+    h1Contrary,
     reasons
   };
 }
