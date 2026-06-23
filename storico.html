@@ -1,45 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Dashboard Commesse</title>
+  <title>Auren | Storico scenari</title>
 
   <style>
     :root {
-      --bg-main: #f4fbff;
-      --bg-second: #eaf6ff;
-
-      --panel: rgba(255, 255, 255, 0.92);
-      --panel-light: rgba(235, 248, 255, 0.96);
-
-      --text: #102033;
-      --text-strong: #071f33;
-      --text-soft: #426177;
-      --muted: #6f8aa3;
-
-      --neon-blue: #00bfff;
-      --neon-blue-soft: rgba(0, 191, 255, 0.45);
-      --neon-blue-light: rgba(0, 191, 255, 0.18);
-
-      --cyan: #006ea6;
-      --green: #047857;
-      --yellow: #ca8a04;
-      --orange: #ea580c;
-      --red: #dc2626;
-      --purple: #7e22ce;
-
-      --border-neon: rgba(0, 180, 255, 0.42);
-      --border-soft: rgba(0, 120, 180, 0.12);
-
-      --shadow-soft: 0 18px 42px rgba(0, 92, 160, 0.14);
-      --shadow-neon: 0 0 28px rgba(0, 180, 255, 0.20);
-
-      --radius: 24px;
+      --black: #0B0B0B;
+      --soft-white: #F5F5F5;
+      --muted: #A7A7A7;
+      --gold: #C6A85A;
+      --gold-light: #FFD978;
+      --danger: #E66B6B;
+      --green: #79D98B;
+      --blue: #78B7FF;
+      --border-gold: rgba(198, 168, 90, 0.42);
+      --border-gold-soft: rgba(198, 168, 90, 0.28);
     }
 
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
@@ -48,2033 +31,1716 @@
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      font-family: Inter, Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 8% 8%, rgba(0, 180, 255, 0.20), transparent 28%),
-        radial-gradient(circle at 92% 12%, rgba(0, 90, 255, 0.14), transparent 30%),
-        linear-gradient(135deg, #f4fbff 0%, #eaf6ff 45%, #ffffff 100%);
+      background: var(--black);
+      color: var(--soft-white);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       overflow-x: hidden;
     }
 
-    body::before {
-      content: "";
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .background {
       position: fixed;
+      inset: 0;
+      z-index: -5;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(198,168,90,0.13), transparent 28%),
+        radial-gradient(circle at 80% 12%, rgba(198,168,90,0.08), transparent 26%),
+        linear-gradient(180deg, #111111 0%, #080808 100%);
+    }
+
+    .background::before {
+      content: "";
+      position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0, 140, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 140, 255, 0.05) 1px, transparent 1px);
-      background-size: 46px 46px;
-      mask-image: linear-gradient(to bottom, black, rgba(0,0,0,0.25), transparent);
-      pointer-events: none;
-      z-index: -2;
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 92%);
     }
 
-    body::after {
-      content: "";
+    .gold-rain,
+    .meteor-rain {
       position: fixed;
       inset: 0;
-      background:
-        linear-gradient(120deg, transparent, rgba(0, 180, 255, 0.08), transparent);
       pointer-events: none;
-      animation: backgroundMove 8s linear infinite;
-      z-index: -1;
+      overflow: hidden;
     }
 
-    @keyframes backgroundMove {
-      0% {
-        transform: translateX(-30%);
-      }
+    .gold-rain { z-index: -3; }
+    .meteor-rain { z-index: -2; }
 
-      100% {
-        transform: translateX(30%);
-      }
+    .gold-streak {
+      position: absolute;
+      top: -180px;
+      width: 2px;
+      height: 140px;
+      background: linear-gradient(to bottom, transparent, rgba(255,217,120,0.9), transparent);
+      filter: drop-shadow(0 0 12px rgba(255,217,120,0.75));
+      animation: fall linear infinite;
     }
 
-    .login-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 99999999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      background:
-        radial-gradient(circle at top left, rgba(0, 180, 255, 0.22), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(0, 110, 166, 0.16), transparent 34%),
-        linear-gradient(135deg, #f4fbff 0%, #eaf6ff 55%, #ffffff 100%);
+    @keyframes fall {
+      0% { transform: translateY(-220px) translateX(0) rotate(10deg); opacity: 0; }
+      10% { opacity: 0.65; }
+      85% { opacity: 0.35; }
+      100% { transform: translateY(calc(100vh + 280px)) translateX(-90px) rotate(10deg); opacity: 0; }
     }
 
-    .login-card {
-      width: min(430px, 100%);
-      padding: 34px;
-      border-radius: 30px;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,0.96), rgba(235,248,255,0.98));
-      border: 1px solid rgba(0, 180, 255, 0.45);
+    .meteor {
+      position: absolute;
+      top: -40px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold-light);
       box-shadow:
-        0 24px 60px rgba(0, 92, 160, 0.18),
-        0 0 34px rgba(0, 180, 255, 0.22);
-      text-align: center;
-      animation: modalIn 0.35s ease both;
+        0 0 10px rgba(255,217,120,0.9),
+        0 0 24px rgba(255,217,120,0.55),
+        0 0 42px rgba(198,168,90,0.28);
+      opacity: 0;
+      animation: meteorFall linear infinite;
     }
 
-    .login-badge {
-      display: inline-flex;
-      padding: 8px 13px;
-      border-radius: 999px;
-      background: rgba(0, 180, 255, 0.10);
-      color: #006ea6;
-      border: 1px solid rgba(0, 180, 255, 0.35);
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 18px;
+    .meteor::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 42px;
+      left: 50%;
+      bottom: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(to top, rgba(255,217,120,0.7), transparent);
+      filter: blur(1px);
     }
 
-    .login-card h2 {
-      margin: 0;
-      font-size: 32px;
-      letter-spacing: -0.045em;
-      color: #071f33;
+    @keyframes meteorFall {
+      0% { transform: translateY(-80px) translateX(0) scale(0.6); opacity: 0; }
+      12% { opacity: 0.75; }
+      80% { opacity: 0.45; }
+      100% { transform: translateY(calc(100vh + 120px)) translateX(-55px) scale(1); opacity: 0; }
     }
 
-    .login-card p {
-      margin: 12px 0 22px;
-      color: #426177;
-      line-height: 1.5;
+    .cursor-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 150px;
+      height: 150px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      background: radial-gradient(circle, rgba(255,217,120,0.16), rgba(198,168,90,0.07) 35%, transparent 70%);
+      filter: blur(8px);
+      opacity: 0.75;
     }
 
-    .login-field {
-      margin-bottom: 14px;
+    .mouse-trail {
+      position: fixed;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9997;
+      background: radial-gradient(circle, rgba(255,217,120,0.34), rgba(198,168,90,0.12) 45%, transparent 72%);
+      box-shadow: 0 0 22px rgba(255,217,120,0.3);
+      animation: trailFade 0.7s ease-out forwards;
     }
 
-    .login-button {
-      width: 100%;
+    @keyframes trailFade {
+      from { transform: translate(-50%, -50%) scale(1); opacity: 0.75; }
+      to { transform: translate(-50%, -50%) scale(1.9); opacity: 0; }
     }
 
-    .login-error {
-      display: none;
-      margin-top: 14px;
-      color: #b91c1c;
-      background: rgba(254,226,226,0.95);
-      border: 1px solid rgba(239,68,68,0.28);
-      padding: 10px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 13px;
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(11,11,11,0.82);
+      border-bottom: 1px solid rgba(198,168,90,0.20);
     }
 
-    .app {
-      width: min(1520px, calc(100% - 36px));
+    .nav {
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 28px 0 60px;
-      animation: pageIn 0.7s ease both;
-      display: none;
-    }
-
-    @keyframes pageIn {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hero {
-      position: relative;
-      overflow: visible;
-      border: 1px solid var(--border-neon);
-      border-radius: 34px;
-      padding: 36px;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(235, 248, 255, 0.96));
-      box-shadow:
-        0 18px 45px rgba(0, 92, 160, 0.14),
-        0 0 30px rgba(0, 180, 255, 0.22),
-        inset 0 0 20px rgba(0, 180, 255, 0.05);
-      margin-bottom: 20px;
-      z-index: 5;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 1px;
-      border-radius: 33px;
-      border: 1px solid rgba(0, 180, 255, 0.20);
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle, rgba(0, 180, 255, 0.28), rgba(0, 180, 255, 0.08), transparent 68%);
-      right: -120px;
-      top: -130px;
-      filter: blur(2px);
-      animation: floatGlow 5s ease-in-out infinite alternate;
-      z-index: 0;
-    }
-
-    @keyframes floatGlow {
-      from {
-        transform: translate(0, 0) scale(1);
-      }
-
-      to {
-        transform: translate(-22px, 26px) scale(1.08);
-      }
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 10;
+      padding: 8px 24px;
+      min-height: 74px;
       display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-
-    .eyebrow {
-      display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 9px 14px;
-      border-radius: 999px;
-      background: rgba(0, 180, 255, 0.10);
-      color: var(--cyan);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      border: 1px solid rgba(0, 180, 255, 0.35);
-      box-shadow: 0 0 18px rgba(0, 180, 255, 0.12);
-      margin-bottom: 18px;
+      justify-content: space-between;
     }
 
-    .pulse-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #16a34a;
-      box-shadow: 0 0 0 rgba(22, 163, 74, 0.7);
-      animation: pulse 1.7s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.70);
-      }
-
-      70% {
-        box-shadow: 0 0 0 11px rgba(22, 163, 74, 0);
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
-      }
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(38px, 5vw, 66px);
-      letter-spacing: -0.055em;
-      line-height: 0.95;
-      color: var(--text-strong);
-      text-shadow:
-        0 0 14px rgba(0, 180, 255, 0.16),
-        0 1px 0 rgba(255,255,255,0.60);
-    }
-
-    .hero p {
-      margin: 18px 0 0;
-      max-width: 780px;
-      color: #33516b;
-      font-size: 16px;
-      line-height: 1.65;
-    }
-
-    .hero-actions {
+    .brand {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 9999;
+      align-items: center;
+      min-width: 190px;
     }
 
-    button {
-      border: 0;
-      cursor: pointer;
-      font-family: inherit;
-      transition: 0.22s ease;
-      font-weight: 900;
+    .logo-img-big {
+      height: 58px;
+      width: auto;
+      max-width: 185px;
+      object-fit: contain;
+      display: block;
+      filter:
+        drop-shadow(0 0 10px rgba(255,217,120,0.75))
+        drop-shadow(0 0 28px rgba(198,168,90,0.45));
+      transition: all 0.3s ease;
+    }
+
+    .brand:hover .logo-img-big {
+      transform: scale(1.04);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      padding: 13px 18px;
-      border-radius: 15px;
-      font-size: 14px;
-      min-height: 48px;
+      min-height: 44px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold);
+      background: rgba(198,168,90,0.08);
+      color: var(--soft-white);
+      font-weight: 700;
+      transition: 0.2s ease;
+      cursor: pointer;
       white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: rgba(198,168,90,0.15);
+      box-shadow: 0 0 28px rgba(198,168,90,0.24);
     }
 
     .btn-primary {
-      color: #03111f;
-      background: linear-gradient(135deg, #a8f3ff, #38d9ff 45%, #00a6ff);
-      box-shadow:
-        0 12px 28px rgba(56,217,255,0.32),
-        0 0 24px rgba(56,217,255,0.28);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #111;
+      border: none;
+      box-shadow: 0 0 40px rgba(198,168,90,0.25);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow:
-        0 18px 38px rgba(56,217,255,0.45),
-        0 0 34px rgba(56,217,255,0.36);
+    .btn-export {
+      background: linear-gradient(135deg, rgba(121,217,139,0.22), rgba(198,168,90,0.10));
+      border-color: rgba(121,217,139,0.38);
+      color: var(--green);
     }
 
-    .btn-glass {
-      color: #082033;
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(0, 180, 255, 0.38);
-      box-shadow: 0 0 18px rgba(0, 180, 255, 0.12);
-      backdrop-filter: blur(18px);
+    .btn-export:hover {
+      background: rgba(121,217,139,0.14);
+      box-shadow: 0 0 28px rgba(121,217,139,0.18);
     }
 
-    .btn-glass:hover {
-      background: rgba(220,244,255,0.95);
-      transform: translateY(-2px);
-      box-shadow: 0 0 24px rgba(0, 180, 255, 0.20);
+    .control-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    .btn-danger {
-      color: white;
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      box-shadow: 0 12px 28px rgba(239, 68, 68, 0.22);
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 118px 24px 50px;
     }
 
-    .user-pill {
+    .page-hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 13px 15px;
-      min-height: 48px;
-      border-radius: 15px;
-      background: rgba(255,255,255,0.74);
-      border: 1px solid rgba(0, 180, 255, 0.32);
-      color: #082033;
+      padding: 8px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold);
+      background: rgba(198,168,90,0.09);
+      color: var(--gold-light);
       font-size: 13px;
-      font-weight: 850;
-      max-width: 260px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      margin-bottom: 20px;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
-      margin-bottom: 22px;
-      position: relative;
-      z-index: 1;
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 20px rgba(255,217,120,0.9);
+      animation: pulse 1.8s ease-in-out infinite;
     }
 
-    .stat-card {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--border-neon);
-      border-radius: var(--radius);
-      padding: 20px;
+    @keyframes pulse {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.35); }
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+      margin-bottom: 18px;
+      max-width: 760px;
+    }
+
+    .gold-text {
+      background: linear-gradient(135deg, #fff3bf, var(--gold), #8b6d2f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-text {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+      max-width: 760px;
+    }
+
+    .board {
+      border-radius: 34px;
       background:
-        linear-gradient(145deg, rgba(255,255,255,0.94), rgba(232,247,255,0.96));
-      box-shadow:
-        0 14px 32px rgba(0, 92, 160, 0.12),
-        0 0 24px rgba(0, 180, 255, 0.18),
-        inset 0 0 16px rgba(0, 180, 255, 0.04);
-      backdrop-filter: blur(18px);
-      animation: cardUp 0.55s ease both;
-      transition: 0.25s ease;
+        linear-gradient(135deg, rgba(198,168,90,0.14), rgba(255,255,255,0.035)),
+        rgba(255,255,255,0.025);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,217,120,0.05);
+      overflow: hidden;
+      padding: 28px;
+      margin-bottom: 22px;
     }
 
-    @keyframes cardUp {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .controls {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 0.9fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 22px;
     }
 
-    .stat-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(0, 180, 255, 0.14), transparent 58%);
-      opacity: 0;
-      transition: 0.25s;
+    .control-field {
+      min-height: 46px;
+      border-radius: 999px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.22);
+      color: var(--soft-white);
+      padding: 0 16px;
+      outline: none;
+      font-size: 14px;
     }
 
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(0, 180, 255, 0.85);
-      box-shadow:
-        0 18px 40px rgba(0, 92, 160, 0.18),
-        0 0 34px rgba(0, 180, 255, 0.30),
-        inset 0 0 20px rgba(0, 180, 255, 0.06);
+    .control-field:focus {
+      border-color: rgba(255,217,120,0.55);
+      box-shadow: 0 0 24px rgba(198,168,90,0.14);
     }
 
-    .stat-card:hover::before {
-      opacity: 1;
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
     }
 
-    .stat-label {
-      position: relative;
-      color: #0077b6;
+    .summary-card {
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
+      border-radius: 20px;
+      padding: 14px 15px;
+      min-height: 92px;
+    }
+
+    .summary-label {
+      color: var(--muted);
       font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-    }
-
-    .stat-value {
-      position: relative;
-      margin-top: 12px;
-      font-size: clamp(22px, 2.7vw, 32px);
-      font-weight: 950;
-      letter-spacing: -0.045em;
-      color: var(--text-strong);
-      text-shadow: 0 0 12px rgba(0, 180, 255, 0.16);
-    }
-
-    .stat-note {
-      position: relative;
-      margin-top: 8px;
-      color: #526b7f;
-      font-size: 12px;
+      margin-bottom: 8px;
       line-height: 1.35;
     }
 
-    .panel {
-      border: 1px solid var(--border-neon);
-      border-radius: 28px;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,0.94), rgba(235,248,255,0.96));
-      box-shadow:
-        0 18px 42px rgba(0, 92, 160, 0.13),
-        0 0 26px rgba(0, 180, 255, 0.18),
-        inset 0 0 20px rgba(0, 180, 255, 0.04);
-      backdrop-filter: blur(18px);
-      overflow: hidden;
-      margin-bottom: 22px;
-      position: relative;
-      z-index: 1;
+    .summary-value {
+      color: var(--soft-white);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
     }
 
-    .panel-header {
-      padding: 23px;
-      border-bottom: 1px solid rgba(0, 180, 255, 0.22);
+    .summary-value.gold { color: var(--gold-light); }
+    .summary-value.green { color: var(--green); }
+    .summary-value.red { color: var(--danger); }
+    .summary-value.blue { color: var(--blue); }
+
+    .date-group {
+      margin-top: 22px;
+      border-radius: 28px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+
+    .date-header {
       display: flex;
       justify-content: space-between;
+      gap: 18px;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      background: rgba(220, 244, 255, 0.58);
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(198,168,90,0.075);
     }
 
-    .panel-title h2 {
-      margin: 0;
-      font-size: 23px;
-      letter-spacing: -0.035em;
-      color: var(--text-strong);
+    .date-title {
+      color: var(--gold-light);
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: capitalize;
     }
 
-    .panel-title p {
-      margin: 7px 0 0;
-      color: var(--text-soft);
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .filters {
-      padding: 0 23px 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .field {
-      position: relative;
-      min-width: 230px;
-      flex: 1;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      background: rgba(255,255,255,0.92);
-      color: var(--text);
-      border: 1px solid rgba(0, 160, 230, 0.34);
-      border-radius: 15px;
-      padding: 13px 14px;
-      outline: none;
-      font-size: 14px;
-      font-family: inherit;
-      transition: 0.2s ease;
-      box-shadow:
-        inset 0 0 12px rgba(0, 120, 200, 0.04),
-        0 0 12px rgba(0, 180, 255, 0.05);
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: rgba(0, 180, 255, 0.90);
-      box-shadow:
-        0 0 0 4px rgba(0, 180, 255, 0.12),
-        0 0 22px rgba(0, 180, 255, 0.18);
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #7a95a8;
-    }
-
-    select option {
-      background: #ffffff;
-      color: var(--text);
+    .date-count {
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .table-wrap {
-      overflow: auto;
-      max-height: 640px;
+      width: 100%;
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
-      min-width: 1360px;
       border-collapse: collapse;
-      font-size: 13px;
+      min-width: 1050px;
+      table-layout: fixed;
     }
 
-    thead th {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: rgba(220, 244, 255, 0.98);
-      color: var(--cyan);
+    th,
+    td {
+      padding: 10px 12px;
       text-align: left;
-      padding: 15px 14px;
-      border-bottom: 1px solid rgba(0, 180, 255, 0.28);
-      white-space: nowrap;
-      text-transform: uppercase;
-      letter-spacing: 0.055em;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: middle;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    th {
+      color: var(--gold-light);
       font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(0,0,0,0.12);
+      white-space: nowrap;
     }
 
-    tbody td {
-      padding: 15px 14px;
-      border-bottom: 1px solid rgba(0, 120, 180, 0.10);
-      color: #132f45;
-      vertical-align: top;
-      line-height: 1.45;
+    td {
+      color: var(--soft-white);
     }
 
-    tbody tr {
-      cursor: pointer;
-      transition: 0.18s ease;
-      background: rgba(255,255,255,0.62);
+    tr:last-child td {
+      border-bottom: none;
     }
 
-    tbody tr:hover {
-      background: rgba(0, 180, 255, 0.08);
+    th:nth-child(1), td:nth-child(1) { width: 130px; }
+    th:nth-child(2), td:nth-child(2) { width: 75px; }
+    th:nth-child(3), td:nth-child(3) { width: 105px; }
+    th:nth-child(4), td:nth-child(4) { width: 120px; }
+    th:nth-child(5), td:nth-child(5) { width: 120px; }
+    th:nth-child(6), td:nth-child(6) { width: 115px; }
+    th:nth-child(7), td:nth-child(7) { width: 130px; }
+    th:nth-child(8), td:nth-child(8) { width: 95px; }
+    th:nth-child(9), td:nth-child(9) { width: 260px; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 3px;
     }
 
-    tbody tr.selected {
-      background: rgba(0, 180, 255, 0.16);
-      box-shadow:
-        inset 4px 0 0 var(--neon-blue),
-        0 0 18px rgba(0, 180, 255, 0.18);
-    }
-
-    tbody tr.row-expired {
-      box-shadow: inset 4px 0 0 var(--red);
-    }
-
-    tbody tr.row-soon {
-      box-shadow: inset 4px 0 0 #facc15;
-    }
-
-    tbody tr.row-tomorrow {
-      box-shadow: inset 4px 0 0 #f97316;
-    }
-
-    tbody tr.row-expired.selected,
-    tbody tr.row-soon.selected,
-    tbody tr.row-tomorrow.selected {
-      box-shadow:
-        inset 4px 0 0 var(--neon-blue),
-        inset 8px 0 0 rgba(255,255,255,0.28),
-        0 0 20px rgba(0, 180, 255, 0.22);
-    }
-
-    .numero {
-      width: 42px;
-      height: 42px;
+    .id-pill,
+    .action-pill,
+    .result-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 14px;
-      background: rgba(0, 180, 255, 0.11);
-      color: var(--cyan);
-      font-weight: 950;
-      border: 1px solid rgba(0, 180, 255, 0.42);
-      box-shadow: 0 0 16px rgba(0, 180, 255, 0.12);
-    }
-
-    .money {
-      font-weight: 950;
-      color: var(--green);
+      min-height: 30px;
+      padding: 0 11px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.20);
       white-space: nowrap;
     }
 
-    .badge {
+    .id-pill {
+      color: var(--gold-light);
+    }
+
+    .action-pill.buy {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+    }
+
+    .action-pill.sell {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
+    }
+
+    .action-pill.wait {
+      color: var(--gold-light);
+      border-color: rgba(255,217,120,0.35);
+      background: rgba(198,168,90,0.08);
+    }
+
+    .result-pill.correct {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
+    }
+
+    .result-pill.wrong {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
+    }
+
+    .result-pill.pending {
+      color: var(--blue);
+      border-color: rgba(120,183,255,0.35);
+      background: rgba(120,183,255,0.08);
+    }
+
+    .result-pill.neutral {
+      color: var(--gold-light);
+      border-color: rgba(255,217,120,0.35);
+      background: rgba(198,168,90,0.08);
+    }
+
+    .variation-positive {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .variation-negative {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .variation-neutral {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .reading-cell {
+      color: var(--soft-white);
+      line-height: 1.45;
+      vertical-align: top;
+    }
+
+    .reading-main {
+      display: block;
+      max-width: 100%;
+      white-space: normal;
+      overflow: visible;
+      line-height: 1.45;
+    }
+
+    .daily-points {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 7px 10px;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 12px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 900;
-      white-space: nowrap;
-      border: 1px solid transparent;
-    }
-
-    .badge::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-      box-shadow: 0 0 8px currentColor;
-    }
-
-    .badge-da-lavorare {
-      color: #334155;
-      background: rgba(226,232,240,0.75);
-      border-color: rgba(100,116,139,0.20);
-    }
-
-    .badge-attesa {
-      color: #92400e;
-      background: rgba(254,243,199,0.95);
-      border-color: rgba(245,158,11,0.30);
-    }
-
-    .badge-aggiudicata {
-      color: #047857;
-      background: rgba(209,250,229,0.95);
-      border-color: rgba(16,185,129,0.28);
-    }
-
-    .badge-persa {
-      color: #b91c1c;
-      background: rgba(254,226,226,0.95);
-      border-color: rgba(239,68,68,0.28);
-    }
-
-    .badge-rifiutata {
-      color: #7e22ce;
-      background: rgba(243,232,255,0.95);
-      border-color: rgba(168,85,247,0.28);
-    }
-
-    .deadline-box {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .deadline-date {
-      font-weight: 850;
-      color: var(--text);
-    }
-
-    .deadline-pill {
-      display: inline-flex;
-      width: fit-content;
-      padding: 6px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 950;
-      letter-spacing: 0.02em;
-      border: 1px solid transparent;
+      border: 1px solid var(--border-gold-soft);
+      background: rgba(0,0,0,0.18);
       white-space: nowrap;
     }
 
-    .deadline-ok {
-      color: #0369a1;
-      background: rgba(224,242,254,0.95);
-      border-color: rgba(56,189,248,0.28);
+    .daily-points.positive {
+      color: var(--green);
+      border-color: rgba(121,217,139,0.35);
+      background: rgba(121,217,139,0.08);
     }
 
-    .deadline-soon {
-      color: #92400e;
-      background: rgba(254,243,199,0.95);
-      border-color: rgba(245,158,11,0.30);
-      box-shadow: 0 0 14px rgba(245,158,11,0.10);
+    .daily-points.negative {
+      color: var(--danger);
+      border-color: rgba(230,107,107,0.35);
+      background: rgba(230,107,107,0.08);
     }
 
-    .deadline-tomorrow {
-      color: #9a3412;
-      background: rgba(255,237,213,0.95);
-      border-color: rgba(249,115,22,0.30);
-      box-shadow: 0 0 14px rgba(249,115,22,0.11);
-    }
-
-    .deadline-expired {
-      color: #b91c1c;
-      background: rgba(254,226,226,0.95);
-      border-color: rgba(239,68,68,0.30);
-      box-shadow: 0 0 14px rgba(239,68,68,0.11);
-    }
-
-    .actions-menu {
-      position: relative;
-      z-index: 99999;
-    }
-
-    .dropdown {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 58px;
-      width: 245px;
-      border: 1px solid rgba(0, 180, 255, 0.45);
-      border-radius: 18px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.98);
-      box-shadow:
-        0 18px 40px rgba(0, 70, 120, 0.22),
-        0 0 28px rgba(0, 180, 255, 0.20);
-      z-index: 999999;
-    }
-
-    .dropdown.show {
-      display: block;
-      animation: dropdownIn 0.18s ease both;
-    }
-
-    @keyframes dropdownIn {
-      from {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.98);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .dropdown button {
-      width: 100%;
-      text-align: left;
-      padding: 14px 16px;
-      color: var(--text);
-      background: #ffffff;
-      border-bottom: 1px solid rgba(0, 120, 180, 0.10);
-    }
-
-    .dropdown button:hover {
-      background: rgba(0, 180, 255, 0.10);
-    }
-
-    .modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(3, 12, 24, 0.42);
-      backdrop-filter: blur(12px);
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      z-index: 1000000;
-    }
-
-    .modal {
-      width: min(990px, 100%);
-      max-height: 92vh;
-      overflow-y: auto;
-      border-radius: 30px;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,0.98), rgba(232,247,255,0.98));
-      border: 1px solid rgba(0, 180, 255, 0.48);
-      box-shadow:
-        0 22px 55px rgba(0, 70, 120, 0.25),
-        0 0 34px rgba(0, 180, 255, 0.25);
-      padding: 27px;
-      animation: modalIn 0.25s ease both;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: translateY(18px) scale(0.98);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .modal h2 {
-      margin: 0 0 6px;
-      font-size: 29px;
-      letter-spacing: -0.04em;
-      color: var(--text-strong);
-    }
-
-    .modal-subtitle {
-      margin: 0 0 24px;
-      color: var(--text-soft);
-      line-height: 1.45;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--cyan);
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 24px;
+    .daily-points.neutral {
+      color: var(--muted);
     }
 
     .empty-state {
-      padding: 50px 22px;
+      padding: 34px;
+      border-radius: 28px;
+      border: 1px dashed var(--border-gold);
+      background: rgba(0,0,0,0.20);
       text-align: center;
-      color: var(--text-soft);
-      background: rgba(235,248,255,0.70);
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     .empty-state strong {
-      color: var(--text-strong);
-      display: block;
-      font-size: 18px;
-      margin-bottom: 8px;
+      color: var(--gold-light);
     }
 
-    .toast {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      padding: 15px 18px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.98);
-      color: var(--text);
-      border: 1px solid rgba(0, 180, 255, 0.42);
-      box-shadow:
-        0 18px 40px rgba(0, 70, 120, 0.18),
-        0 0 24px rgba(0, 180, 255, 0.18);
-      opacity: 0;
-      transform: translateY(20px);
-      pointer-events: none;
-      transition: 0.25s ease;
-      z-index: 2000000;
-      font-weight: 850;
+    footer {
+      border-top: 1px solid rgba(198,168,90,0.20);
+      padding: 30px 24px;
+      color: #777;
+      text-align: center;
+      font-size: 13px;
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    @media (max-width: 1100px) {
+      .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
-    @media (max-width: 1200px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 900px) {
+      .cursor-glow,
+      .mouse-trail { display: none; }
+
+      .nav { min-height: 72px; }
+      .logo-img-big { height: 54px; max-width: 170px; }
+      .nav-links { display: none; }
+      .brand { min-width: auto; }
+
+      main {
+        padding-top: 108px;
       }
 
-      .form-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .page-hero,
+      .controls,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .control-actions {
+        justify-content: flex-start;
+      }
+
+      .page-hero {
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .logo-img-big { height: 50px; max-width: 150px; }
+
+      .nav {
+        min-height: 70px;
+        padding: 8px 18px;
+      }
+
+      .nav .btn {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 13px;
+      }
+
+      main {
+        padding: 104px 20px 42px;
+      }
+
+      h1 { font-size: 42px; }
+      .board { padding: 22px; }
+      .date-header { flex-direction: column; align-items: flex-start; }
+    }
+
+
+    /* ------------------------------------------------------------------ */
+    /* OTTIMIZZAZIONE MOBILE - STORICO AUREN                              */
+    /* ------------------------------------------------------------------ */
+
+    img, svg, video, canvas {
+      max-width: 100%;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: rgba(198,168,90,0.45);
+      border-radius: 999px;
+    }
+
+    @media (hover: none) {
+      .btn:hover,
+      .brand:hover .logo-img-big {
+        transform: none;
+        box-shadow: none;
       }
     }
 
     @media (max-width: 760px) {
       body {
-        background:
-          radial-gradient(circle at 12% 5%, rgba(0, 180, 255, 0.18), transparent 30%),
-          linear-gradient(135deg, #f7fcff 0%, #edf8ff 50%, #ffffff 100%);
+        -webkit-text-size-adjust: 100%;
       }
 
-      .app {
-        width: min(100% - 18px, 1520px);
-        padding-top: 10px;
+      .gold-rain,
+      .meteor-rain {
+        opacity: 0.45;
       }
 
-      .hero {
-        padding: 22px;
-        border-radius: 26px;
-        margin-bottom: 14px;
-      }
-
-      .hero-content {
-        align-items: stretch;
-      }
-
-      h1 {
-        font-size: 38px;
-        line-height: 0.98;
-      }
-
-      .hero p {
-        font-size: 14px;
-      }
-
-      .hero-actions {
-        width: 100%;
-      }
-
-      .hero-actions .btn,
-      .actions-menu,
-      .user-pill {
-        width: 100%;
-        max-width: none;
-      }
-
-      .actions-menu .btn {
-        width: 100%;
-      }
-
-      .dropdown {
-        position: static;
-        width: 100%;
-        margin-top: 10px;
-        border-radius: 16px;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
+      .nav {
         gap: 12px;
       }
 
-      .stat-card {
-        padding: 17px;
-        border-radius: 20px;
+      .nav .btn {
+        flex-shrink: 0;
       }
 
-      .stat-value {
-        font-size: 28px;
+      .page-hero {
+        gap: 20px;
+        margin-bottom: 22px;
       }
 
-      .panel {
-        border-radius: 22px;
-      }
-
-      .panel-header {
-        padding: 18px;
-      }
-
-      .panel-title h2 {
-        font-size: 21px;
-      }
-
-      .panel-title p {
-        font-size: 13px;
-      }
-
-      .filters {
-        padding: 0 18px 18px;
-      }
-
-      .field {
-        min-width: 100%;
-      }
-
-      .table-wrap {
-        max-height: none;
-        overflow: visible;
-      }
-
-      table {
-        min-width: 0;
+      .page-hero > .btn {
         width: 100%;
       }
 
-      thead {
-        display: none;
+      .hero-text {
+        font-size: 15px;
       }
 
+      .controls {
+        gap: 10px;
+      }
+
+      .control-field {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 18px;
+      }
+
+      .control-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .control-actions .btn {
+        width: 100%;
+        padding: 0 14px;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .summary-card {
+        min-height: 86px;
+        padding: 13px;
+        border-radius: 18px;
+      }
+
+      .summary-label {
+        font-size: 11px;
+      }
+
+      .summary-value {
+        font-size: 21px;
+      }
+
+      .date-group {
+        border-radius: 24px;
+        margin-top: 18px;
+      }
+
+      .date-header {
+        padding: 15px;
+      }
+
+      .date-count {
+        display: grid;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .daily-points {
+        width: fit-content;
+      }
+
+      .table-wrap {
+        overflow: visible;
+      }
+
+      table,
+      thead,
       tbody,
       tr,
+      th,
       td {
         display: block;
         width: 100%;
       }
 
-      tbody tr {
-        margin: 14px;
+      table {
+        min-width: 0;
+        table-layout: auto;
+      }
+
+      thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+
+      tbody {
+        display: grid;
+        gap: 12px;
         padding: 14px;
+      }
+
+      tr {
+        border: 1px solid rgba(198,168,90,0.24);
         border-radius: 20px;
-        border: 1px solid rgba(0, 180, 255, 0.28);
-        background: rgba(255,255,255,0.86);
-        box-shadow:
-          0 12px 26px rgba(0, 92, 160, 0.10),
-          0 0 18px rgba(0, 180, 255, 0.10);
+        background:
+          radial-gradient(circle at 92% 10%, rgba(255,217,120,0.08), transparent 28%),
+          rgba(0,0,0,0.22);
+        overflow: hidden;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.18);
       }
 
-      tbody tr.selected {
-        background: rgba(224, 247, 255, 0.95);
-        box-shadow:
-          inset 4px 0 0 #00bfff,
-          0 12px 26px rgba(0, 92, 160, 0.12),
-          0 0 20px rgba(0, 180, 255, 0.18);
+      th:nth-child(n),
+      td:nth-child(n) {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
       }
 
-      tbody td {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(0, 120, 180, 0.10);
-        font-size: 14px;
-        text-align: right;
+      td {
+        display: grid;
+        grid-template-columns: 136px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 11px 13px;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        font-size: 13px;
+        overflow-wrap: normal;
+        word-break: normal;
       }
 
-      tbody td:last-child {
-        border-bottom: 0;
+      td:not(.reading-cell) {
+        white-space: nowrap;
       }
 
-      tbody td::before {
+      td:last-child {
+        border-bottom: none;
+      }
+
+      td::before {
         content: attr(data-label);
-        flex: 0 0 42%;
-        color: #006ea6;
-        font-weight: 900;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.25;
         text-transform: uppercase;
-        letter-spacing: 0.035em;
-        font-size: 11px;
-        text-align: left;
+        letter-spacing: 0.07em;
+        font-weight: 900;
       }
 
-      .numero {
-        width: 38px;
-        height: 38px;
-      }
-
-      .deadline-box {
-        align-items: flex-end;
-        text-align: right;
-      }
-
-      .badge,
-      .deadline-pill {
+      td.reading-cell {
+        grid-template-columns: 1fr;
+        gap: 8px;
         white-space: normal;
-        text-align: right;
       }
 
-      .form-grid {
+      td.reading-cell::before {
+        display: block;
+      }
+
+      .reading-main {
+        font-size: 13px;
+      }
+
+      .id-pill,
+      .action-pill,
+      .result-pill {
+        justify-self: start;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 430px) {
+      main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .nav {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .logo-img-big {
+        max-width: 132px;
+      }
+
+      .nav .btn {
+        max-width: 150px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.15;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .board {
+        padding: 16px;
+        border-radius: 26px;
+      }
+
+      .summary-grid {
         grid-template-columns: 1fr;
       }
 
-      .modal {
-        padding: 22px;
-        border-radius: 24px;
+      .control-actions {
+        grid-template-columns: 1fr;
       }
 
-      .modal h2 {
-        font-size: 25px;
+      tbody {
+        padding: 12px;
       }
 
-      .modal-actions .btn {
-        width: 100%;
+      td {
+        grid-template-columns: 118px minmax(0, 1fr);
+        padding: 10px 12px;
       }
 
-      .login-card {
-        padding: 26px;
-        border-radius: 24px;
-      }
-
-      .login-card h2 {
-        font-size: 28px;
+      td::before {
+        font-size: 9px;
+        letter-spacing: 0.06em;
       }
     }
+
   </style>
 </head>
 
 <body>
+  <div class="background"></div>
+  <div class="gold-rain" id="goldRain"></div>
+  <div class="meteor-rain" id="meteorRain"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
 
-  <div class="login-screen" id="loginScreen">
-    <div class="login-card">
-      <div class="login-badge">Accesso riservato</div>
+  <header>
+    <nav class="nav">
+      <a href="/" class="brand">
+        <img src="logo0.png" alt="Logo Auren" class="logo-img-big" />
+      </a>
 
-      <h2>Dashboard Commesse</h2>
-
-      <p>
-        Inserisci email e password autorizzate per accedere alla banca dati.
-      </p>
-
-      <div class="login-field">
-        <input
-          type="email"
-          id="loginEmail"
-          placeholder="Email"
-          autocomplete="email"
-        />
+      <div class="nav-links">
+        <a href="/index.html#analisi">Analisi</a>
+        <a href="/index.html#grafico">Grafico live</a>
+        <a href="/index.html#scenario">Scenario</a>
+        <a href="/index.html#premium">Premium</a>
       </div>
 
-      <div class="login-field">
-        <input
-          type="password"
-          id="loginPassword"
-          placeholder="Password"
-          autocomplete="current-password"
-        />
-      </div>
+      <a href="/index.html#scenario" class="btn">Torna allo scenario</a>
+    </nav>
+  </header>
 
-      <button class="btn btn-primary login-button" id="loginBtn">
-        Accedi
-      </button>
-
-      <div class="login-error" id="loginError">
-        Email o password non corrette.
-      </div>
-    </div>
-  </div>
-
-  <div class="app" id="appContent">
-
-    <section class="hero">
-      <div class="hero-content">
-        <div>
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            Gestionale preventivi online
-          </div>
-
-          <h1>Dashboard<br>Commesse</h1>
-
-          <p>
-            Banca dati dinamica collegata a Firestore per monitorare preventivi,
-            importi, scadenze, KAM, stati di avanzamento e risultati commerciali.
-          </p>
+  <main>
+    <section class="page-hero">
+      <div>
+        <div class="eyebrow">
+          <span class="pulse"></span>
+          Storico operativo XAU/USD
         </div>
 
-        <div class="hero-actions">
-          <span class="user-pill" id="userEmail">Utente collegato</span>
+        <h1>Storico <span class="gold-text">scenari</span>.</h1>
 
-          <button class="btn btn-primary" id="newCommessaBtn">
-            + Nuova commessa
-          </button>
-
-          <div class="actions-menu">
-            <button class="btn btn-glass" id="actionsBtn">
-              Azioni ▾
-            </button>
-
-            <div class="dropdown" id="actionsDropdown">
-              <button id="duplicateBtn">Duplica commessa</button>
-              <button id="editBtn">Modifica commessa</button>
-              <button id="deleteBtn">Elimina commessa</button>
-            </div>
-          </div>
-
-          <button class="btn btn-danger" id="logoutBtn">
-            Esci
-          </button>
-        </div>
+        <p class="hero-text">
+          Qui vengono salvate le analisi generate ogni 30 minuti. Ogni giornata ha il suo storico,
+          con numero identificativo, orario, lettura dello scenario e verifica finale.
+        </p>
       </div>
+
+      <a href="/index.html#scenario" class="btn btn-primary">Scenario attuale</a>
     </section>
 
-    <section class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Totale lavori</div>
-        <div class="stat-value" id="totalAmount">€ 0,00</div>
-        <div class="stat-note">Somma complessiva degli importi O.E.</div>
+    <section class="board">
+      <div class="controls">
+        <input class="control-field" type="search" id="searchInput" placeholder="Cerca per ID, scenario, esito..." />
+
+        <select class="control-field" id="dateFilter"></select>
+
+        <select class="control-field" id="actionFilter">
+          <option value="all">Tutti gli scenari</option>
+          <option value="buy">Rialzista</option>
+          <option value="sell">Ribassista</option>
+          <option value="wait">Neutrale</option>
+        </select>
+
+        <div class="control-actions">
+          <button class="btn btn-export" type="button" id="exportBtn">Scarica Excel</button>
+          <button class="btn" type="button" id="refreshBtn">Aggiorna</button>
+        </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-label">Numero commesse</div>
-        <div class="stat-value" id="totalJobs">0</div>
-        <div class="stat-note">Totale commesse presenti in archivio</div>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label">Scenari totali</div>
+          <div class="summary-value gold" id="totalCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Confermati</div>
+          <div class="summary-value green" id="correctCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Non confermati</div>
+          <div class="summary-value red" id="wrongCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">In verifica</div>
+          <div class="summary-value blue" id="pendingCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Neutrali / non operative</div>
+          <div class="summary-value gold" id="waitCount">0</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">Accuratezza storica</div>
+          <div class="summary-value green" id="winrateValue">0%</div>
+        </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-label">Valore medio</div>
-        <div class="stat-value" id="averageAmount">€ 0,00</div>
-        <div class="stat-note">Media del valore per preventivo</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">Aggiudicate</div>
-        <div class="stat-value" id="wonJobs">0</div>
-        <div class="stat-note">Commesse vinte o confermate</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">Scadenze urgenti</div>
-        <div class="stat-value" id="urgentDeadlines">0</div>
-        <div class="stat-note">Scadute o in scadenza entro 3 giorni</div>
-      </div>
+      <div id="historyContainer"></div>
     </section>
+  </main>
 
-    <section class="panel">
-      <div class="panel-header">
-        <div class="panel-title">
-          <h2>Elenco commesse</h2>
-          <p>
-            Seleziona una riga per modificarla, duplicarla o eliminarla.
-            Ogni modifica viene salvata online nel database.
-          </p>
-        </div>
-      </div>
+  <footer>
+    © 2026 Auren. Storico informativo di mercato. Non costituisce consulenza finanziaria.
+  </footer>
 
-      <div class="filters">
-        <div class="field">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Cerca per committente, città, KAM, note..."
-          />
-        </div>
+  <script>
+    const goldRain = document.getElementById("goldRain");
+    const streakCount = 22;
 
-        <div class="field">
-          <select id="statusFilter">
-            <option value="">Tutti gli stati</option>
-            <option value="da-lavorare">Da lavorare / in lavorazione</option>
-            <option value="attesa">Consegnata / in attesa</option>
-            <option value="aggiudicata">Aggiudicata</option>
-            <option value="persa">Persa</option>
-            <option value="rifiutata">Rifiutata</option>
-          </select>
-        </div>
-      </div>
+    for (let i = 0; i < streakCount; i++) {
+      const streak = document.createElement("span");
+      streak.className = "gold-streak";
+      streak.style.left = Math.random() * 100 + "vw";
+      streak.style.animationDuration = 4.5 + Math.random() * 6 + "s";
+      streak.style.animationDelay = Math.random() * 7 + "s";
+      streak.style.height = 60 + Math.random() * 130 + "px";
+      streak.style.opacity = 0.12 + Math.random() * 0.38;
+      goldRain.appendChild(streak);
+    }
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>N.</th>
-              <th>Nome</th>
-              <th>Cognome</th>
-              <th>KAM</th>
-              <th>Indirizzo</th>
-              <th>Città</th>
-              <th>O.E.</th>
-              <th>Invio ufficio</th>
-              <th>Scadenza preventivo</th>
-              <th>Assemblea</th>
-              <th>Stato</th>
-              <th>Info</th>
-              <th>Annotazioni</th>
-            </tr>
-          </thead>
+    const meteorRain = document.getElementById("meteorRain");
+    const meteorCount = 30;
 
-          <tbody id="commesseTable"></tbody>
-        </table>
+    for (let i = 0; i < meteorCount; i++) {
+      const meteor = document.createElement("span");
+      meteor.className = "meteor";
+      const size = 2 + Math.random() * 4;
+      meteor.style.width = size + "px";
+      meteor.style.height = size + "px";
+      meteor.style.left = Math.random() * 100 + "vw";
+      meteor.style.animationDuration = 5 + Math.random() * 9 + "s";
+      meteor.style.animationDelay = Math.random() * 11 + "s";
+      meteor.style.opacity = 0.16 + Math.random() * 0.52;
+      meteorRain.appendChild(meteor);
+    }
 
-        <div class="empty-state" id="emptyState" style="display:none;">
-          <strong>Nessuna commessa presente</strong>
-          Aggiungi la prima commessa per iniziare a popolare la banca dati.
-        </div>
-      </div>
-    </section>
+    const cursorGlow = document.getElementById("cursorGlow");
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let glowX = mouseX;
+    let glowY = mouseY;
+    let lastTrail = 0;
 
-    <section class="panel">
-      <div class="panel-header">
-        <div class="panel-title">
-          <h2>Statistiche per KAM</h2>
-          <p>Analisi automatica del valore portato da ogni commerciale.</p>
-        </div>
-      </div>
+    document.addEventListener("mousemove", (event) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>KAM</th>
-              <th>Numero lavori</th>
-              <th>Importo totale</th>
-              <th>% sul totale</th>
-              <th>Valore medio preventivo</th>
-            </tr>
-          </thead>
+      const now = Date.now();
 
-          <tbody id="kamStatsTable"></tbody>
-        </table>
-      </div>
-    </section>
+      if (now - lastTrail > 42) {
+        const trail = document.createElement("span");
+        trail.className = "mouse-trail";
+        trail.style.left = mouseX + "px";
+        trail.style.top = mouseY + "px";
+        document.body.appendChild(trail);
+        setTimeout(() => trail.remove(), 700);
+        lastTrail = now;
+      }
+    });
 
-  </div>
+    function animateGlow() {
+      glowX += (mouseX - glowX) * 0.18;
+      glowY += (mouseY - glowY) * 0.18;
+      cursorGlow.style.left = glowX + "px";
+      cursorGlow.style.top = glowY + "px";
+      requestAnimationFrame(animateGlow);
+    }
 
-  <div class="modal-bg" id="modalBg">
-    <div class="modal">
-      <h2 id="modalTitle">Nuova commessa</h2>
-      <p class="modal-subtitle">
-        Inserisci i dati della commessa. Il salvataggio avverrà direttamente online.
-      </p>
+    animateGlow();
 
-      <form id="commessaForm">
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Numero progressivo</label>
-            <input type="number" id="numero" required />
-          </div>
-
-          <div class="form-group">
-            <label>Nome committente</label>
-            <input type="text" id="nome" />
-          </div>
-
-          <div class="form-group">
-            <label>Cognome committente</label>
-            <input type="text" id="cognome" />
-          </div>
-
-          <div class="form-group">
-            <label>KAM</label>
-            <input type="text" id="kam" placeholder="Nome commerciale" />
-          </div>
-
-          <div class="form-group">
-            <label>Indirizzo</label>
-            <input type="text" id="indirizzo" />
-          </div>
-
-          <div class="form-group">
-            <label>Città</label>
-            <input type="text" id="citta" />
-          </div>
-
-          <div class="form-group">
-            <label>O.E. - Importo lavoro</label>
-            <input type="number" id="oe" step="0.01" placeholder="Es. 15000" />
-          </div>
-
-          <div class="form-group">
-            <label>Data invio ufficio preventivi</label>
-            <input type="date" id="dataInvio" />
-          </div>
-
-          <div class="form-group">
-            <label>Data scadenza preventivo</label>
-            <input type="date" id="dataScadenza" />
-          </div>
-
-          <div class="form-group">
-            <label>Data assemblea condominio</label>
-            <input type="date" id="dataAssemblea" />
-          </div>
-
-          <div class="form-group">
-            <label>Stato commessa</label>
-            <select id="stato">
-              <option value="da-lavorare">Da lavorare / in lavorazione</option>
-              <option value="attesa">Consegnata / in attesa</option>
-              <option value="aggiudicata">Aggiudicata</option>
-              <option value="persa">Persa</option>
-              <option value="rifiutata">Rifiutata</option>
-            </select>
-          </div>
-
-          <div class="form-group full">
-            <label>Info</label>
-            <textarea id="info" rows="3" placeholder="Informazioni utili sulla commessa..."></textarea>
-          </div>
-
-          <div class="form-group full">
-            <label>Annotazioni</label>
-            <textarea id="annotazioni" rows="3" placeholder="Note interne, aggiornamenti, promemoria..."></textarea>
-          </div>
-
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn btn-glass" id="cancelBtn">
-            Annulla
-          </button>
-
-          <button type="submit" class="btn btn-primary" id="saveBtn">
-            Salva commessa
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      updateDoc,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      query,
-      orderBy,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBXcvjzPv_7cmcjc4O2xpFsrGG1ydcR4js",
-      authDomain: "banca-dati-2bd62.firebaseapp.com",
-      projectId: "banca-dati-2bd62",
-      storageBucket: "banca-dati-2bd62.firebasestorage.app",
-      messagingSenderId: "898295257324",
-      appId: "1:898295257324:web:8b7f3678bf3c4f83d72dc9"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const loginScreen = document.getElementById("loginScreen");
-    const appContent = document.getElementById("appContent");
-    const loginEmail = document.getElementById("loginEmail");
-    const loginPassword = document.getElementById("loginPassword");
-    const loginError = document.getElementById("loginError");
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const userEmail = document.getElementById("userEmail");
-
-    const form = document.getElementById("commessaForm");
-    const modalBg = document.getElementById("modalBg");
-    const actionsDropdown = document.getElementById("actionsDropdown");
-
+    const historyContainer = document.getElementById("historyContainer");
     const searchInput = document.getElementById("searchInput");
-    const statusFilter = document.getElementById("statusFilter");
+    const dateFilter = document.getElementById("dateFilter");
+    const actionFilter = document.getElementById("actionFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const exportBtn = document.getElementById("exportBtn");
 
-    let commesse = [];
-    let selectedId = null;
-    let editingId = null;
-    let unsubscribeCommesse = null;
+    let historyItems = [];
 
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.innerText = message;
-      toast.classList.add("show");
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 2300);
+    function pad(value) {
+      return String(value).padStart(2, "0");
     }
 
-    function formatCurrency(value) {
-      const number = Number(value) || 0;
-
-      return number.toLocaleString("it-IT", {
-        style: "currency",
-        currency: "EUR"
-      });
-    }
-
-    function formatDate(date) {
-      if (!date) return "-";
-
-      const parts = date.split("-");
-      if (parts.length !== 3) return "-";
-
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-
-    function normalizeDate(date) {
+    function formatDateKey(date) {
       const d = new Date(date);
-      d.setHours(0, 0, 0, 0);
-      return d;
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
     }
 
-    function getDeadlineInfo(date) {
-      if (!date) {
+    function formatDateIt(date) {
+      const d = new Date(date);
+
+      return d.toLocaleDateString("it-IT", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function formatTime(date) {
+      const d = new Date(date);
+      return pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+
+    function formatPrice(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+
+      return Number(value).toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatSignedPrice(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+
+      const number = Number(value);
+      const sign = number > 0 ? "+" : "";
+
+      return sign + number.toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatSignedPercent(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
+
+      const number = Number(value);
+      const sign = number > 0 ? "+" : "";
+
+      return sign + number.toLocaleString("it-IT", {
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3
+      }) + "%";
+    }
+
+    function normalizeAction(action) {
+      if (action === "buy" || action === "BUY" || action === "acquisto" || action === "Acquisto") return "buy";
+      if (action === "sell" || action === "SELL" || action === "vendita" || action === "Vendita") return "sell";
+      return "wait";
+    }
+
+    function actionLabel(action) {
+      const normalized = normalizeAction(action);
+
+      if (normalized === "buy") return "Rialzista";
+      if (normalized === "sell") return "Ribassista";
+
+      return "Neutrale";
+    }
+
+    function normalizeResult(result) {
+      if (result === "correct") return "correct";
+      if (result === "wrong") return "wrong";
+      if (result === "neutral") return "neutral";
+      if (result === "wait") return "neutral";
+      return "pending";
+    }
+
+    function resultLabel(result) {
+      const normalized = normalizeResult(result);
+
+      if (normalized === "correct") return "Confermato";
+      if (normalized === "wrong") return "Non confermato";
+      if (normalized === "neutral") return "Neutrale";
+
+      return "In verifica";
+    }
+
+    function evaluateDisplayResult(action, entryPrice, closePrice) {
+      const normalizedAction = normalizeAction(action);
+      const entry = Number(entryPrice);
+      const close = Number(closePrice);
+
+      if (normalizedAction === "wait") {
         return {
-          text: "Nessuna scadenza",
-          className: "deadline-ok",
-          rowClass: "",
-          urgent: false
+          result: "neutral",
+          resultText: "Neutrale",
+          priceDifference: null,
+          percentageChange: null
         };
       }
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const deadline = normalizeDate(date);
-      const diffTime = deadline - today;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays < 0) {
+      if (
+        closePrice === null ||
+        closePrice === undefined ||
+        Number.isNaN(entry) ||
+        Number.isNaN(close)
+      ) {
         return {
-          text: `Scaduta da ${Math.abs(diffDays)} giorni`,
-          className: "deadline-expired",
-          rowClass: "row-expired",
-          urgent: true
+          result: "pending",
+          resultText: "In verifica",
+          priceDifference: null,
+          percentageChange: null
         };
       }
 
-      if (diffDays === 0) {
+      if (normalizedAction === "buy") {
+        const difference = close - entry;
+        const percentageChange = entry ? (difference / entry) * 100 : 0;
+
         return {
-          text: "Scade oggi",
-          className: "deadline-tomorrow",
-          rowClass: "row-tomorrow",
-          urgent: true
+          result: difference > 0 ? "correct" : "wrong",
+          resultText: difference > 0 ? "Confermato" : "Non confermato",
+          priceDifference: difference,
+          percentageChange
         };
       }
 
-      if (diffDays === 1) {
-        return {
-          text: "Scade domani",
-          className: "deadline-tomorrow",
-          rowClass: "row-tomorrow",
-          urgent: true
-        };
-      }
+      if (normalizedAction === "sell") {
+        const difference = entry - close;
+        const percentageChange = entry ? (difference / entry) * 100 : 0;
 
-      if (diffDays <= 3) {
         return {
-          text: `Mancano ${diffDays} giorni`,
-          className: "deadline-soon",
-          rowClass: "row-soon",
-          urgent: true
+          result: difference > 0 ? "correct" : "wrong",
+          resultText: difference > 0 ? "Confermato" : "Non confermato",
+          priceDifference: difference,
+          percentageChange
         };
       }
 
       return {
-        text: `Mancano ${diffDays} giorni`,
-        className: "deadline-ok",
-        rowClass: "",
-        urgent: false
+        result: "neutral",
+        resultText: "Non operativo",
+        priceDifference: null,
+        percentageChange: null
       };
     }
 
-    function renderDeadline(date) {
-      const info = getDeadlineInfo(date);
+    function getVariationClass(value, result) {
+      if (result === "correct") return "variation-positive";
+      if (result === "wrong") return "variation-negative";
 
-      return `
-        <div class="deadline-box">
-          <span class="deadline-date">${formatDate(date)}</span>
-          <span class="deadline-pill ${info.className}">
-            ${info.text}
-          </span>
-        </div>
-      `;
+      const number = Number(value || 0);
+
+      if (number > 0) return "variation-positive";
+      if (number < 0) return "variation-negative";
+
+      return "variation-neutral";
     }
 
-    function getStatusLabel(stato) {
-      const labels = {
-        "da-lavorare": "Da lavorare",
-        "attesa": "In attesa",
-        "aggiudicata": "Aggiudicata",
-        "persa": "Persa",
-        "rifiutata": "Rifiutata"
-      };
+    function cleanDescription(text) {
+      if (!text) return "--";
 
-      return labels[stato] || "Da lavorare";
+      return String(text)
+        .replaceAll("acquisto", "scenario rialzista")
+        .replaceAll("vendita", "scenario ribassista")
+        .replaceAll("compra", "lettura rialzista")
+        .replaceAll("vendi", "lettura ribassista")
+        .replaceAll("ingresso", "scenario")
+        .replaceAll("segnale operativo", "lettura del mercato");
     }
 
-    function getNextNumero() {
-      if (commesse.length === 0) return 1;
-      return Math.max(...commesse.map(c => Number(c.numero) || 0)) + 1;
+    function buildId(item, index) {
+      const progressive = String(index + 1).padStart(6, "0");
+      return "AUR-" + progressive;
     }
 
-    function openNewCommessa() {
-      editingId = null;
-      selectedId = null;
+    function normalizeHistoryItem(item, index) {
+      const createdAt = item.createdAt || item.updatedAt || item.timestamp || new Date().toISOString();
+      const action = normalizeAction(item.action || (item.scenario && item.scenario.action));
 
-      document.getElementById("modalTitle").innerText = "Nuova commessa";
-      form.reset();
-      document.getElementById("numero").value = getNextNumero();
+      const entryPrice = item.entryPrice ?? item.price;
+      const closePrice = item.closePrice;
 
-      openModal();
-      renderTable();
-    }
+      const evaluation = evaluateDisplayResult(action, entryPrice, closePrice);
 
-    function openModal() {
-      modalBg.style.display = "flex";
-    }
-
-    function closeModal() {
-      modalBg.style.display = "none";
-      editingId = null;
-    }
-
-    function closeActions() {
-      actionsDropdown.classList.remove("show");
-    }
-
-    function toggleActions() {
-      actionsDropdown.classList.toggle("show");
-    }
-
-    function getSelectedCommessa() {
-      if (!selectedId) {
-        showToast("Seleziona prima una commessa dalla tabella");
-        return null;
-      }
-
-      const commessa = commesse.find(c => c.id === selectedId);
-
-      if (!commessa) {
-        showToast("Commessa non trovata");
-        return null;
-      }
-
-      return commessa;
-    }
-
-    function getFormData() {
       return {
-        numero: Number(document.getElementById("numero").value) || getNextNumero(),
-        nome: document.getElementById("nome").value.trim(),
-        cognome: document.getElementById("cognome").value.trim(),
-        kam: document.getElementById("kam").value.trim(),
-        indirizzo: document.getElementById("indirizzo").value.trim(),
-        citta: document.getElementById("citta").value.trim(),
-        oe: Number(document.getElementById("oe").value) || 0,
-        dataInvio: document.getElementById("dataInvio").value,
-        dataScadenza: document.getElementById("dataScadenza").value,
-        dataAssemblea: document.getElementById("dataAssemblea").value,
-        stato: document.getElementById("stato").value,
-        info: document.getElementById("info").value.trim(),
-        annotazioni: document.getElementById("annotazioni").value.trim()
+        id: item.id || "",
+        displayId: buildId(item, index),
+        createdAt,
+        dateKey: formatDateKey(createdAt),
+        dateLabel: formatDateIt(createdAt),
+        timeLabel: formatTime(createdAt),
+        action,
+
+        result: evaluation.result,
+        resultText: evaluation.resultText,
+
+        entryPrice,
+        closePrice,
+
+        priceDifference:
+          evaluation.priceDifference !== null && evaluation.priceDifference !== undefined
+            ? evaluation.priceDifference
+            : item.priceDifference,
+
+        percentageChange:
+          evaluation.percentageChange !== null && evaluation.percentageChange !== undefined
+            ? evaluation.percentageChange
+            : item.percentageChange,
+
+        support: item.support,
+        resistance: item.resistance,
+        reliability: item.reliability,
+        description: cleanDescription(item.description || item.summary || item.note || buildDescription(item)),
+        raw: item
       };
     }
 
-    async function saveCommessa(event) {
-      event.preventDefault();
+    function buildDescription(item) {
+      const scenario = item.scenario || {};
+      const main = scenario.main || {};
 
-      const saveBtn = document.getElementById("saveBtn");
-      saveBtn.disabled = true;
-      saveBtn.innerText = "Salvataggio...";
-
-      try {
-        const data = getFormData();
-
-        if (editingId) {
-          const ref = doc(db, "commesse", editingId);
-
-          await updateDoc(ref, {
-            ...data,
-            updatedAt: serverTimestamp(),
-            updatedBy: auth.currentUser ? auth.currentUser.email : ""
-          });
-
-          showToast("Commessa modificata online");
-        } else {
-          await addDoc(collection(db, "commesse"), {
-            ...data,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            createdBy: auth.currentUser ? auth.currentUser.email : "",
-            updatedBy: auth.currentUser ? auth.currentUser.email : ""
-          });
-
-          showToast("Nuova commessa salvata online");
-        }
-
-        closeModal();
-      } catch (error) {
-        console.error(error);
-        showToast("Errore durante il salvataggio");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerText = "Salva commessa";
+      if (main.title || main.description) {
+        return [main.title, main.description].filter(Boolean).join(" - ");
       }
+
+      if (item.action === "buy") return "Scenario orientato al rialzo.";
+      if (item.action === "sell") return "Scenario orientato al ribasso.";
+
+      return "Scenario neutrale o in attesa di conferme.";
     }
 
-    function renderTable() {
-      const tbody = document.getElementById("commesseTable");
-      const emptyState = document.getElementById("emptyState");
-      const search = searchInput.value.toLowerCase();
-      const status = statusFilter.value;
+    function loadLocalHistory() {
+      return JSON.parse(localStorage.getItem("auren_history") || "[]");
+    }
 
-      tbody.innerHTML = "";
+    async function loadHistory() {
+      try {
+        const response = await fetch("/api/history", { cache: "no-store" });
 
-      const filtered = commesse.filter(c => {
-        const text = `
-          ${c.numero}
-          ${c.nome}
-          ${c.cognome}
-          ${c.kam}
-          ${c.indirizzo}
-          ${c.citta}
-          ${c.info}
-          ${c.annotazioni}
-        `.toLowerCase();
+        if (!response.ok) throw new Error("Endpoint storico non disponibile");
 
-        const matchesSearch = text.includes(search);
-        const matchesStatus = status === "" || c.stato === status;
+        const data = await response.json();
+        const items = Array.isArray(data) ? data : data.items || [];
 
-        return matchesSearch && matchesStatus;
+        historyItems = items
+          .sort((a, b) => new Date(a.createdAt || a.updatedAt || a.timestamp) - new Date(b.createdAt || b.updatedAt || b.timestamp))
+          .map(normalizeHistoryItem)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } catch (error) {
+        const localItems = loadLocalHistory();
+
+        historyItems = localItems
+          .sort((a, b) => new Date(a.createdAt || a.updatedAt || a.timestamp) - new Date(b.createdAt || b.updatedAt || b.timestamp))
+          .map(normalizeHistoryItem)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
+      populateDateFilter();
+      renderHistory();
+    }
+
+    function populateDateFilter() {
+      const currentValue = dateFilter.value;
+      const dates = [...new Map(historyItems.map(item => [item.dateKey, item.dateLabel])).entries()];
+
+      dateFilter.innerHTML = "";
+
+      dates.forEach(([dateKey, dateLabel]) => {
+        const option = document.createElement("option");
+        option.value = dateKey;
+        option.textContent = dateLabel;
+        dateFilter.appendChild(option);
       });
 
-      emptyState.style.display = filtered.length === 0 ? "block" : "none";
-
-      filtered
-        .sort((a, b) => Number(a.numero) - Number(b.numero))
-        .forEach(c => {
-          const tr = document.createElement("tr");
-          const deadlineInfo = getDeadlineInfo(c.dataScadenza);
-
-          if (deadlineInfo.rowClass) {
-            tr.classList.add(deadlineInfo.rowClass);
-          }
-
-          if (c.id === selectedId) {
-            tr.classList.add("selected");
-          }
-
-          tr.onclick = () => {
-            selectedId = c.id;
-            renderTable();
-          };
-
-          tr.innerHTML = `
-            <td data-label="N."><span class="numero">${c.numero || "-"}</span></td>
-            <td data-label="Nome">${c.nome || "-"}</td>
-            <td data-label="Cognome">${c.cognome || "-"}</td>
-            <td data-label="KAM"><strong>${c.kam || "-"}</strong></td>
-            <td data-label="Indirizzo">${c.indirizzo || "-"}</td>
-            <td data-label="Città">${c.citta || "-"}</td>
-            <td data-label="O.E." class="money">${formatCurrency(c.oe)}</td>
-            <td data-label="Invio ufficio">${formatDate(c.dataInvio)}</td>
-            <td data-label="Scadenza">${renderDeadline(c.dataScadenza)}</td>
-            <td data-label="Assemblea">${formatDate(c.dataAssemblea)}</td>
-            <td data-label="Stato">
-              <span class="badge badge-${c.stato}">
-                ${getStatusLabel(c.stato)}
-              </span>
-            </td>
-            <td data-label="Info">${c.info || "-"}</td>
-            <td data-label="Annotazioni">${c.annotazioni || "-"}</td>
-          `;
-
-          tbody.appendChild(tr);
-        });
-    }
-
-    function renderStats() {
-      const totalAmount = commesse.reduce((sum, c) => sum + (Number(c.oe) || 0), 0);
-      const totalJobs = commesse.length;
-      const averageAmount = totalJobs > 0 ? totalAmount / totalJobs : 0;
-      const wonJobs = commesse.filter(c => c.stato === "aggiudicata").length;
-
-      const urgentDeadlines = commesse.filter(c => {
-        const deadline = getDeadlineInfo(c.dataScadenza);
-
-        return deadline.urgent === true &&
-          c.stato !== "aggiudicata" &&
-          c.stato !== "persa" &&
-          c.stato !== "rifiutata";
-      }).length;
-
-      document.getElementById("totalAmount").innerText = formatCurrency(totalAmount);
-      document.getElementById("totalJobs").innerText = totalJobs;
-      document.getElementById("averageAmount").innerText = formatCurrency(averageAmount);
-      document.getElementById("wonJobs").innerText = wonJobs;
-      document.getElementById("urgentDeadlines").innerText = urgentDeadlines;
-
-      renderKamStats(totalAmount);
-    }
-
-    function renderKamStats(totalAmount) {
-      const tbody = document.getElementById("kamStatsTable");
-      tbody.innerHTML = "";
-
-      const stats = {};
-
-      commesse.forEach(c => {
-        const kamName = c.kam || "Non indicato";
-
-        if (!stats[kamName]) {
-          stats[kamName] = {
-            numero: 0,
-            totale: 0
-          };
-        }
-
-        stats[kamName].numero += 1;
-        stats[kamName].totale += Number(c.oe) || 0;
-      });
-
-      Object.entries(stats)
-        .sort((a, b) => b[1].totale - a[1].totale)
-        .forEach(([kam, data]) => {
-          const percentuale = totalAmount > 0 ? (data.totale / totalAmount) * 100 : 0;
-          const media = data.numero > 0 ? data.totale / data.numero : 0;
-
-          const tr = document.createElement("tr");
-
-          tr.innerHTML = `
-            <td data-label="KAM"><strong>${kam}</strong></td>
-            <td data-label="Numero lavori">${data.numero}</td>
-            <td data-label="Importo totale" class="money">${formatCurrency(data.totale)}</td>
-            <td data-label="% sul totale">${percentuale.toFixed(2)}%</td>
-            <td data-label="Valore medio">${formatCurrency(media)}</td>
-          `;
-
-          tbody.appendChild(tr);
-        });
-    }
-
-    function editSelected() {
-      const c = getSelectedCommessa();
-      if (!c) return;
-
-      editingId = c.id;
-
-      document.getElementById("modalTitle").innerText = `Modifica commessa n. ${c.numero}`;
-
-      document.getElementById("numero").value = c.numero || "";
-      document.getElementById("nome").value = c.nome || "";
-      document.getElementById("cognome").value = c.cognome || "";
-      document.getElementById("kam").value = c.kam || "";
-      document.getElementById("indirizzo").value = c.indirizzo || "";
-      document.getElementById("citta").value = c.citta || "";
-      document.getElementById("oe").value = c.oe || 0;
-      document.getElementById("dataInvio").value = c.dataInvio || "";
-      document.getElementById("dataScadenza").value = c.dataScadenza || "";
-      document.getElementById("dataAssemblea").value = c.dataAssemblea || "";
-      document.getElementById("stato").value = c.stato || "da-lavorare";
-      document.getElementById("info").value = c.info || "";
-      document.getElementById("annotazioni").value = c.annotazioni || "";
-
-      closeActions();
-      openModal();
-    }
-
-    async function duplicateSelected() {
-      const c = getSelectedCommessa();
-      if (!c) return;
-
-      try {
-        await addDoc(collection(db, "commesse"), {
-          numero: getNextNumero(),
-          nome: c.nome || "",
-          cognome: c.cognome || "",
-          kam: c.kam || "",
-          indirizzo: c.indirizzo || "",
-          citta: c.citta || "",
-          oe: Number(c.oe) || 0,
-          dataInvio: c.dataInvio || "",
-          dataScadenza: c.dataScadenza || "",
-          dataAssemblea: c.dataAssemblea || "",
-          stato: "da-lavorare",
-          info: c.info || "",
-          annotazioni: c.annotazioni || "",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-          createdBy: auth.currentUser ? auth.currentUser.email : "",
-          updatedBy: auth.currentUser ? auth.currentUser.email : ""
-        });
-
-        closeActions();
-        showToast("Commessa duplicata online");
-      } catch (error) {
-        console.error(error);
-        showToast("Errore durante la duplicazione");
+      if ([...dateFilter.options].some(option => option.value === currentValue)) {
+        dateFilter.value = currentValue;
+      } else if (dates.length > 0) {
+        dateFilter.value = dates[0][0];
       }
     }
 
-    async function deleteSelected() {
-      const c = getSelectedCommessa();
-      if (!c) return;
+    function getFilteredItems() {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedAction = actionFilter.value;
 
-      const confirmDelete = confirm(`Vuoi eliminare la commessa n. ${c.numero}?`);
+      let selectedDate = dateFilter.value;
 
-      if (!confirmDelete) return;
-
-      try {
-        await deleteDoc(doc(db, "commesse", selectedId));
-
-        selectedId = null;
-        closeActions();
-
-        showToast("Commessa eliminata online");
-      } catch (error) {
-        console.error(error);
-        showToast("Errore durante l'eliminazione");
-      }
-    }
-
-    function listenCommesse() {
-      if (unsubscribeCommesse) {
-        unsubscribeCommesse();
+      if (!selectedDate && historyItems.length > 0) {
+        selectedDate = historyItems[0].dateKey;
       }
 
-      const q = query(collection(db, "commesse"), orderBy("numero", "asc"));
+      return historyItems.filter(item => {
+        const searchable = [
+          item.displayId,
+          item.id,
+          item.dateLabel,
+          item.timeLabel,
+          actionLabel(item.action),
+          resultLabel(item.result),
+          item.description,
+          item.entryPrice,
+          item.closePrice,
+          item.priceDifference,
+          item.percentageChange,
+          item.support,
+          item.resistance
+        ].join(" ").toLowerCase();
 
-      unsubscribeCommesse = onSnapshot(q, (snapshot) => {
-        commesse = snapshot.docs.map(item => {
-          return {
-            id: item.id,
-            ...item.data()
-          };
-        });
+        const matchesQuery = !query || searchable.includes(query);
+        const matchesDate = item.dateKey === selectedDate;
+        const matchesAction = selectedAction === "all" || item.action === selectedAction;
 
-        if (selectedId && !commesse.some(c => c.id === selectedId)) {
-          selectedId = null;
-        }
-
-        renderTable();
-        renderStats();
-      }, (error) => {
-        console.error(error);
-        showToast("Errore nel caricamento dati");
+        return matchesQuery && matchesDate && matchesAction;
       });
     }
 
-    async function login() {
-      loginError.style.display = "none";
+    function updateSummary(items) {
+      const operativeItems = items.filter(item => item.action !== "wait");
+      const correctItems = operativeItems.filter(item => item.result === "correct");
+      const wrongItems = operativeItems.filter(item => item.result === "wrong");
+      const pendingItems = operativeItems.filter(item => item.result === "pending");
+      const waitItems = items.filter(item => item.action === "wait" || item.result === "neutral");
 
-      const email = loginEmail.value.trim();
-      const password = loginPassword.value.trim();
+      document.getElementById("totalCount").innerText = items.length;
+      document.getElementById("correctCount").innerText = correctItems.length;
+      document.getElementById("wrongCount").innerText = wrongItems.length;
+      document.getElementById("pendingCount").innerText = pendingItems.length;
+      document.getElementById("waitCount").innerText = waitItems.length;
 
-      if (!email || !password) {
-        loginError.innerText = "Inserisci email e password.";
-        loginError.style.display = "block";
+      const closedOperative = correctItems.length + wrongItems.length;
+      const winrate = closedOperative > 0
+        ? Math.round((correctItems.length / closedOperative) * 100)
+        : 0;
+
+      document.getElementById("winrateValue").innerText = winrate + "%";
+    }
+
+    function groupByDate(items) {
+      return items.reduce((groups, item) => {
+        if (!groups[item.dateKey]) {
+          groups[item.dateKey] = {
+            label: item.dateLabel,
+            items: []
+          };
+        }
+
+        groups[item.dateKey].items.push(item);
+        return groups;
+      }, {});
+    }
+
+    function calculateDailyPoints(items) {
+      return items
+        .filter(item => item.action !== "wait")
+        .filter(item => item.result === "correct" || item.result === "wrong")
+        .reduce((total, item) => total + Number(item.priceDifference || 0), 0);
+    }
+
+    function getDailyPointsClass(points) {
+      if (points > 0) return "positive";
+      if (points < 0) return "negative";
+      return "neutral";
+    }
+
+    function renderHistory() {
+      const filtered = getFilteredItems();
+      updateSummary(filtered);
+
+      if (!filtered.length) {
+        historyContainer.innerHTML = `
+          <div class="empty-state">
+            <strong>Nessuno scenario trovato.</strong><br>
+            Quando il tuo algoritmo salverà le analisi ogni 30 minuti, appariranno automaticamente in questa pagina.
+          </div>
+        `;
         return;
       }
 
-      loginBtn.disabled = true;
-      loginBtn.innerText = "Accesso...";
+      const groups = groupByDate(filtered);
+
+      historyContainer.innerHTML = Object.entries(groups).map(([dateKey, group]) => {
+        const dailyPoints = calculateDailyPoints(group.items);
+        const dailyPointsClass = getDailyPointsClass(dailyPoints);
+
+        return `
+          <div class="date-group">
+            <div class="date-header">
+              <div class="date-title">${group.label}</div>
+              <div class="date-count">
+                <span class="daily-points ${dailyPointsClass}">
+                  Punti giornata: ${formatSignedPrice(dailyPoints)}
+                </span>
+                &nbsp;&nbsp;${group.items.length} scenari salvati
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Orario</th>
+                    <th>Scenario</th>
+                    <th>Esito</th>
+                    <th>Prezzo iniziale</th>
+                    <th>Prezzo finale</th>
+                    <th>Variazione</th>
+                    <th>Affidabilità</th>
+                    <th>Lettura</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${group.items.map(item => {
+                    const resultClass = item.result === "correct"
+                      ? "correct"
+                      : item.result === "wrong"
+                        ? "wrong"
+                        : item.result === "neutral"
+                          ? "neutral"
+                          : "pending";
+
+                    const variationClass = getVariationClass(item.priceDifference, item.result);
+
+                    return `
+                      <tr>
+                        <td data-label="ID"><span class="id-pill">${item.displayId}</span></td>
+                        <td data-label="Orario">${item.timeLabel}</td>
+                        <td data-label="Scenario"><span class="action-pill ${item.action}">${actionLabel(item.action)}</span></td>
+                        <td data-label="Esito"><span class="result-pill ${resultClass}">${resultLabel(item.result)}</span></td>
+                        <td data-label="Prezzo iniziale">${formatPrice(item.entryPrice)}</td>
+                        <td data-label="Prezzo finale">${item.closePrice !== null && item.closePrice !== undefined ? formatPrice(item.closePrice) : "--"}</td>
+                        <td data-label="Variazione">
+                          <div class="${variationClass}">
+                            ${item.priceDifference !== null && item.priceDifference !== undefined
+                              ? formatSignedPrice(item.priceDifference) + " punti"
+                              : "--"}
+                          </div>
+                          <div class="muted">
+                            ${item.percentageChange !== null && item.percentageChange !== undefined
+                              ? formatSignedPercent(item.percentageChange)
+                              : ""}
+                          </div>
+                        </td>
+                        <td data-label="Affidabilità">${item.reliability ? Math.round(Number(item.reliability)) + "%" : "--"}</td>
+                        <td class="reading-cell" data-label="Lettura">
+                          <div class="reading-main">${item.description || "--"}</div>
+                          <div class="muted">
+                            Supporto: ${formatPrice(item.support)} · Resistenza: ${formatPrice(item.resistance)}
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function escapeCsvValue(value) {
+      if (value === null || value === undefined) return "";
+
+      return String(value)
+        .replaceAll('"', '""')
+        .replace(/\r?\n|\r/g, " ")
+        .trim();
+    }
+
+    function buildCsvRow(values) {
+      return values.map(value => `"${escapeCsvValue(value)}"`).join(";");
+    }
+
+    function exportHistoryToCsv() {
+      const items = getFilteredItems();
+
+      if (!items.length) {
+        alert("Nessuno scenario da esportare con i filtri attuali.");
+        return;
+      }
+
+      const totalScenarios = items.length;
+      const operativeItems = items.filter(item => item.action !== "wait");
+      const correctItems = operativeItems.filter(item => item.result === "correct");
+      const wrongItems = operativeItems.filter(item => item.result === "wrong");
+      const pendingItems = operativeItems.filter(item => item.result === "pending");
+      const waitItems = items.filter(item => item.action === "wait" || item.result === "neutral");
+      const closedOperative = correctItems.length + wrongItems.length;
+
+      const winrate = closedOperative > 0
+        ? ((correctItems.length / closedOperative) * 100).toFixed(2)
+        : "0.00";
+
+      const totalPoints = operativeItems
+        .filter(item => item.result === "correct" || item.result === "wrong")
+        .reduce((total, item) => total + Number(item.priceDifference || 0), 0);
+
+      const theoreticalEuro100 = totalPoints * 100;
+
+      const summaryRows = [
+        ["Report Auren - Storico scenari"],
+        ["Data esportazione", new Date().toLocaleString("it-IT")],
+        ["Scenari esportati", totalScenarios],
+        ["Scenari confermati", correctItems.length],
+        ["Scenari non confermati", wrongItems.length],
+        ["Scenari in verifica", pendingItems.length],
+        ["Scenari neutrali / non operativi", waitItems.length],
+        ["Accuratezza storica", winrate + "%"],
+        ["Punti totali", totalPoints.toFixed(2)],
+        ["Valore teorico con unità da 100 euro", theoreticalEuro100.toFixed(2) + " euro"],
+        []
+      ];
+
+      const headers = [
+        "ID",
+        "Data",
+        "Orario",
+        "Scenario",
+        "Esito",
+        "Prezzo iniziale",
+        "Prezzo finale",
+        "Variazione punti",
+        "Variazione percentuale",
+        "Affidabilità",
+        "Supporto",
+        "Resistenza",
+        "Lettura"
+      ];
+
+      const rows = items.map(item => [
+        item.displayId,
+        item.dateLabel,
+        item.timeLabel,
+        actionLabel(item.action),
+        resultLabel(item.result),
+        item.entryPrice ?? "",
+        item.closePrice ?? "",
+        item.priceDifference ?? "",
+        item.percentageChange ?? "",
+        item.reliability ?? "",
+        item.support ?? "",
+        item.resistance ?? "",
+        item.description ?? ""
+      ]);
+
+      const csvContent = [
+        ...summaryRows.map(buildCsvRow),
+        buildCsvRow(headers),
+        ...rows.map(buildCsvRow)
+      ].join("\n");
+
+      const bom = "\uFEFF";
+      const blob = new Blob([bom + csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const selectedDate = dateFilter.value || "storico";
+      const fileName = `Auren_Storico_Scenari_${selectedDate}.csv`;
+
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    searchInput.addEventListener("input", renderHistory);
+    dateFilter.addEventListener("change", renderHistory);
+    actionFilter.addEventListener("change", renderHistory);
+
+    exportBtn.addEventListener("click", exportHistoryToCsv);
+
+    refreshBtn.addEventListener("click", async () => {
+      refreshBtn.disabled = true;
+      refreshBtn.innerText = "Aggiorno...";
 
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        loginPassword.value = "";
+        await fetch("/api/scenario", {
+          cache: "no-store"
+        });
+
+        await loadHistory();
       } catch (error) {
-        console.error(error);
-        loginError.innerText = "Email o password non corrette.";
-        loginError.style.display = "block";
+        console.error("Errore aggiornamento storico:", error);
+        await loadHistory();
       } finally {
-        loginBtn.disabled = false;
-        loginBtn.innerText = "Accedi";
-      }
-    }
-
-    async function logout() {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error(error);
-        showToast("Errore durante l'uscita");
-      }
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginScreen.style.display = "none";
-        appContent.style.display = "block";
-        userEmail.innerText = user.email || "Utente collegato";
-
-        listenCommesse();
-      } else {
-        if (unsubscribeCommesse) {
-          unsubscribeCommesse();
-          unsubscribeCommesse = null;
-        }
-
-        commesse = [];
-        selectedId = null;
-        editingId = null;
-
-        loginScreen.style.display = "flex";
-        appContent.style.display = "none";
-        userEmail.innerText = "";
-
-        renderTable();
-        renderStats();
+        refreshBtn.disabled = false;
+        refreshBtn.innerText = "Aggiorna";
       }
     });
 
-    loginBtn.addEventListener("click", login);
-
-    loginPassword.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        login();
-      }
-    });
-
-    loginEmail.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        loginPassword.focus();
-      }
-    });
-
-    logoutBtn.addEventListener("click", logout);
-
-    document.getElementById("newCommessaBtn").addEventListener("click", openNewCommessa);
-    document.getElementById("actionsBtn").addEventListener("click", toggleActions);
-    document.getElementById("duplicateBtn").addEventListener("click", duplicateSelected);
-    document.getElementById("editBtn").addEventListener("click", editSelected);
-    document.getElementById("deleteBtn").addEventListener("click", deleteSelected);
-    document.getElementById("cancelBtn").addEventListener("click", closeModal);
-
-    searchInput.addEventListener("input", renderTable);
-    statusFilter.addEventListener("change", renderTable);
-
-    form.addEventListener("submit", saveCommessa);
-
-    window.addEventListener("click", function(event) {
-      const actionsMenu = document.querySelector(".actions-menu");
-
-      if (actionsMenu && !actionsMenu.contains(event.target)) {
-        actionsDropdown.classList.remove("show");
-      }
-
-      if (event.target === modalBg) {
-        closeModal();
-      }
-    });
+    loadHistory();
   </script>
-
 </body>
 </html>
