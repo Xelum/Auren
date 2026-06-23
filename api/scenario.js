@@ -2,17 +2,19 @@ import { createClient } from "redis";
 
 let redisClient;
 
-const MIN_SCORE_TO_TRADE = 6.4;
-const MIN_QUALITY_TO_TRADE = 68;
-const MIN_BULLISH_QUALITY_TO_TRADE = 72;
+const MIN_SCORE_TO_TRADE = 4.8;
+const MIN_QUALITY_TO_TRADE = 58;
+const MIN_BULLISH_QUALITY_TO_TRADE = 62;
+const MIN_DIRECTION_SCORE = 3.4;
 
-// Auren V3.1 - versione riequilibrata dopo storico reale 09/06/2026 - 11/06/2026:
-// 1) soglia operativa piu equilibrata: score minimo 6.4 e affidabilita minima 68;
-// 2) H1 resta importante, ma non blocca automaticamente se M15/M30 e qualita sono forti;
-// 3) le fasce orarie diventano penalita leggere, non un blocco operativo quasi totale;
-// 4) i risk warning restano visibili, ma bloccano solo quando sono davvero numerosi;
-// 5) scenario rialzista ancora piu prudente del ribassista, ma non eccessivamente bloccato;
-// 6) classificazione errori basso/medio/alto basata sui punti effettivi contrari.
+// Auren V3.2 - versione piu operativa.
+// Obiettivo: evitare che l'algoritmo resti quasi sempre in attesa.
+// 1) soglie abbassate: score minimo 4.8 e affidabilita minima 58;
+// 2) H1 resta importante, ma non blocca automaticamente segnali forti;
+// 3) supporti e resistenze vicini bloccano solo quando qualita e score non bastano;
+// 4) fasce orarie, warning e mercato sporco diventano penalita leggere;
+// 5) scenario rialzista resta piu prudente, ma non eccessivamente bloccato;
+// 6) storico e struttura API restano compatibili con il frontend attuale.
 
 async function getRedisClient() {
   if (!redisClient) {
@@ -1359,6 +1361,133 @@ function applyRiskPenalties({
 
   const volatilityRatio = atr30m / price;
 
+  const highVolatility = volatilityRatio > 0.0052;
+  const veryLowVolatility = volatilityRatio < 0.0007;
+
+  const extremeRsi =
+    rsi15m >= 78 ||
+    rsi15m <= 22 ||
+    rsi30m >= 76 ||
+    rsi30m <= 24;
+
+  const structureConflict =
+    structure15m !== "neutral" &&
+    structure30m !== "neutral" &&
+    structure15m !== structure30m;
+
+  const higherTimeframeConflict =
+    structure30m !== "neutral" &&
+    structure1h !== "neutral" &&
+    structure30m !== structure1h;
+
+  const momentumConflict =
+    Math.sign(momentum15m) !== Math.sign(momentum30m) &&
+    Math.abs(momentum15m) > 0.6 &&
+    Math.abs(momentum30m) > 0.6;
+
+  if (highVolatility) {
+    adjustedScore *= 0.84;
+    adjustedQuality -= 9;
+    penalties.push("Volatilita molto alta");
+  }
+
+  if (veryLowVolatility) {
+    adjustedScore *= 0.88;
+    adjustedQuality -= 7;
+    penalties.push("Volatilita troppo bassa");
+  }
+
+  if (extremeRsi) {
+    adjustedScore *= 0.90;
+    adjustedQuality -= 7;
+    penalties.push("RSI in zona estrema");
+  }
+
+  if (structureConflict) {
+    adjustedScore *= 0.82;
+    adjustedQuality -= 10;
+    penalties.push("Conflitto tra M15 e M30");
+  }
+
+  if (higherTimeframeConflict) {
+    adjustedScore *= 0.86;
+    adjustedQuality -= 8;
+    penalties.push("H1 contrario alla direzione M30");
+  }
+
+  const h1NotAligned =
+    structure30m !== "neutral" &&
+    structure1h !== structure30m;
+
+  if (h1NotAligned && !higherTimeframeConflict) {
+    adjustedScore *= 0.97;
+    adjustedQuality -= 3;
+    penalties.push("H1 non conferma la direzione");
+  }
+
+  const rangePosition =
+    recentRange30m && recentRange30m.width > 0
+      ? (price - recentRange30m.low) / recentRange30m.width
+      : 0.5;
+
+  const centralRange = rangePosition >= 0.40 && rangePosition <= 0.60;
+
+  if (centralRange) {
+    adjustedScore *= 0.96;
+    adjustedQuality -= 4;
+    penalties.push("Prezzo nella zona centrale del range M30");
+  }
+
+  if (momentumConflict) {
+    adjustedScore *= 0.92;
+    adjustedQuality -= 5;
+    penalties.push("Momentum non allineato");
+  }
+
+  if (marketRegime === "choppy" || marketRegime === "conflict") {
+    adjustedScore *= 0.88;
+    adjustedQuality -= 7;
+    penalties.push("Mercato sporco o contrastato");
+  }
+
+  const bullishLateEntry =
+    score > 0 &&
+    rangePosition > 0.84 &&
+    Math.abs(momentum30m) > 1.2;
+
+  const bearishLateEntry =
+    score < 0 &&
+    rangePosition < 0.16 &&
+    Math.abs(momentum30m) > 1.2;
+
+  if (bullishLateEntry || bearishLateEntry) {
+    adjustedScore *= 0.94;
+    adjustedQuality -= 4;
+    penalties.push("Rischio ingresso tardivo dopo movimento gia esteso");
+  }
+
+  if (
+    signalQuality.overall >= 80 &&
+    Math.abs(momentum30m) > 1.5 &&
+    Math.abs(momentum15m) > 1.5
+  ) {
+    adjustedScore *= 0.96;
+    adjustedQuality -= 3;
+    penalties.push("Segnale forte ma possibile movimento gia esteso");
+  }
+
+  return {
+    score: adjustedScore,
+    quality: Math.max(0, Math.min(100, Math.round(adjustedQuality))),
+    penalties
+  };
+}) {
+  let adjustedScore = score;
+  let adjustedQuality = signalQuality.overall;
+  const penalties = [];
+
+  const volatilityRatio = atr30m / price;
+
   const highVolatility = volatilityRatio > 0.0048;
   const veryLowVolatility = volatilityRatio < 0.0010;
 
@@ -1483,35 +1612,33 @@ function applyRiskPenalties({
 
 function getTimePenalty(date = new Date()) {
   const hour = date.getHours();
-  const minute = date.getMinutes();
-  const halfHourKey = hour + ":" + (minute >= 30 ? "30" : "00");
 
   const veryUnstableHours = [15, 18, 19];
   const unstableHours = [9, 11];
   const lessStableHours = [13, 14, 16, 17];
 
-  // V3.1: le fasce orarie restano un fattore di prudenza,
-  // ma non devono trasformare quasi tutti gli scenari in attesa.
+  // V3.2: la fascia oraria deve rendere Auren prudente,
+  // ma non deve trasformare quasi tutto in "attesa".
   if (veryUnstableHours.includes(hour)) {
     return {
-      multiplier: 0.88,
-      qualityPenalty: 6,
+      multiplier: 0.96,
+      qualityPenalty: 3,
       reason: "Fascia oraria storicamente instabile per Auren"
     };
   }
 
   if (unstableHours.includes(hour)) {
     return {
-      multiplier: 0.92,
-      qualityPenalty: 5,
+      multiplier: 0.97,
+      qualityPenalty: 2,
       reason: "Fascia oraria da trattare con prudenza"
     };
   }
 
   if (lessStableHours.includes(hour)) {
     return {
-      multiplier: 0.96,
-      qualityPenalty: 3,
+      multiplier: 0.98,
+      qualityPenalty: 1,
       reason: "Fascia oraria leggermente meno stabile"
     };
   }
@@ -1545,8 +1672,8 @@ function calculateTradability(data) {
   const absScore = Math.abs(score);
 
   const direction =
-    score >= 4.5 ? "bullish" :
-    score <= -4.5 ? "bearish" :
+    score >= MIN_DIRECTION_SCORE ? "bullish" :
+    score <= -MIN_DIRECTION_SCORE ? "bearish" :
     "neutral";
 
   const hardBadRegime = marketRegime === "low_volatility";
@@ -1559,10 +1686,10 @@ function calculateTradability(data) {
   const distanceFromSupport = Math.abs(price - support);
 
   const tooCloseToResistance =
-    direction === "bullish" && distanceFromResistance < atr30m * 1.25;
+    direction === "bullish" && distanceFromResistance < atr30m * 0.55;
 
   const tooCloseToSupport =
-    direction === "bearish" && distanceFromSupport < atr30m * 1.25;
+    direction === "bearish" && distanceFromSupport < atr30m * 0.55;
 
   const rangePosition =
     recentRange30m && recentRange30m.width > 0
@@ -1596,85 +1723,83 @@ function calculateTradability(data) {
 
   if (absScore < MIN_SCORE_TO_TRADE) {
     tradable = false;
-    reasons.push("Score tecnico sotto la soglia operativa 6.4");
+    reasons.push("Score tecnico sotto la soglia operativa 4.8");
   }
 
   if (signalQuality.overall < MIN_QUALITY_TO_TRADE) {
     tradable = false;
-    reasons.push("Affidabilita sotto 68: meglio attendere");
+    reasons.push("Affidabilita sotto 58: meglio attendere");
   }
 
-  // La bassa volatilita resta un blocco forte, perche spesso genera falsi segnali.
-  if (hardBadRegime) {
+  // La bassa volatilita non blocca piu sempre.
+  // Blocca solo quando lo score non e' abbastanza forte.
+  if (hardBadRegime && absScore < 6.2) {
     tradable = false;
     reasons.push("Regime di mercato troppo poco volatile");
   }
 
-  // Choppy/conflict non bloccano sempre: bloccano solo se il segnale non e' abbastanza forte.
-  if (softBadRegime && signalQuality.overall < 76 && absScore < 7.2) {
+  // Choppy/conflict non bloccano sempre: bloccano solo se score e qualita sono deboli.
+  if (softBadRegime && signalQuality.overall < 64 && absScore < 5.8) {
     tradable = false;
     reasons.push("Regime di mercato sporco con segnale non abbastanza forte");
   }
 
   // H1 contrario non deve bloccare automaticamente ogni scenario.
-  // Blocca solo quando la qualita non e' sufficiente.
-  if (h1Contrary && signalQuality.overall < 78) {
+  if (h1Contrary && signalQuality.overall < 66 && absScore < 6.2) {
     tradable = false;
     reasons.push("H1 contrario con affidabilita non sufficiente");
   }
 
-  // H1 resta importante, ma la soglia e' piu equilibrata rispetto alla V3.
-  if (signalQuality.overall < 72 && !h1Aligned) {
+  if (signalQuality.overall < 60 && !h1Aligned && absScore < 5.5) {
     tradable = false;
     reasons.push("Manca conferma H1 sufficiente");
   }
 
-  // La zona centrale non deve annullare tutto se la qualita del segnale e' buona.
-  if (centralRange && !h1Aligned && signalQuality.overall < 78) {
+  if (centralRange && !h1Aligned && signalQuality.overall < 62 && absScore < 5.8) {
     tradable = false;
     reasons.push("Prezzo nella zona centrale del range senza conferma H1 forte");
   }
 
-  if (tooCloseToResistance) {
+  if (tooCloseToResistance && signalQuality.overall < 70 && absScore < 6.5) {
     tradable = false;
     reasons.push("Prezzo troppo vicino alla resistenza");
   }
 
-  if (tooCloseToSupport) {
+  if (tooCloseToSupport && signalQuality.overall < 70 && absScore < 6.5) {
     tradable = false;
     reasons.push("Prezzo troppo vicino al supporto");
   }
 
-  // Il rialzista resta piu selettivo del ribassista, ma non eccessivamente bloccato.
+  // Il rialzista resta piu prudente, ma non richiede piu allineamento perfetto sempre.
   if (direction === "bullish") {
     if (signalQuality.overall < MIN_BULLISH_QUALITY_TO_TRADE) {
       tradable = false;
-      reasons.push("Scenario rialzista sotto soglia rafforzata 72");
+      reasons.push("Scenario rialzista sotto soglia rafforzata 62");
     }
 
-    if (!m15m30Aligned) {
+    if (!m15m30Aligned && signalQuality.overall < 68 && absScore < 6.5) {
       tradable = false;
       reasons.push("Scenario rialzista senza pieno allineamento M15/M30");
     }
 
-    if (!h1Aligned) {
+    if (!h1Aligned && signalQuality.overall < 70 && absScore < 6.8) {
       tradable = false;
       reasons.push("Scenario rialzista senza conferma H1");
     }
 
-    if (rsi30m >= 68 && rangePosition > 0.68) {
+    if (rsi30m >= 72 && rangePosition > 0.82 && absScore < 7.0) {
       tradable = false;
       reasons.push("Rialzista gia esteso vicino alla parte alta del range");
     }
   }
 
   // I warning devono essere avvisi, non un blocco immediato.
-  if (signalQuality.riskWarnings && signalQuality.riskWarnings.length >= 4) {
+  if (signalQuality.riskWarnings && signalQuality.riskWarnings.length >= 6) {
     tradable = false;
     reasons.push("Troppi segnali di rischio contemporanei");
   }
 
-  if (Array.isArray(riskWarnings) && riskWarnings.length >= 5) {
+  if (Array.isArray(riskWarnings) && riskWarnings.length >= 7) {
     tradable = false;
     reasons.push("Accumulo eccessivo di penalita operative");
   }
@@ -1772,7 +1897,7 @@ function buildScenarioV2(data) {
     };
   }
 
-  if (score >= 4.5) {
+  if (score >= MIN_DIRECTION_SCORE) {
     const mainProb = Math.min(78, Math.max(58, signalQuality.overall));
     const secondProb = Math.max(15, Math.round((100 - mainProb) * 0.65));
     const altProb = 100 - mainProb - secondProb;
@@ -1823,7 +1948,7 @@ function buildScenarioV2(data) {
     };
   }
 
-  if (score <= -4.5) {
+  if (score <= -MIN_DIRECTION_SCORE) {
     const mainProb = Math.min(78, Math.max(58, signalQuality.overall));
     const secondProb = Math.max(15, Math.round((100 - mainProb) * 0.65));
     const altProb = 100 - mainProb - secondProb;
